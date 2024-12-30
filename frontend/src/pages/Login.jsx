@@ -1,128 +1,125 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
-    const navigate = useNavigate();
-    // Initialize dark mode state from localStorage or default to false
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        // Check localStorage for dark mode preference
-        const savedMode = localStorage.getItem('darkMode');
-        return savedMode ? JSON.parse(savedMode) : false;
-    });
-
-    const handleGoogleSignIn = () => {
-        // Implement Google sign-in logic
-    };
-
-    const handleLogin = (event) => {
-        event.preventDefault();
-        // Implement login logic
-    };
+    const [isDark, setIsDark] = useState(false);
+    const [formData, setFormData] = useState({ mobile: '', password: '' });
+    const [errors, setErrors] = useState({ mobile: '', password: '' });
 
     const toggleDarkMode = () => {
-        setIsDarkMode((prevMode) => {
-            const newMode = !prevMode;
-            // Save new mode to localStorage
-            localStorage.setItem('darkMode', JSON.stringify(newMode));
-            return newMode;
-        });
+        setIsDark(!isDark);
     };
 
     useEffect(() => {
-        // Apply the dark mode class to the root element based on the state
-        document.documentElement.classList.toggle('dark', isDarkMode);
-    }, [isDarkMode]);
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [isDark]);
+
+    const validate = (name, value) => {
+        let error = '';
+        if (name === 'mobile') {
+            if (!/^[6-9]\d{9}$/.test(value)) {
+                error = 'Please enter a valid 10-digit mobile number';
+            }
+        } else if (name === 'password') {
+            if (value.length < 6) {
+                error = 'Password must be at least 6 characters long';
+            }
+        }
+        setErrors((prev) => ({ ...prev, [name]: error }));
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        validate(name, value);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!errors.mobile && !errors.password) {
+            console.log('Form Submitted:', formData);
+            // Add login logic here
+        }
+    };
 
     return (
-        <div
-            className={`min-h-screen grid place-items-center px-4 transition-colors duration-300 ${
-                isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-800'
-            }`}
-        >
-            <div className="absolute top-4 right-4">
-                <button
-                    onClick={toggleDarkMode}
-                    className="p-2 text-sm bg-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800"
-                    aria-label="Toggle Dark Mode"
-                >
-                    {isDarkMode ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 ">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+        <div className='h-screen dark:bg-slate-800 bg-slate-50'>
+            <div className={`w-full p-3 ${isDark ? 'bg-slate-800 text-slate-50' : 'bg-slate-50 text-slate-800'}`}>
+                <button onClick={toggleDarkMode} className="focus:outline-none">
+                    {!isDark ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+                            />
                         </svg>
                     ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
                         </svg>
                     )}
                 </button>
             </div>
-            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-                <h2 className="text-4xl font-bold text-center dark:text-gray-100 header_2_color">Login</h2>
-                <form onSubmit={handleLogin} className="mt-6">
-                    <div className="mb-4">
-                        <label
-                            htmlFor="mobile"
-                            className="block text-sm font-medium dark:text-gray-300"
-                        >
-                            Mobile 
-                        </label>
+
+            <form onSubmit={handleSubmit} className={`flex justify-center my-20 w-full ${isDark ? 'bg-slate-800 text-slate-50' : 'bg-slate-50 text-slate-800'}`}>
+                <div className='w-80 text-slate-800 dark:text-slate-50'>
+                    <div className='w-full text-center'>
+                        <h1 className='text-3xl md:text-4xl my-4 header_2_color'>Login</h1>
+                    </div>
+
+                    <div className="relative z-0">
                         <input
                             type="tel"
                             id="mobile"
                             name="mobile"
-                            placeholder="Enter mobile number"
-                            required
-                            maxLength="10"
-                            pattern="[0-9]{10}"
-                            autoComplete="tel"
-                            className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                            value={formData.mobile}
+                            onChange={handleChange}
+                            className="block py-2.5 px-0 w-full text-lg bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-slate-600 focus:outline-none focus:ring-0 focus:border-slate-600 peer"
+                            placeholder=" "
                         />
-                    </div>
-                    <div className="mb-4">
                         <label
-                            htmlFor="password"
-                            className="block text-sm font-medium dark:text-gray-300"
+                            htmlFor="mobile"
+                            className="absolute text-lg text-gray-500 dark:text-slate-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-600 peer-focus:dark:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                            Password
+                            Mobile Number
                         </label>
+                        {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
+                    </div>
+
+                    <div className="relative z-0 my-6">
                         <input
                             type="password"
                             id="password"
                             name="password"
-                            placeholder="Enter password"
-                            required
-                            autoComplete="current-password"
-                            className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="block py-2.5 px-0 w-full text-lg bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-slate-600 focus:outline-none focus:ring-0 focus:border-slate-600 peer"
+                            placeholder=" "
                         />
+                        <label
+                            htmlFor="password"
+                            className="absolute text-lg text-gray-500 dark:text-slate-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-600 peer-focus:dark:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Password
+                        </label>
+                        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
                     </div>
-                    <button
-                        type="submit"
-                        className="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    >
-                        Login
-                    </button>
-                </form>
-                <button
-                    onClick={handleGoogleSignIn}
-                    className="w-full px-4 py-2 mt-4 text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition"
-                >
-                    Sign in with Google
-                </button>
-                <div className="grid grid-cols-2 gap-4 mt-4 text-sm">
-                    <button
-                        onClick={() => navigate('/forgot-password')}
-                        className="hover:underline focus:outline-none dark:text-gray-300"
-                    >
-                        Forgot Password?
-                    </button>
-                    <button
-                        onClick={() => navigate('/signup')}
-                        className="hover:underline focus:outline-none text-right dark:text-gray-300"
-                    >
-                        Sign Up
-                    </button>
+
+                    <div className='w-full text-center my-2'>
+                        <button type="submit" className='px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800' disabled={errors.mobile || errors.password}>
+                            Login
+                        </button>
+                    </div>
+                    <div className='w-full text-center my-2'>
+                        <Link to="/forgot-password" className='underline'>Forgot password?</Link>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };
