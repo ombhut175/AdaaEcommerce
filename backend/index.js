@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv')
-const userRouter = require('./routes/user');
+const userRouter = require('./routes/auth');
 const requireLogin = require('./middlewares/requiredLogin');
 const cookieParser = require('cookie-parser');
+const addressRouter = require('./routes/address');
 //configuration--------------------------------------------------
 dotenv.config()
 const PORT = process.env.PORT;
@@ -23,6 +24,7 @@ mongoose.connect(process.env.MONGO_URL)
         //routes
         app.use('/signup',userRouter)
         app.use('/login',userRouter)
+        app.use('/',addressRouter)
         app.get('/home',requireLogin,(req,res)=>{   
             res.send("kokokok")
         })
