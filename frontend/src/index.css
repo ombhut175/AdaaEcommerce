@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,3 +88,8 @@ button:focus-visible {
   }
 }
 >>>>>>> 26ab246f0db634c25094414d60f4633f9f051c6c
+=======
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+>>>>>>> 9c89c3c (removed react router dom error)
