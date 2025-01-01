@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
+import {setMode} from "../redux/slice/userPreferences.js";
 
 const Signup = () => {
     const [isDark, setIsDark] = useState(false);
@@ -10,12 +12,20 @@ const Signup = () => {
         password: ''
     });
     const [errors, setErrors] = useState({});
+    const userPreferences = useSelector(state => state.userPreferences);
+    const dispatch = useDispatch();
 
     const toggleDarkMode = () => {
+        dispatch(setMode(!isDark));
         setIsDark(!isDark);
     };
 
+    useEffect(()=>{
+       setIsDark(userPreferences.isDarkMode)
+    },[])
+
     useEffect(() => {
+        setIsDark(userPreferences.isDarkMode)
         if (isDark) {
             document.documentElement.classList.add('dark');
         } else {
@@ -132,7 +142,7 @@ const Signup = () => {
                         </button>
                     </div>
                     <div className='w-full text-center my-2'>
-                        <Link to="/forgot-password" className='underline'>Forgot password?</Link>
+                        <Link to="/login" className='underline'>login</Link>
                     </div>
                 </div>
             </form>
