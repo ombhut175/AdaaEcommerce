@@ -1,8 +1,3 @@
 /node_modules
-<<<<<<< HEAD
 *.env
-.idea/
 **/node_modules
-=======
-*.env
->>>>>>> 26ab246f0db634c25094414d60f4633f9f051c6c
