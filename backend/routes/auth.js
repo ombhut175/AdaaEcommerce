@@ -1,5 +1,5 @@
 const express = require('express');
-const {sendOtp,verifyOtp} = require('../controllers/user')
+const {sendOtp,verifyOtp} = require('../controllers/auth')
 
 //delclaration 
 const router = express.Router();

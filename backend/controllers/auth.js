@@ -13,7 +13,7 @@ const userSchema = z.object({
 
 //signupSendOtp method -----------------------------------------------------
 const sendOtp = async (req, res) => {
-    const { firstName, lastName, mobile } = req.body;
+    const { firstName, lastName, mobile,password } = req.body;
 
     //generate otp & expiration
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
