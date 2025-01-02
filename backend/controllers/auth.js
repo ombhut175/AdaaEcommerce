@@ -1,18 +1,14 @@
 const user = require('../model/user')
 const z = require('zod');
-const sendOtpTwilio = require('../utils/sendOtpTwilio');
+const {sendOtpViaEmail} = require('../utils/MailServices');
 const jwt = require('jsonwebtoken');
 
 
-// validation schema by zod ------------------------------------------------
-const userSchema = z.object({
-    name:z.string().nonempty(),
-    mobile: z.string().nonempty(),
-})
+
 
 //signupSendOtp method -----------------------------------------------------
-const sendOtp = async (req, res) => {
-    const { name, mobile} = req.body;
+const sendOtpToSignup = async (req, res) => {
+    const { name, email,password} = req.body;
 
     //generate otp & expiration
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -21,39 +17,26 @@ const sendOtp = async (req, res) => {
     try {
         
         //user exists or not
-        const User = await user.findOne({ mobile });
+        const User = await user.findOne({ email });
         
         if (User) {
 
-            //already exists    
-            User.otp = otp;
-            User.otpExpiresAt = otpExpiresAt;
-            await User.save();
+            res.send(400).json({success:false,msg:"User Already Exists"})
         
         } else {
-
-            if(!name){
-                res.status(400).json({success:false,msg:"All fields are required!"});
-            }
-
-            const zodMsg = userSchema.safeParse({ name:name ,mobile: mobile })
-            
-            //validation
-            if (!zodMsg.success) {
-                res.status(403).json(zodMsg);
-            }
 
             //create new user
             await user.create({
                 name,
-                mobile,
+                email,
                 otp,
+                password,
                 otpExpiresAt
             })
         }
         
         //send otp
-        await sendOtpTwilio(mobile, otp)
+        await sendOtpViaEmail(email, otp)
 
         res.status(200).json({ success: true, msg: "Otp send successful !" })
 
@@ -65,17 +48,17 @@ const sendOtp = async (req, res) => {
     }
 }
 
-const verifyOtp = async (req, res) => {
-    const { otp, mobile } = req.body;
+const verifyOtpToSignup = async (req, res) => {
+    const { otp, email } = req.body;
 
     //check is empty or not
-    if (!otp || !mobile) {
-        res.status(400).json({ success: false, msg: "All fields are required !" });
+    if (!otp || !email) {
+        res.status(400).json({ success: false, msg: "All fields are required Email and OTP !" });
     }
 
     try {
         //find user
-        const User = await user.findOne({ mobile });
+        const User = await user.findOne({ email });
 
         //check is invalid or expiration
         if (User.otp != otp) {
@@ -99,7 +82,100 @@ const verifyOtp = async (req, res) => {
 
     }
 }
+
+//forgot password during the login 
+const sendOtpForgotPassword = async (req,res)=>{
+    const { email} = req.body;
+
+    //generate otp & expiration
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
+    
+    try {
+        
+        //user exists or not
+        const User = await user.findOne({ email });
+        User.otp  = otp,
+        User.otpExpiresAt = otpExpiresAt
+        
+        //save otp to database
+        await User.save();
+
+        //send otp
+        await sendOtpViaEmail(email, otp)
+
+        res.status(200).json({ success: true, msg: "Otp send successful !" })
+
+    }
+    catch (err) {
+
+        console.log(`Error occured in send otp  : ${err}`);
+
+    }
+}
+
+const verifyOtpForgotPassword = async (req,res)=>{
+    const { otp, email } = req.body;
+
+    //check is empty or not
+    if (!otp || !email) {
+        res.status(400).json({ success: false, msg: "All fields are required Email and OTP !" });
+    }
+
+    try {
+        //find user
+        const User = await user.findOne({ email });
+
+        //check is invalid or expiration
+        if (User.otp != otp) {
+            res.json({ success: false, msg: "Otp is invalid" })
+        }
+
+        if (User.otpExpiresAt < Date.now()) {
+            res.json({ success: false, msg: "Otp is Expires" })
+        }
+        
+        //sign a jwt token
+        const token = jwt.sign({ id: User._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+        res.cookie('auth-token',token);
+        res.status(200).json({ message: 'User verified successfully', token });
+    
+    } catch (err) {
+
+        console.log(`Error occur in verify otp : ${err}`);
+
+    }
+}
+
+const setNewPassword = async (req,res)=>{
+    const { email,newPassword } = req.body;
+
+    //check is empty or not
+    if (!email) {
+        res.status(400).json({ success: false, msg: "All fields are required Email !" });
+    }
+
+    try {
+        //find user
+        const User = await user.findOne({ email });
+
+        //check is invalid or expiration
+        User.password = newPassword
+        await User.save();
+        
+        res.status(200).json({ success:true,message: 'Password changed successfully' });
+    
+    } catch (err) {
+
+        console.log(`Error occur in verify otp : ${err}`);
+
+    }
+}
+
 module.exports = {
-    sendOtp,
-    verifyOtp
+    sendOtpToSignup,
+    verifyOtpToSignup,
+    sendOtpForgotPassword,
+    verifyOtpForgotPassword,
+    setNewPassword
 }
