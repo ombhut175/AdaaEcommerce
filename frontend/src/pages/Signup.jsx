@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux";
-import { setMode } from "../redux/slice/userPreferences.js";
+import {useDispatch, useSelector} from "react-redux";
+import {setMode} from "../redux/slice/userPreferences.js";
+import {GoogleButton} from "../components/GoogleButton.jsx";
 
 const Signup = () => {
     const [isDark, setIsDark] = useState(false);
@@ -149,15 +150,15 @@ const Signup = () => {
                         </div>
                     ))}
 
-                    <button type="submit" className="w-full py-2 text-lg text-white bg-slate-800 rounded-md hover:bg-slate-900 dark:bg-slate-200 dark:text-slate-800">
-                        Sign Up
-                    </button>
-                </form>
-                <div className="text-center mt-3">
-                    <span className="dark:text-slate-300">Already have an account? </span>
-                    <Link to="/login" className="text-sm underline dark:text-slate-300">
-                        Login
-                    </Link>
+                    <div className='w-full text-center my-5'>
+                        <button type="submit" className='px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800'>
+                            Sign Up
+                        </button>
+                    </div>
+                    <div className='w-full text-center my-6'>
+                        <Link to="/login" className='underline'>login</Link>
+                    </div>
+                    <GoogleButton />
                 </div>
             </div>
         </div>
