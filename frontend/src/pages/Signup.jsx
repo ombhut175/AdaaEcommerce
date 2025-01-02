@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {setMode} from "../redux/slice/userPreferences.js";
+import {GoogleButton} from "../components/GoogleButton.jsx";
 
 const Signup = () => {
     const [isDark, setIsDark] = useState(false);
@@ -141,9 +142,10 @@ const Signup = () => {
                             Sign Up
                         </button>
                     </div>
-                    <div className='w-full text-center my-2'>
+                    <div className='w-full text-center my-6'>
                         <Link to="/login" className='underline'>login</Link>
                     </div>
+                    <GoogleButton />
                 </div>
             </form>
         </div>

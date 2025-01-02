@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {useNavigate, Link} from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {setMode} from "../redux/slice/userPreferences.js";
+import {GoogleButton} from "../components/GoogleButton.jsx";
 
 const Login = () => {
     const [isDark, setIsDark] = useState(false);
-    const [formData, setFormData] = useState({ mobile: '', password: '' });
-    const [errors, setErrors] = useState({ mobile: '', password: '' });
+    const [formData, setFormData] = useState({mobile: '', password: ''});
+    const [errors, setErrors] = useState({mobile: '', password: ''});
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
 
@@ -40,12 +41,12 @@ const Login = () => {
                 error = 'Password must be at least 6 characters long';
             }
         }
-        setErrors((prev) => ({ ...prev, [name]: error }));
+        setErrors((prev) => ({...prev, [name]: error}));
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setFormData((prev) => ({...prev, [name]: value}));
         validate(name, value);
     };
 
@@ -62,7 +63,8 @@ const Login = () => {
             <div className={`w-full p-3 ${isDark ? 'bg-slate-800 text-slate-50' : 'bg-slate-50 text-slate-800'}`}>
                 <button onClick={toggleDarkMode} className="focus:outline-none">
                     {!isDark ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                             stroke="currentColor" className="w-6 h-6">
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -70,14 +72,17 @@ const Login = () => {
                             />
                         </svg>
                     ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                             stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round"
+                                  d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
                         </svg>
                     )}
                 </button>
             </div>
 
-            <form onSubmit={handleSubmit} className={`flex justify-center my-20 w-full ${isDark ? 'bg-slate-800 text-slate-50' : 'bg-slate-50 text-slate-800'}`}>
+            <form onSubmit={handleSubmit}
+                  className={`flex justify-center my-20 w-full ${isDark ? 'bg-slate-800 text-slate-50' : 'bg-slate-50 text-slate-800'}`}>
                 <div className='w-80 text-slate-800 dark:text-slate-50'>
                     <div className='w-full text-center'>
                         <h1 className='text-3xl md:text-4xl my-4 header_2_color'>Login</h1>
@@ -122,13 +127,16 @@ const Login = () => {
                     </div>
 
                     <div className='w-full text-center my-2'>
-                        <button type="submit" className='px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800' disabled={errors.mobile || errors.password}>
+                        <button type="submit"
+                                className='px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800'
+                                disabled={errors.mobile || errors.password}>
                             Login
                         </button>
                     </div>
-                    <div className='w-full text-center my-2'>
+                    <div className='w-full text-center my-5'>
                         <Link to="/signup" className='underline'>SignUp</Link>
                     </div>
+                    <GoogleButton/>
                 </div>
             </form>
         </div>
