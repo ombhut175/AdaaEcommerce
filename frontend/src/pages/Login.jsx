@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
-import {setMode} from "../redux/slice/userPreferences.js";
+import { useDispatch, useSelector } from "react-redux";
+import { setMode } from "../redux/slice/userPreferences.js";
 
 const Login = () => {
     const [isDark, setIsDark] = useState(false);
-    const [formData, setFormData] = useState({ mobile: '', password: '' });
-    const [errors, setErrors] = useState({ mobile: '', password: '' });
+    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [errors, setErrors] = useState({ email: '', password: '' });
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
 
@@ -30,9 +30,9 @@ const Login = () => {
 
     const validate = (name, value) => {
         let error = '';
-        if (name === 'mobile') {
-            if (!/^[6-9]\d{9}$/.test(value)) {
-                error = 'Please enter a valid 10-digit mobile number';
+        if (name === 'email') {
+            if (!/\S+@\S+\.\S+/.test(value)) {
+                error = 'Please enter a valid email address';
             }
         } else if (name === 'password') {
             if (value.length < 6) {
@@ -50,7 +50,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!errors.mobile && !errors.password) {
+        if (!errors.email && !errors.password) {
             console.log('Form Submitted:', formData);
             // Add login logic here
         }
@@ -96,32 +96,32 @@ const Login = () => {
                 )}
             </button>
 
-            {/* Login Card Here*/}
+            {/* Login Card Here */}
             <div
                 className={`w-full max-w-md p-10 rounded-xl shadow-md ${
-                    isDark ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-800'
-                }`}
+                    isDark ? 'bg-slate-900 text-slate-100' : 'bg-white text-slate-800'
+                } md:hover:scale-105 transition-all`}
             >
                 <h1 className="text-3xl md:text-4xl font-semibold mb-6 text-center">Login</h1>
 
                 <form onSubmit={handleSubmit}>
                     <div className="relative z-0 mb-6">
                         <input
-                            type="tel"
-                            id="mobile"
-                            name="mobile"
-                            value={formData.mobile}
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
                             onChange={handleChange}
                             className="block py-2.5 px-0 w-full text-lg bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-slate-600 focus:outline-none focus:ring-0 focus:border-slate-600 peer"
                             placeholder=" "
                         />
                         <label
-                            htmlFor="mobile"
+                            htmlFor="email"
                             className="absolute text-lg text-gray-500 dark:text-slate-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-600 peer-focus:dark:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                            Mobile Number
+                            Email Address
                         </label>
-                        {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
+                        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                     </div>
 
                     <div className="relative z-0 mb-6">
@@ -146,9 +146,16 @@ const Login = () => {
                     <button
                         type="submit"
                         className="w-full px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800"
-                        disabled={errors.mobile || errors.password}
+                        disabled={errors.email || errors.password}
                     >
                         Login
+                    </button>
+                    <button
+                        type="submit"
+                        className="w-full px-8 py-2 my-3 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800"
+                        disabled={errors.email || errors.password}
+                    >
+                        
                     </button>
 
                     <div className="w-full text-center mt-4">
@@ -156,13 +163,13 @@ const Login = () => {
                             Forgot password?
                         </Link>
                     </div>
-                    <div className='w-full text-center my-2'>
-                        <Link to="/signup" className='underline'>SignUp</Link>
+                    <div className="w-full text-center my-2">
+                        <Link to="/signup" className="underline">SignUp</Link>
                     </div>
                 </form>
             </div>
         </div>
     );
-}
+};
 
 export default Login;

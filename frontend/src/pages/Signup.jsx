@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
-import {setMode} from "../redux/slice/userPreferences.js";
+import { useDispatch, useSelector } from "react-redux";
+import { setMode } from "../redux/slice/userPreferences.js";
 
 const Signup = () => {
     const [isDark, setIsDark] = useState(false);
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        mobile: '',
+        name: '',
+        email: '',
         password: ''
     });
     const [errors, setErrors] = useState({});
@@ -20,12 +19,12 @@ const Signup = () => {
         setIsDark(!isDark);
     };
 
-    useEffect(()=>{
-       setIsDark(userPreferences.isDarkMode)
-    },[])
+    useEffect(() => {
+        setIsDark(userPreferences.isDarkMode);
+    }, []);
 
     useEffect(() => {
-        setIsDark(userPreferences.isDarkMode)
+        setIsDark(userPreferences.isDarkMode);
         if (isDark) {
             document.documentElement.classList.add('dark');
         } else {
@@ -38,15 +37,13 @@ const Signup = () => {
         setFormData({ ...formData, [id]: value });
 
         let error = '';
-        if (id === 'firstName' && !value.trim()) {
-            error = 'First Name is required';
-        } else if (id === 'lastName' && !value.trim()) {
-            error = 'Last Name is required';
-        } else if (id === 'mobile') {
+        if (id === 'name' && !value.trim()) {
+            error = 'Name is required';
+        } else if (id === 'email') {
             if (!value.trim()) {
-                error = 'Mobile Number is required';
-            } else if (!/^\d{10}$/.test(value)) {
-                error = 'Enter a valid 10-digit Mobile Number';
+                error = 'Email is required';
+            } else if (!/\S+@\S+\.\S+/.test(value)) {
+                error = 'Enter a valid email address';
             }
         } else if (id === 'password') {
             if (!value.trim()) {
@@ -62,16 +59,13 @@ const Signup = () => {
     const validate = () => {
         const newErrors = {};
 
-        if (!formData.firstName.trim()) {
-            newErrors.firstName = 'First Name is required';
+        if (!formData.name.trim()) {
+            newErrors.name = 'Name is required';
         }
-        if (!formData.lastName.trim()) {
-            newErrors.lastName = 'Last Name is required';
-        }
-        if (!formData.mobile.trim()) {
-            newErrors.mobile = 'Mobile Number is required';
-        } else if (!/^\d{10}$/.test(formData.mobile)) {
-            newErrors.mobile = 'Enter a valid 10-digit Mobile Number';
+        if (!formData.email.trim()) {
+            newErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Enter a valid email address';
         }
         if (!formData.password.trim()) {
             newErrors.password = 'Password is required';
@@ -93,7 +87,7 @@ const Signup = () => {
 
     return (
         <div className='h-screen flex items-center justify-center dark:bg-slate-800 bg-slate-50'>
-            {/* Toggle Button Here */}
+            {/* Toggle Button */}
             <button
                 onClick={toggleDarkMode}
                 className="absolute top-10 right-10 focus:outline-none"
@@ -131,49 +125,40 @@ const Signup = () => {
                 )}
             </button>
 
-            {/*SignUp Card Here*/}
-            <div className="rounded-2xl shadow-2xl p-8 w-96 md:w-[25rem] lg:w-[28rem] xl:w-[33rem] bg-white dark:bg-slate-900 transition-all duration-300 hover:scale-105">
+            {/* Signup Form */}
+            <div className="rounded-2xl md:hover:scale-105 shadow-md  transition-all p-16 w-96 md:w-[450px] bg-white dark:bg-slate-900">
                 <h1 className="text-3xl font-semibold mb-5 text-center text-slate-800 dark:text-slate-100">Sign Up</h1>
                 <form onSubmit={handleSubmit}>
-                    {['firstName', 'lastName', 'mobile', 'password'].map((field, idx) => (
+                    {['name', 'email', 'password'].map((field, idx) => (
                         <div className="relative z-0 mb-4" key={idx}>
                             <input
                                 type={field === 'password' ? 'password' : 'text'}
                                 id={field}
                                 value={formData[field]}
                                 onChange={handleChange}
-                                className="block py-2.5 px-0 w-full text-lg bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-slate-600 focus:outline-none focus:ring-0 focus:border-slate-600 peer"
+                                className="block py-2.5 px-0 w-full text-lg bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-slate-600 peer"
                                 placeholder=" "
                             />
                             <label
                                 htmlFor={field}
-                                className="absolute text-lg text-gray-500 dark:text-slate-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-600 peer-focus:dark:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                className="absolute text-lg text-gray-500 dark:text-slate-200 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                             >
-                                {field === 'mobile' ? 'Mobile Number' : field === 'password' ? 'Password' : field === 'firstName' ? 'First Name' : 'Last Name'}
+                                {field.charAt(0).toUpperCase() + field.slice(1)}
                             </label>
                             {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
                         </div>
                     ))}
 
-                    <div className='w-full text-center my-5'>
-                        <button type="submit" className='px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800'>
-                            Sign Up
-                        </button>
-                    </div>
-                    <div className='w-full text-center my-2'>
-                        <Link to="/login" className='underline'>login</Link>
-                    </div>
-                    <button type="submit" className="w-full py-2 text-lg text-white bg-slate-800 rounded-md hover:bg-slate-900 dark:bg-slate-200 dark:text-slate-800 dark:hover:bg-slate-300">
+                    <button type="submit" className="w-full py-2 text-lg text-white bg-slate-800 rounded-md hover:bg-slate-900 dark:bg-slate-200 dark:text-slate-800">
                         Sign Up
                     </button>
                 </form>
                 <div className="text-center mt-3">
-                    <span className='dark:text-slate-300'>Already have an account? &nbsp;</span>
+                    <span className="dark:text-slate-300">Already have an account? </span>
                     <Link to="/login" className="text-sm underline dark:text-slate-300">
                         Login
                     </Link>
                 </div>
-                
             </div>
         </div>
     );
