@@ -10,7 +10,6 @@ const Login = () => {
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
 
-
     const toggleDarkMode = () => {
         dispatch(setMode(!isDark));
         setIsDark(!isDark);
@@ -157,18 +156,13 @@ const Login = () => {
                             Forgot password?
                         </Link>
                     </div>
-<<<<<<< HEAD
                     <div className='w-full text-center my-2'>
                         <Link to="/signup" className='underline'>SignUp</Link>
                     </div>
-                </div>
-            </form>
-=======
                 </form>
             </div>
->>>>>>> kishanAkbari
         </div>
     );
-};
+}
 
 export default Login;

@@ -154,7 +154,6 @@ const Signup = () => {
                             {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
                         </div>
                     ))}
-<<<<<<< HEAD
 
                     <div className='w-full text-center my-5'>
                         <button type="submit" className='px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800'>
@@ -164,7 +163,6 @@ const Signup = () => {
                     <div className='w-full text-center my-2'>
                         <Link to="/login" className='underline'>login</Link>
                     </div>
-=======
                     <button type="submit" className="w-full py-2 text-lg text-white bg-slate-800 rounded-md hover:bg-slate-900 dark:bg-slate-200 dark:text-slate-800 dark:hover:bg-slate-300">
                         Sign Up
                     </button>
@@ -174,7 +172,6 @@ const Signup = () => {
                     <Link to="/login" className="text-sm underline dark:text-slate-300">
                         Login
                     </Link>
->>>>>>> kishanAkbari
                 </div>
                 
             </div>
