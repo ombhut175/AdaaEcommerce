@@ -1,20 +1,19 @@
-const { timeStamp } = require('console')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
-    firstName:String,
-    lastName:String,
-    mobile:String,
-    password:String,
-    profilePicture:String,
+const userSchema = mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    mobile: { type: String, required: true, unique: true }, 
+    profilePicture: { type: String }, 
     otp: { type: String },
-    role:[],
-    status:String,
-    devices:[],
-    membership:String,
+    role: { type: [String], default: [] }, 
+    status: { type: String, default: 'active' }, 
+    devices: { type: [String], default: [] },
+    membership: { type: String },
     otpExpiresAt: { type: Date },
     verified: { type: Boolean, default: false },
-},{timeStamp:true})
-
+  },
+  { timestamps: true } 
+);
 
 module.exports = mongoose.model('User', userSchema);

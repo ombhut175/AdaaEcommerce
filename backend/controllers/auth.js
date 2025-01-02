@@ -6,14 +6,13 @@ const jwt = require('jsonwebtoken');
 
 // validation schema by zod ------------------------------------------------
 const userSchema = z.object({
-    firstName: z.string().nonempty(),
-    lastName: z.string().nonempty(),
+    name:z.string().nonempty(),
     mobile: z.string().nonempty(),
 })
 
 //signupSendOtp method -----------------------------------------------------
 const sendOtp = async (req, res) => {
-    const { firstName, lastName, mobile,password } = req.body;
+    const { name, mobile} = req.body;
 
     //generate otp & expiration
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -33,11 +32,11 @@ const sendOtp = async (req, res) => {
         
         } else {
 
-            if(!firstName || !lastName){
+            if(!name){
                 res.status(400).json({success:false,msg:"All fields are required!"});
             }
 
-            const zodMsg = userSchema.safeParse({ firstName: firstName, lastName: lastName, mobile: mobile })
+            const zodMsg = userSchema.safeParse({ name:name ,mobile: mobile })
             
             //validation
             if (!zodMsg.success) {
@@ -46,8 +45,7 @@ const sendOtp = async (req, res) => {
 
             //create new user
             await user.create({
-                firstName,
-                lastName,
+                name,
                 mobile,
                 otp,
                 otpExpiresAt
