@@ -4,32 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setMode } from '../redux/slice/userPreferences.js';
 import { GoogleButton } from '../components/GoogleButton.jsx';
 
-const InputField = ({ id, type, value, handleChange, error, label }) => (
-    <div className="relative z-0 mb-4">
-        <input
-            type={type}
-            id={id}
-            value={value}
-            onChange={handleChange}
-            className="block py-2.5 px-0 w-full text-lg bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-slate-600 peer"
-            placeholder=" "
-        />
-        <label
-            htmlFor={id}
-            className="absolute text-lg text-gray-500 dark:text-slate-200 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-        >
-            {label}
-        </label>
-        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-    </div>
-);
+
 
 const Signup = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
     const [errors, setErrors] = useState({});
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
-
+    const [isHidePass,setIsHidePass] = useState(true);
     const isDark = userPreferences.isDarkMode;
 
     useEffect(() => {
@@ -40,40 +22,52 @@ const Signup = () => {
         dispatch(setMode(!isDark));
     };
 
-    const validateField = (id, value) => {
-        if (!value.trim()) {
-            return `${id.charAt(0).toUpperCase() + id.slice(1)} is required`;
+    const validate = (name, value) => {
+        let error = '';
+        if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
+            error = 'Please enter a valid email address';
+        } else if (name === 'password') {
+            const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/;
+            if (!passwordRegex.test(value)) {
+                error = 'Password must be at least 6 characters long, include at least one number, and one special character';
+            }
+        }else if(name=='name' && value.length<2){
+            error = 'Enter minimum two letter';
+
         }
-        if (id === 'email' && !/\S+@\S+\.\S+/.test(value)) {
-            return 'Enter a valid email address';
-        }
-        if (id === 'password' && value.length < 6) {
-            return 'Password must be at least 6 characters long';
-        }
-        return '';
+        setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
     };
 
     const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData({ ...formData, [id]: value });
-        setErrors({ ...errors, [id]: validateField(id, value) });
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        validate(name, value);
     };
 
-    const validateForm = () => {
-        const newErrors = {};
-        Object.keys(formData).forEach(key => {
-            const error = validateField(key, formData[key]);
-            if (error) newErrors[key] = error;
-        });
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
+   
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
             console.log('Form submitted', formData);
-            // Add submission logic
+            fetch(link() + "/signup",
+                {
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify(formData)
+                })
+                .then(function(res){ return res.json() })
+                .then((res)=>{
+                    if(res.success==true){
+                        setIsLogin(true)
+                        setTimeout(()=>{
+                            navigate('/')
+                        },1000)
+                    }
+                })
+                .catch(function(res){ console.log(res) })
         }
     };
 
@@ -98,25 +92,30 @@ const Signup = () => {
             {/* Signup Form */}
             <div className="rounded-2xl md:hover:scale-105 shadow-md transition-all p-16 w-96 md:w-[450px] bg-white dark:bg-slate-900">
                 <h1 className="text-3xl font-semibold mb-5 text-center text-slate-800 dark:text-slate-100">Sign Up</h1>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} noValidate>
                 <div class="relative z-0 w-full mb-5 group">
-                            <input type="email" name="floating_email" id="floating_email" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
+                            <input type="email" name="email" id="email"  onChange={handleChange} class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
                             <label for="floating_email" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
+                            {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
+
                         </div>
-                        <div class="relative z-0 w-full mb-5 group">
-                            <input type="password" name="floating_password" id="floating_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
-                            <label for="floating_password" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
-                        </div>
-                        <div class="relative z-0 w-full mb-5 group">
-                            <input type="password" name="repeat_password" id="floating_repeat_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
-                            <label for="floating_repeat_password" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm password</label>
+                        <div className="relative z-0 w-full mb-5 group">
+                            <input type={`${isHidePass?"password":"text"}`} name="password" id="floating_password" onChange={handleChange} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
+                            <label form="floating_password" className={`peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6`}>Password</label>
+                            {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
+                            {
+                            isHidePass ? <label className='absolute top-2 right-2'><button className='p-1'onClick={()=>{setIsHidePass(false)}}><i class="fa-regular fa-eye"></i></button></label>
+                            :<label className='absolute top-2 right-2'><button className='p-1' onClick={()=>{setIsHidePass(true)}}><i class="fa-regular fa-eye-slash"></i></button></label>
+                            }
                         </div>
                         <div class="relative z-0 w-full mb-5 group">
                             
                             <div class="relative z-0 w-full mb-5 group">
-                                <input type="text" name="floating_name"  class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
+                                <input type="text" name="name" onChange={handleChange} class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
                                 <label  class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
                             </div>
+                            {errors.name && <span className="text-red-500 text-xs">{errors.name}</span>}
+                        
                         </div>
                     <div className="w-full text-center my-5">
                         <button type="submit" className="w-full px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800">

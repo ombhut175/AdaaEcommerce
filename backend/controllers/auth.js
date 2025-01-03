@@ -2,11 +2,11 @@ const userModel = require('../model/user')
 const z = require('zod');
 const {sendOtpViaEmail} = require('../utils/MailServices');
 const jwt = require('jsonwebtoken');
-
+const bcrypt = require('bcrypt')
 
 //signupSendOtp method -----------------------------------------------------
 const sendOtpToSignup = async (req, res) => {
-    const {name, email, password} = req.body;
+    let {name, email, password} = req.body;
 
     //generate otp & expiration
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -22,7 +22,7 @@ const sendOtpToSignup = async (req, res) => {
             res.send(400).json({success: false, msg: "User Already Exists"})
 
         } else {
-
+            password = await bcrypt.hash(password,5);
             //create new userModel
             await userModel.create({
                 name,
@@ -157,7 +157,7 @@ const setNewPassword = async (req, res) => {
         const User = await userModel.findOne({email});
 
         //check is invalid or expiration
-        User.password = newPassword
+        User.password = await bcrypt.hash(newPassword,5);
         await User.save();
 
         res.status(200).json({success: true, message: 'Password changed successfully'});
@@ -171,25 +171,29 @@ const setNewPassword = async (req, res) => {
 
 const forLogin = async (req, res) => {
     const {email, password} = req.body;
-
+    try{
     if (!email && !password) {
-        res.json({success: false, msg: "All feild are required !"});
+        return res.status(404).json({success: false, msg: "All feild are required !"});
     }
 
     const data = await userModel.findOne({email});
     if (!data) {
-        res.json({success: false, msg: "User Not found"});
+        res.status(404).json({success: false, msg: "User Not found"});
     }
-
-    if (data.password == password) {
-        const token = jwt.sign({id: User._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
+    const isPassValid = await bcrypt.compare(password,data.password)
+    if (isPassValid) {
+        const token = jwt.sign({id: data._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
         res.cookie('auth-token', token);
 
         res.json({
-            success: true, msg: "Login Successfull"
+            success: true, msg: "Login Successful"
         })
     }
     res.json({success: false, msg: "Password Incorrect"})
+    }catch(err){
+        console.log(err);
+        
+    }
 }
 module.exports = {
     sendOtpToSignup,
