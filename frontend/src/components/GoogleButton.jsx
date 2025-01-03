@@ -6,7 +6,7 @@ export function GoogleButton() {
     return (
         <>
             <button
-                className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-1 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 w-full justify-center"
+                className="flex items-center h-11 active:scale-90 transition-all bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-1 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 w-full justify-center"
                 onClick={handleSignIn}
             >
                 <svg className="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg"
