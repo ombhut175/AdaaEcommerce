@@ -127,7 +127,7 @@ const verifyOtpForgotPassword = async (req,res)=>{
         const User = await user.findOne({ email });
 
         //check is invalid or expiration
-        if (User.otp != otp) {
+        if (User.otp !== otp) {
             res.json({ success: false, msg: "Otp is invalid" })
         }
 
