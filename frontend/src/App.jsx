@@ -1,37 +1,23 @@
-// import { Route, Routes } from 'react-router-dom';
-// import './App.css';
-// import Login from './pages/Login';
-// import Signup from './pages/Signup';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Signup from "./pages/Signup.jsx";
+import Login from "./pages/Login.jsx";
+import Layout from "../Layout.jsx";
+import HomePage from "./pages/Home.jsx";
+import BlogGridView from "./pages/BlogGridView.jsx";
 
-// function App() {
-//     return (
-//         <>
-//             <Routes>
-//                 {/* Default route */}
-//                 <Route path="/" element={<Login />} /> {/* You can change this to a Home component or any other default page */}
-//                 <Route path="/login" element={<Login />} />
-//                 <Route path="/signup" element={<Signup />} />
-//                 {/* Other routes */}
-//             </Routes>
-//         </>
-//     );
-// }
-
-// export default App;
-// import { Route, Routes } from 'react-router-dom'
-// import Login from './pages/Login'
-// import Signup from './pages/Signup'
-
-// function App() {
-//   return (
-//     <>
-//       <Routes path="/" element={<Layoyt/>}>
-//       <Route path="/login" element={<Login />} />
-//       <Route path="/signup" element={<Signup />} />
-//       {/* Other routes */}
-//     </Routes>
-//     </>
-//   )
-// }
-
-// export default App
+export default function App(){
+    return (
+        <>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/" element={<Layout />}>
+                        <Route path="home" element={<HomePage />} />
+                        <Route path="bloggridview" element={<BlogGridView />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </>
+    )
+}

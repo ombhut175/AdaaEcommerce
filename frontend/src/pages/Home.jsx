@@ -36,100 +36,100 @@ export default function HomePage() {
             <div className="bg-gray-200">
                 <div className="justify-center flex items-center flex-col">
                     <h1 className="mt-10 text-4xl font-bold text-indigo-800">NEW ARRIVAL!</h1>
-                    <hr class="w-48 h-1 mx-auto my-4 bg-yellow-400 border-0 rounded md:my-10 dark:bg-gray-700" />
+                    <hr className="w-48 h-1 mx-auto my-4 bg-yellow-400 border-0 rounded md:my-10 dark:bg-gray-700" />
                 </div>
 
                 {/* cards */}
                 <div className="w-full h-auto flex flex-wrap justify-center gap-6 p-4">
-                    <div class="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
+                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
                         {/* Image */}
                         <img
-                            class="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
+                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
                             src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
                             alt="Sunset in the mountains"
                         />
                         {/* Img Text */}
-                        <div class="px-6 py-4 bg-white">
-                            <div class="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
+                        <div className="px-6 py-4 bg-white">
+                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
+                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
                         </div>
-                        <div class="px-6 pb-2  bg-white">
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
+                        <div className="px-6 pb-2  bg-white">
+                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
                         </div>
                     </div>
 
-                    <div class="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
+                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
                         {/* Image */}
                         <img
-                            class="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
+                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
                             src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
                             alt="Sunset in the mountains"
                         />
                         {/* Img Text */}
-                        <div class="px-6 py-4  bg-white">
-                            <div class="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
+                        <div className="px-6 py-4  bg-white">
+                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
+                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
                         </div>
-                        <div class="px-6 pb-2  bg-white">
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
+                        <div className="px-6 pb-2  bg-white">
+                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
                         </div>
                     </div>
 
-                    <div class="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
+                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
                         {/* Image */}
                         <img
-                            class="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
+                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
                             src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
                             alt="Sunset in the mountains"
                         />
                         {/* Img Text */}
-                        <div class="px-6 py-4  bg-white">
-                            <div class="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
+                        <div className="px-6 py-4  bg-white">
+                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
+                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
                         </div>
-                        <div class="px-6 pb-2  bg-white">
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
+                        <div className="px-6 pb-2  bg-white">
+                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
                         </div>
                     </div>
 
-                    <div class="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
+                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
                         {/* Image */}
                         <img
-                            class="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
+                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
                             src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
                             alt="Sunset in the mountains"
                         />
                         {/* Img Text */}
-                        <div class="px-6 py-4  bg-white">
-                            <div class="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
+                        <div className="px-6 py-4  bg-white">
+                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
+                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
                         </div>
-                        <div class="px-6 pb-2  bg-white">
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
+                        <div className="px-6 pb-2  bg-white">
+                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
                         </div>
                     </div>
 
-                    <div class="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
+                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
                         {/* Image */}
                         <img
-                            class="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
+                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
                             src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
                             alt="Sunset in the mountains"
                         />
                         {/* Img Text */}
-                        <div class="px-6 py-4  bg-white">
-                            <div class="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p class="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
+                        <div className="px-6 py-4  bg-white">
+                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
+                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
                         </div>
-                        <div class="px-6 pb-2  bg-white">
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
+                        <div className="px-6 pb-2  bg-white">
+                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
                         </div>
                     </div>
                 </div>
                 {/* card end */}
 
                 {/* Explore More Button */}
-                <div class="flex flex-col items-center justify-center space-y-4">
+                <div className="flex flex-col items-center justify-center space-y-4">
                     <div className="m-5">
                         <a
                         className="group relative inline-flex items-center overflow-hidden rounded bg-indigo-600 px-8 py-3 text-white focus:outline-none focus:ring active:bg-indigo-500"
@@ -157,32 +157,32 @@ export default function HomePage() {
                     </div>
 
                     {/* divider */}
-                    <div class="w-80 h-1 bg-black rounded-full flex flex-wrap flex-col justify-center ">
-                        <span class="w-80 h-1 bg-black rounded-full"></span>
+                    <div className="w-80 h-1 bg-black rounded-full flex flex-wrap flex-col justify-center ">
+                        <span className="w-80 h-1 bg-black rounded-full"></span>
                         <span>⭐</span>
-                        <span class="w-80 h-1 bg-black rounded-full"></span>
+                        <span className="w-80 h-1 bg-black rounded-full"></span>
                     </div>
                     {/* text */}
-                    <div class="flex space-x-40 ">
-                        <div class="flex flex-col">
-                            <h3 class="text-gray-800 font-bold text-xl">PRADA</h3>
-                            <h3 class="text-gray-800 font-bold text-xl">Cartier</h3>
+                    <div className="flex space-x-40 ">
+                        <div className="flex flex-col">
+                            <h3 className="text-gray-800 font-bold text-xl">PRADA</h3>
+                            <h3 className="text-gray-800 font-bold text-xl">Cartier</h3>
                         </div>
-                        <div class="flex flex-col">
-                            <h3 class="text-gray-800 font-bold text-xl">BURBERRY</h3>
-                            <h3 class="text-gray-800 font-bold text-xl">GUCCI</h3>
+                        <div className="flex flex-col">
+                            <h3 className="text-gray-800 font-bold text-xl">BURBERRY</h3>
+                            <h3 className="text-gray-800 font-bold text-xl">GUCCI</h3>
                         </div>
-                        <div class="flex flex-col">
-                            <h3 class="text-gray-800 font-bold text-xl">BOSS</h3>
-                            <h3 class="text-gray-800 font-bold text-xl">TIFFANY & CO.</h3>
+                        <div className="flex flex-col">
+                            <h3 className="text-gray-800 font-bold text-xl">BOSS</h3>
+                            <h3 className="text-gray-800 font-bold text-xl">TIFFANY & CO.</h3>
                         </div>
                     </div>
 
                     {/* divider */}
-                    <div class="w-60 h-1 bg-yellow-300 rounded-full"></div>
+                    <div className="w-60 h-1 bg-yellow-300 rounded-full"></div>
                     
-                    <h2 class="text-gray-800 font-bold text-lg">COLLECTIONS</h2>
-                    <h1 class="font-roboto">This should be Roboto font</h1>
+                    <h2 className="text-gray-800 font-bold text-lg">COLLECTIONS</h2>
+                    <h1 className="font-roboto">This should be Roboto font</h1>
 
                 </div>
                 <div className="bg-white">
@@ -202,12 +202,12 @@ export default function HomePage() {
             </div>
 
             <div>
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="text-center">
-                        <h2 class="text-3xl font-bold text-indigo-800 sm:text-4xl">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center">
+                        <h2 className="text-3xl font-bold text-indigo-800 sm:text-4xl">
                         @TRENDING
                         </h2>
-                        <div class="mt-4 text-gray-500">
+                        <div className="mt-4 text-gray-500">
                             <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#2021</span>
                             <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#spring</span>
                             <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#collection</span>
@@ -216,13 +216,13 @@ export default function HomePage() {
                             <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#openfashion</span>
                         </div>
                     </div>
-                    <div class="mt-10 text-center">
-                        <h2 class="text-3xl font-bold text-indigo-800 sm:text-5xl">
+                    <div className="mt-10 text-center">
+                        <h2 className="text-3xl font-bold text-indigo-800 sm:text-5xl">
                         Open
                         <br />
                         Fashion
                         </h2>
-                        <p class="mt-4 text-xl text-gray-500 sm:text-2xl">
+                        <p className="mt-4 text-xl text-gray-500 sm:text-2xl">
                         Making a luxurious lifestyle accessible for a generous group of women is our
                         daily drive.
                         </p>
@@ -239,89 +239,89 @@ export default function HomePage() {
             <div>
 <div data-hs-carousel='{
     "loadingClasses": "opacity-0"
-  }' class="relative">
-  <div class="hs-carousel flex space-x-2">
-    <div class="flex-none">
-      <div class="hs-carousel-pagination max-h-96 flex flex-col gap-y-2 overflow-y-auto">
-        <div class="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div class="flex justify-center h-full bg-gray-100 p-2 dark:bg-neutral-900">
-            <span class="self-center text-xs text-gray-800 transition duration-700 dark:text-white">First slide</span>
+  }' className="relative">
+  <div className="hs-carousel flex space-x-2">
+    <div className="flex-none">
+      <div className="hs-carousel-pagination max-h-96 flex flex-col gap-y-2 overflow-y-auto">
+        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
+          <div className="flex justify-center h-full bg-gray-100 p-2 dark:bg-neutral-900">
+            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">First slide</span>
           </div>
         </div>
-        <div class="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div class="flex justify-center h-full bg-gray-200 p-2 dark:bg-neutral-800">
-            <span class="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Second slide</span>
+        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
+          <div className="flex justify-center h-full bg-gray-200 p-2 dark:bg-neutral-800">
+            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Second slide</span>
           </div>
         </div>
-        <div class="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div class="flex justify-center h-full bg-gray-300 p-2 dark:bg-neutral-700">
-            <span class="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Third slide</span>
+        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
+          <div className="flex justify-center h-full bg-gray-300 p-2 dark:bg-neutral-700">
+            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Third slide</span>
           </div>
         </div>
-        <div class="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div class="flex justify-center h-full bg-gray-100 p-2 dark:bg-neutral-900">
-            <span class="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Fourth slide</span>
+        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
+          <div className="flex justify-center h-full bg-gray-100 p-2 dark:bg-neutral-900">
+            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Fourth slide</span>
           </div>
         </div>
-        <div class="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div class="flex justify-center h-full bg-gray-200 p-2 dark:bg-neutral-800">
-            <span class="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Fifth slide</span>
+        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
+          <div className="flex justify-center h-full bg-gray-200 p-2 dark:bg-neutral-800">
+            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Fifth slide</span>
           </div>
         </div>
-        <div class="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div class="flex justify-center h-full bg-gray-300 p-2 dark:bg-neutral-700">
-            <span class="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Sixth slide</span>
+        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
+          <div className="flex justify-center h-full bg-gray-300 p-2 dark:bg-neutral-700">
+            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Sixth slide</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="relative grow overflow-hidden min-h-96 bg-white rounded-lg">
-      <div class="hs-carousel-body absolute top-0 bottom-0 start-0 flex flex-nowrap transition-transform duration-700 opacity-0">
-        <div class="hs-carousel-slide">
-          <div class="flex justify-center h-full bg-gray-100 p-6 dark:bg-neutral-900">
-            <span class="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">First slide</span>
+    <div className="relative grow overflow-hidden min-h-96 bg-white rounded-lg">
+      <div className="hs-carousel-body absolute top-0 bottom-0 start-0 flex flex-nowrap transition-transform duration-700 opacity-0">
+        <div className="hs-carousel-slide">
+          <div className="flex justify-center h-full bg-gray-100 p-6 dark:bg-neutral-900">
+            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">First slide</span>
           </div>
         </div>
-        <div class="hs-carousel-slide">
-          <div class="flex justify-center h-full bg-gray-200 p-6 dark:bg-neutral-800">
-            <span class="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Second slide</span>
+        <div className="hs-carousel-slide">
+          <div className="flex justify-center h-full bg-gray-200 p-6 dark:bg-neutral-800">
+            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Second slide</span>
           </div>
         </div>
-        <div class="hs-carousel-slide">
-          <div class="flex justify-center h-full bg-gray-300 p-6 dark:bg-neutral-700">
-            <span class="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Third slide</span>
+        <div className="hs-carousel-slide">
+          <div className="flex justify-center h-full bg-gray-300 p-6 dark:bg-neutral-700">
+            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Third slide</span>
           </div>
         </div>
-        <div class="hs-carousel-slide">
-          <div class="flex justify-center h-full bg-gray-100 p-6 dark:bg-neutral-900">
-            <span class="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Fourth slide</span>
+        <div className="hs-carousel-slide">
+          <div className="flex justify-center h-full bg-gray-100 p-6 dark:bg-neutral-900">
+            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Fourth slide</span>
           </div>
         </div>
-        <div class="hs-carousel-slide">
-          <div class="flex justify-center h-full bg-gray-200 p-6 dark:bg-neutral-800">
-            <span class="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Fifth slide</span>
+        <div className="hs-carousel-slide">
+          <div className="flex justify-center h-full bg-gray-200 p-6 dark:bg-neutral-800">
+            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Fifth slide</span>
           </div>
         </div>
-        <div class="hs-carousel-slide">
-          <div class="flex justify-center h-full bg-gray-300 p-6 dark:bg-neutral-700">
-            <span class="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Sixth slide</span>
+        <div className="hs-carousel-slide">
+          <div className="flex justify-center h-full bg-gray-300 p-6 dark:bg-neutral-700">
+            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Sixth slide</span>
           </div>
         </div>
       </div>
 
-      <button type="button" class="hs-carousel-prev hs-carousel-disabled:opacity-50 hs-carousel-disabled:pointer-events-none absolute inset-y-0 start-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 focus:outline-none focus:bg-gray-800/10 rounded-s-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-        <span class="text-2xl" aria-hidden="true">
-          <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button type="button" className="hs-carousel-prev hs-carousel-disabled:opacity-50 hs-carousel-disabled:pointer-events-none absolute inset-y-0 start-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 focus:outline-none focus:bg-gray-800/10 rounded-s-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
+        <span className="text-2xl" aria-hidden="true">
+          <svg className="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m15 18-6-6 6-6"></path>
           </svg>
         </span>
-        <span class="sr-only">Previous</span>
+        <span className="sr-only">Previous</span>
       </button>
-      <button type="button" class="hs-carousel-next hs-carousel-disabled:opacity-50 hs-carousel-disabled:pointer-events-none absolute inset-y-0 end-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 focus:outline-none focus:bg-gray-800/10 rounded-e-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-        <span class="sr-only">Next</span>
-        <span class="text-2xl" aria-hidden="true">
-          <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button type="button" className="hs-carousel-next hs-carousel-disabled:opacity-50 hs-carousel-disabled:pointer-events-none absolute inset-y-0 end-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 focus:outline-none focus:bg-gray-800/10 rounded-e-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
+        <span className="sr-only">Next</span>
+        <span className="text-2xl" aria-hidden="true">
+          <svg className="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m9 18 6-6-6-6"></path>
           </svg>
         </span>
@@ -332,9 +332,9 @@ export default function HomePage() {
             </div>
         
             <div className="w-full">
-                <div class="flex flex-col text-center">
-                    <h3 class="text-indigo-800 font-bold text-4xl">PRADA</h3>
-                    <h3 class="text-indigo-800 font-bold text-4xl">Cartier</h3>
+                <div className="flex flex-col text-center">
+                    <h3 className="text-indigo-800 font-bold text-4xl">PRADA</h3>
+                    <h3 className="text-indigo-800 font-bold text-4xl">Cartier</h3>
                 </div>
                 <div className="mt-4 text-slate-600 text-xl text-center">
                     Cdskmckldmc kmk knkio nio jnmk n njio okjm ojio joijio olkjo kjmolj oijioj iojiojiojioj jiojio

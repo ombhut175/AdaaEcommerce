@@ -10,20 +10,12 @@ import Login from './pages/Login';
 import Layout from '../Layout';
 import HomePage from './pages/Home';
 import BlogGridView from './pages/BlogGridView';
+import App from "./App.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Layout />}>
-            <Route path="home" element={<HomePage />} />
-            <Route path="bloggridview" element={<BlogGridView />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <App />
     </Provider>
   </StrictMode>
 );
