@@ -172,10 +172,33 @@ const setNewPassword = async (req,res)=>{
     }
 }
 
+const forLogin = async (req,res)=>{
+    const {email, password} = req.body;
+
+    if(!email && !password){
+        res.json({success:false,msg:"All feild are required !"});
+    }
+
+    const data = await user.findOne({email});
+    if(!data){
+        res.json({success:false, msg:"User Not found"});
+    }
+
+    if(data.password == password){
+        const token = jwt.sign({ id: User._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+        res.cookie('auth-token',token);
+        
+        res.json({
+            success:true,msg:"Login Successfull"
+        })
+    }
+    res.json({success:false,msg:"Password Incorrect"})
+}
 module.exports = {
     sendOtpToSignup,
     verifyOtpToSignup,
     sendOtpForgotPassword,
     verifyOtpForgotPassword,
-    setNewPassword
+    setNewPassword,
+    forLogin
 }

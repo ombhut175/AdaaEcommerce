@@ -2,9 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv')
-const userRouter = require('./routes/auth');
+const authRouter = require('./routes/auth');
 const requireLogin = require('./middlewares/requiredLogin');
 const cookieParser = require('cookie-parser');
+const cors = require('cors')
 //configuration--------------------------------------------------
 dotenv.config()
 const PORT = process.env.PORT;
@@ -15,16 +16,9 @@ mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log(`Mongodb is connected`);
         const app = express();
-
+        app.use(cors());
         //middlewares
 
-        // Session and CORS
-        app.use(
-            cors({
-                origin: "http://localhost:5173",
-                credentials: true
-            })
-        )
         app.use(cookieParser());
         app.use(
             session({
@@ -44,8 +38,7 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api/google',googleRoutes);
 
         //routes
-        app.use('/signup',userRouter)
-        app.use('/login',userRouter)
+        app.use('/api',authRouter)
         app.get('/home',requireLogin,(req,res)=>{   
             res.send("kokokok")
         })

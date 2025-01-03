@@ -1,5 +1,5 @@
 const express = require('express');
-const {sendOtpToSignup,verifyOtpToSignup,sendOtpForgotPassword,verifyOtpForgotPassword,setNewPassword} = require('../controllers/auth')
+const {forLogin,sendOtpToSignup,verifyOtpToSignup,sendOtpForgotPassword,verifyOtpForgotPassword,setNewPassword} = require('../controllers/auth')
 
 //delclaration 
 const router = express.Router();
@@ -10,5 +10,6 @@ router.post('/signup/verifyOtp',verifyOtpToSignup);
 router.post('/login/sendOtpForForgot',sendOtpForgotPassword);
 router.post('/login/verifyOtpForForgot',verifyOtpForgotPassword);
 router.post('/login/setNewPassword',setNewPassword);
+router.post('/login',forLogin);
 
 module.exports = router

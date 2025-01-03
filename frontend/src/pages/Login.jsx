@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { setMode } from "../redux/slice/userPreferences";
 import { GoogleButton } from "../components/GoogleButton";
+import link from '../backendLink';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -28,11 +29,15 @@ const Login = () => {
         let error = '';
         if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
             error = 'Please enter a valid email address';
-        } else if (name === 'password' && value.length < 6) {
-            error = 'Password must be at least 6 characters long';
+        } else if (name === 'password') {
+            const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/;
+            if (!passwordRegex.test(value)) {
+                error = 'Password must be at least 6 characters long, include at least one number, and one special character';
+            }
         }
-        setErrors(prev => ({ ...prev, [name]: error }));
+        setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
     };
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,8 +48,20 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!errors.email && !errors.password) {
+            console.log(link());
             console.log('Form Submitted:', formData);
-            // Add login logic here
+            
+            fetch(link() + "/login",
+                {
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify(formData   )
+                })
+                .then(function(res){ console.log(res) })
+                .catch(function(res){ console.log(res) })
         }
     };
 
@@ -93,28 +110,22 @@ const Login = () => {
             <div className="w-full max-w-md md:hover:scale-105 transition-all p-8 bg-white dark:bg-slate-900 rounded-lg shadow-md">
                 <h1 className="text-3xl font-semibold text-center text-slate-800 dark:text-slate-100 mb-6">Login</h1>
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-6">
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="w-full p-2 text-lg border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-slate-600 dark:border-gray-600 dark:focus:border-slate-400"
-                            placeholder="Email Address"
-                        />
-                        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-                    </div>
-                    <div className="mb-6">
-                        <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="w-full p-2 text-lg border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-slate-600 dark:border-gray-600 dark:focus:border-slate-400"
-                            placeholder="Password"
-                        />
-                        {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
-                    </div>
+
+
+                    <form class="max-w-md mx-auto">
+                        <div class="relative z-0 w-full mb-5 group">
+                            <input type="email" name="email" id="floating_email" onChange={handleChange} class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
+                            <label for="floating_email" class={` peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6`}>Email address</label>
+                            {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
+                        </div>
+                        <div class="relative z-0 w-full mb-5 group">
+                            <input type="password" name="password" id="floating_password" onChange={handleChange} class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
+                            <label for="floating_password" class={`peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6`}>Password</label>
+                            {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
+                        
+                        </div>
+                       </form>
+
                     <div className="text-center my-3">
                         <button
                             type="submit"
@@ -131,7 +142,7 @@ const Login = () => {
                     <div className="text-center mt-4 my-2">
                         <Link to="/signup" className="text-slate-800 dark:text-slate-400 underline">Forgot Password?</Link>
                     </div>
-                        
+
                 </form>
             </div>
         </div>
