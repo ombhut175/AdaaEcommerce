@@ -6,6 +6,10 @@ const authRouter = require('./routes/auth');
 const requireLogin = require('./middlewares/requiredLogin');
 const cookieParser = require('cookie-parser');
 const cors = require('cors')
+const googleRoutes = require("./routes/googleRoutes");
+const passport = require('./services/passport');
+const session = require('express-session');
+
 //configuration--------------------------------------------------
 dotenv.config()
 const PORT = process.env.PORT;
@@ -39,11 +43,8 @@ mongoose.connect(process.env.MONGO_URL)
 
         //routes
         app.use('/api',authRouter)
-        app.get('/home',requireLogin,(req,res)=>{   
-            res.send("kokokok")
-        })
 
-        //listen at specific port 
+        //listen at specific port
         app.listen(PORT, (err) => {
             if (err) {
 

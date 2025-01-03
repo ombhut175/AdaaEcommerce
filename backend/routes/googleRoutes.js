@@ -46,7 +46,7 @@ googleRoutes.get('/callback', passport.authenticate('google', {
         httpOnly: true,
         secure: true,
         sameSite: 'None', // For cross-origin cookie sharing
-        maxAge: 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000  //expires after 1 week
     });
 
     return res.redirect(`${process.env.CLIENT_URL}home`);

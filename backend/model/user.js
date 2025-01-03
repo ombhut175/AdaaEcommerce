@@ -13,6 +13,7 @@ const userSchema = mongoose.Schema(
         googleId: {type: String},
         membership: {type: String},
         otpExpiresAt: {type: Date},
+        userType: {type: String},
         verified: {type: Boolean, default: false},
     },
     {timestamps: true}
