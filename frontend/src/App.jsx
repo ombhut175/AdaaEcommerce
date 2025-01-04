@@ -4,19 +4,19 @@ import Login from "./pages/Login.jsx";
 import Layout from "./pages/Layout.jsx";
 import HomePage from "./pages/Home.jsx";
 import BlogGridView from "./pages/BlogGridView.jsx";
-import Cart from "./pages/Cart.jsx";
-
-export default function App() {
+import OTPVerification from "./pages/OTPVerification.jsx";
+import PrivateRouter from "./components/PrivateRouter.jsx";
+export default function App(){
     return (
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/signup" element={<Signup/>}/>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/" element={<Layout/>}>
-                        <Route path="home" element={<HomePage/>}/>
-                        <Route path="bloggridview" element={<BlogGridView/>}/>
-                        <Route path={'cart'} element={<Cart/>}/>
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/verify" element={<OTPVerification />} />
+                    <Route path="/" element={<PrivateRouter Component={<Layout />}/>}>
+                        <Route path="home" element={<PrivateRouter Component={<HomePage />}/>} />
+                        <Route path="bloggridview" element={<PrivateRouter Component={<BlogGridView/>}/>} />
                     </Route>
                 </Routes>
             </BrowserRouter>
