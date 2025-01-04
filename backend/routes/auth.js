@@ -4,7 +4,7 @@ const {forLogin,sendOtpToSignup,verifyOtpToSignup,sendOtpForgotPassword,verifyOt
 //delclaration 
 const router = express.Router();
 
-//routes
+//routes 
 router.post('/signup/send-otp',sendOtpToSignup);
 router.post('/signup/verify-otp',verifyOtpToSignup);
 router.post('/login/send-otp-forgot',sendOtpForgotPassword);

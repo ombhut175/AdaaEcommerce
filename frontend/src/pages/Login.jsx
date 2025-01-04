@@ -3,13 +3,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { setMode } from "../redux/slice/userPreferences";
 import { GoogleButton } from "../components/GoogleButton";
-import link from '../backendLink';
+
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [isLogin,setIsLogin] = useState(false);
     const [isHidePass,setIsHidePass] = useState(true);
     const [errors, setErrors] = useState({});
+    const [loading,setLoading] = useState(false);
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
     const navigate = useNavigate()
@@ -51,10 +52,10 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (true) {
-            console.log(link());
             console.log('Form Submitted:', formData);
             
-            fetch(link() + "/login",
+            setLoading(true);
+            fetch(import.meta.env.VITE_BACKEND_URL+ "/api/login",
                 {
                     headers: {
                       'Accept': 'application/json',
@@ -68,9 +69,9 @@ const Login = () => {
                     if(res.success==true){
                         setIsLogin(true)
                         localStorage.setItem('auth-token',res.token);
-                        setTimeout(()=>{
+                        setLoading(false);
                             navigate('/')
-                        },1000)
+                        
                     }
                 })
                 .catch(function(res){ console.log(res) })
@@ -119,6 +120,11 @@ const Login = () => {
             </button>
 
             {/* Login Form */}
+            {loading?/* From Uiverse.io by Fresnel11 */ 
+<div
+  class="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"
+></div>
+:
             <div className="w-full max-w-md md:hover:scale-105 transition-all p-8 bg-white dark:bg-slate-900 rounded-lg shadow-md">
                 <h1 className="text-3xl font-semibold text-center text-slate-800 dark:text-slate-100 mb-6">Login</h1>
                 
@@ -135,8 +141,8 @@ const Login = () => {
                             {
                             isHidePass ? <label className='absolute top-2 right-2'><button className='p-1' onClick={(e)=>{
                                 e.preventDefault()
-                                setIsHidePass(false)}}><i class="fa-regular fa-eye"></i></button></label>
-                            :<label className='absolute top-2 right-2'><button className='p-1' onClick={(e)=>{
+                                setIsHidePass(false)}}><i class="fa-regular fa-eye dark:text-slate-400"></i></button></label>
+                            :<label className='absolute top-2 right-2 dark:text-slate-400'><button className='p-1' onClick={(e)=>{
                                 e.preventDefault()
                                 setIsHidePass(true)}}><i class="fa-regular fa-eye-slash"></i></button></label>
                             }
@@ -157,14 +163,40 @@ const Login = () => {
                         <Link to="/signup" className="text-slate-800 dark:text-slate-400 underline">Create New Account </Link>
                     </div>
                     <div className="text-center mt-4 my-2">
-                        <Link to="/signup" className="text-slate-800 dark:text-slate-400 underline">Forgot Password?</Link>
+                        <Link onClick={()=>{
+                            if(!errors.email ){
+                                if(formData.email.length > 0){
+                                    setLoading(true)
+                                    fetch(import.meta.env.VITE_BACKEND_URL + "/api/login/send-otp-forgot",
+                                        {
+                                            headers: {
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
+                                            },credentials: 'include',
+                                            method: "POST",
+                                            body: JSON.stringify(formData)
+                                        }
+                                    )
+                                    .then((res)=>res.json())
+                                    .then((res)=>{
+                                        if(res.success){
+                                            navigate('/verify-otp-forgot')
+                                        }
+                                        setLoading(false)
+                                    })
+                                }else{
+                                    setErrors(prev => ({ ...prev, "email": "Email is required" }));
+                                }
+                            }
+                        }} className="text-slate-800 dark:text-slate-400 underline">Forgot Password?</Link>
                     </div>
                     {isLogin?<div className='p-2 text-green-500 text-lg text-center'>
                         Login Successful
                     </div>:""}
                 
-            </div>
+            </div>}
         </div>
+
     );
 };
 

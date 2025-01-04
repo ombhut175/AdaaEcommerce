@@ -16,7 +16,7 @@ const sendOtpToSignup = async (req, res) => {
         // Check if the user already exists in the main userModel
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ success: false, msg: "User already exists" });
+            return res.json({ success: false, msg: "User already exists" });
         }
 
         // Check if an unverified user already exists
@@ -209,11 +209,13 @@ const forLogin = async (req, res) => {
             path: '/', // Ensure the cookie is accessible for all routes
         });
 
-        res.json({
+        return res.json({
             success: true, msg: "Login Successful",token
         })
+    }else{
+        res.json({success: false, msg: "Password Incorrect"})
     }
-    res.json({success: false, msg: "Password Incorrect"})
+    
 }
 module.exports = {
     sendOtpToSignup,

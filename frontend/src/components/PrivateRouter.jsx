@@ -37,7 +37,7 @@ const PrivateRouter = ({ Component }) => {
     return <div>Loading...</div>; // You can show a loading spinner or similar
   }
 
-  return isAuthenticated ? <Component /> : <Navigate to="/login" />;
+  return isAuthenticated ? Component : <Navigate to="/login" />;
 };
 
 export default PrivateRouter;

@@ -3,14 +3,15 @@ import { Link,useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMode } from '../redux/slice/userPreferences.js';
 import { GoogleButton } from '../components/GoogleButton.jsx';
-import link from '../backendLink.js';
-
-
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const Signup = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
     const [errors, setErrors] = useState({});
     const [otpSend,setOtpSend] = useState(false);
+    const [loading,setLoading] = useState(false);
+    
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
     const [isHidePass,setIsHidePass] = useState(true);
@@ -58,25 +59,30 @@ const Signup = () => {
             if(errors.length==undefined)
             {
                 console.log('Form submitted', formData);
-                fetch(link() + "/signup/send-otp",
+                setLoading(true)
+                fetch(import.meta.env.VITE_BACKEND_URL + "/api/signup/send-otp",
                     {
                         headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                         },
+                        credentials:'include',
                         method: "POST",
                         body: JSON.stringify(formData)
                     })
-                    .then(function(res){ return res.json() })
+                    .then((res)=>res.json())
                     .then((res)=>{
                         if(res.success){
-                            console.log(formData);
                             
                             localStorage.setItem('email',formData.email)
                             setOtpSend(true);
-                            setTimeout(()=>{
-                                navigate('/verify')
-                            },1000)
+                            setLoading(false)
+                            navigate('/verify')
+                        }else{
+                            setLoading(false)
+                            toast.success(res.msg)
+                            navigate('/login')
+                            
                         }
                         
                     })
@@ -103,7 +109,13 @@ const Signup = () => {
             </button>
 
             {/* Signup Form */}
-            <div className="rounded-2xl md:hover:scale-105 shadow-md transition-all p-16 w-96 md:w-[450px] bg-white dark:bg-slate-900">
+
+{loading? 
+    <div
+    class="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"
+  ></div>
+    :
+<div className="rounded-2xl md:hover:scale-105 shadow-md transition-all p-16 w-96 md:w-[450px] bg-white dark:bg-slate-900">
                 <h1 className="text-3xl font-semibold mb-5 text-center text-slate-800 dark:text-slate-100">Sign Up</h1>
                 <form  noValidate>
                 <div class="relative z-0 w-full mb-5 group">
@@ -120,11 +132,11 @@ const Signup = () => {
                             isHidePass ? <label className='absolute top-2 right-2'><button className='p-1'onClick={(e)=>{
                                 e.preventDefault()
                                 setIsHidePass(false)
-                            }}><i class="fa-regular fa-eye"></i></button></label>
+                            }}><i class="fa-regular fa-eye dark:text-slate-400"></i></button></label>
                             :<label className='absolute top-2 right-2'><button className='p-1' onClick={(e)=>{
                                 e.preventDefault()
                                 setIsHidePass(true)
-                            }}><i class="fa-regular fa-eye-slash"></i></button></label>
+                            }}><i class="fa-regular fa-eye-slash dark:text-slate-400"></i></button></label>
                             }
                         </div>
                         <div class="relative z-0 w-full mb-5 group">
@@ -150,7 +162,9 @@ const Signup = () => {
                     </div>:""}
                 </form>
             </div>
-        </div>
+}
+
+</div>
     );
 };
 

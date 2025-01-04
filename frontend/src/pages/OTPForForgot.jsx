@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {toast} from 'react-toastify'
-
-const OTPVerification = () => {
+const OTPForForgot = () => {
     const [otp, setOtp] = useState('');
     const [errors, setErrors] = useState('');
     const [isVerified, setIsVerified] = useState(false);
@@ -24,24 +22,25 @@ const OTPVerification = () => {
         // Assume you already have the email sent earlier
         const email = localStorage.getItem('email'); // Retrieve email from storage
         
-        fetch(import.meta.env.VITE_BACKEND_URL + '/api/signup/verify-otp', {
+        fetch(import.meta.env.VITE_BACKEND_URL + '/api/login/verify-otp-forgot', {
             method: 'POST',
             headers: {
+                
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ email, otp }),
         })
             .then((res) => res.json())
             .then((data) => {
-                if (data.success) {
+                if (data.token) {
                     setIsVerified(true);
-                    localStorage.setItem('auth-token',data.token)
-                    navigate('/home'); // Redirect to home page after successful OTP verification
+                    localStorage.setItem('auth-token',data.token);
+                    navigate('/set-new-password'); 
                     
                 } else {
                     console.log(data);
                     
-                    setErrors('Please try again.');
+                    setErrors('Invalid OTP. Please try again.');
                 }
             })
             .catch((err) => {
@@ -98,4 +97,4 @@ const OTPVerification = () => {
     );
 };
 
-export default OTPVerification;
+export default OTPForForgot;
