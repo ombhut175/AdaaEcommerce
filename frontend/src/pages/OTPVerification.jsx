@@ -23,8 +23,8 @@ const OTPVerification = () => {
 
         // Assume you already have the email sent earlier
         const email = localStorage.getItem('email'); // Retrieve email from storage
-
-        fetch(link() + '/verifyOtp', {
+        
+        fetch(link() + '/signup/verify-otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,6 +39,8 @@ const OTPVerification = () => {
                         navigate('/home'); // Redirect to home page after successful OTP verification
                     }, 1000);
                 } else {
+                    console.log(data);
+                    
                     setErrors('Invalid OTP. Please try again.');
                 }
             })
@@ -91,7 +93,9 @@ const OTPVerification = () => {
                     </div>
                 )}
                 <div className="p-2 text-slate-800 dark:text-slate-200 text-lg text-center">
-                        <button>Resend OTP</button>
+                        <button onClick={()=>{
+                            
+                        }}>Resend OTP</button>
                     </div>
                 
             </div>

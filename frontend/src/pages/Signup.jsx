@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMode } from '../redux/slice/userPreferences.js';
 import { GoogleButton } from '../components/GoogleButton.jsx';
+import link from '../backendLink.js';
 
 
 
 const Signup = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
     const [errors, setErrors] = useState({});
+    const [otpSend,setOtpSend] = useState(false);
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
     const [isHidePass,setIsHidePass] = useState(true);
     const isDark = userPreferences.isDarkMode;
-
+    const navigate = useNavigate();
     useEffect(() => {
         document.documentElement.classList.toggle('dark', isDark);
     }, [isDark]);
@@ -33,41 +35,52 @@ const Signup = () => {
             }
         }else if(name=='name' && value.length<2){
             error = 'Enter minimum two letter';
-
+        }else if(!error){
+            setErrors({})
+            return true;
         }
-        setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
+        setErrors(prev => ({ ...prev, [name]: error }));
+        return false; 
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
         validate(name, value);
+        
     };
 
    
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (validateForm()) {
-            console.log('Form submitted', formData);
-            fetch(link() + "/signup",
-                {
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json'
-                    },
-                    method: "POST",
-                    body: JSON.stringify(formData)
-                })
-                .then(function(res){ return res.json() })
-                .then((res)=>{
-                    if(res.success==true){
-                        setIsLogin(true)
-                        setTimeout(()=>{
-                            navigate('/')
-                        },1000)
-                    }
-                })
-                .catch(function(res){ console.log(res) })
+            console.log(errors.length);
+            
+            if(errors.length==undefined)
+            {
+                console.log('Form submitted', formData);
+                fetch(link() + "/signup/send-otp",
+                    {
+                        headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                        },
+                        method: "POST",
+                        body: JSON.stringify(formData)
+                    })
+                    .then(function(res){ return res.json() })
+                    .then((res)=>{
+                        if(res.success){
+                            console.log(formData);
+                            
+                            localStorage.setItem('email',formData.email)
+                            setOtpSend(true);
+                            setTimeout(()=>{
+                                navigate('/verify')
+                            },1000)
+                        }
+                        
+                    })
+                    .catch(function(err){ console.log(err) })
         }
     };
 
@@ -92,7 +105,7 @@ const Signup = () => {
             {/* Signup Form */}
             <div className="rounded-2xl md:hover:scale-105 shadow-md transition-all p-16 w-96 md:w-[450px] bg-white dark:bg-slate-900">
                 <h1 className="text-3xl font-semibold mb-5 text-center text-slate-800 dark:text-slate-100">Sign Up</h1>
-                <form onSubmit={handleSubmit} noValidate>
+                <form  noValidate>
                 <div class="relative z-0 w-full mb-5 group">
                             <input type="email" name="email" id="email"  onChange={handleChange} class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
                             <label for="floating_email" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
@@ -104,8 +117,14 @@ const Signup = () => {
                             <label form="floating_password" className={`peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6`}>Password</label>
                             {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
                             {
-                            isHidePass ? <label className='absolute top-2 right-2'><button className='p-1'onClick={()=>{setIsHidePass(false)}}><i class="fa-regular fa-eye"></i></button></label>
-                            :<label className='absolute top-2 right-2'><button className='p-1' onClick={()=>{setIsHidePass(true)}}><i class="fa-regular fa-eye-slash"></i></button></label>
+                            isHidePass ? <label className='absolute top-2 right-2'><button className='p-1'onClick={(e)=>{
+                                e.preventDefault()
+                                setIsHidePass(false)
+                            }}><i class="fa-regular fa-eye"></i></button></label>
+                            :<label className='absolute top-2 right-2'><button className='p-1' onClick={(e)=>{
+                                e.preventDefault()
+                                setIsHidePass(true)
+                            }}><i class="fa-regular fa-eye-slash"></i></button></label>
                             }
                         </div>
                         <div class="relative z-0 w-full mb-5 group">
@@ -118,7 +137,7 @@ const Signup = () => {
                         
                         </div>
                     <div className="w-full text-center my-5">
-                        <button type="submit" className="w-full px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800">
+                        <button onClick={handleSubmit} className="w-full px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800">
                             Sign Up
                         </button>
                     </div>
@@ -126,6 +145,9 @@ const Signup = () => {
                     <div className="w-full text-center my-6 dark:text-slate-400">
                         <Link to="/login" className="underline">Already have an account?</Link>
                     </div>
+                    {otpSend?<div className='p-2 text-green-500 text-lg text-center'>
+                        Otp send in your E-mail.
+                    </div>:""}
                 </form>
             </div>
         </div>

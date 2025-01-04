@@ -20,9 +20,21 @@ mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log(`Mongodb is connected`);
         const app = express();
-        app.use(cors());
+        // app.use(cors());
         //middlewares
+        const allowedOrigins = ['http://localhost:5173', 'https://your-production-domain.com'];
 
+        app.use(cors({
+            origin: (origin, callback) => {
+                if (!origin || allowedOrigins.includes(origin)) {
+                    callback(null, true);
+                } else {
+                    callback(new Error('Not allowed by CORS'));
+                }
+            },
+            credentials: true,
+        }));
+        
         app.use(cookieParser());
         app.use(
             session({

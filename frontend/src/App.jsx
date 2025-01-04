@@ -5,7 +5,7 @@ import Layout from "../Layout.jsx";
 import HomePage from "./pages/Home.jsx";
 import BlogGridView from "./pages/BlogGridView.jsx";
 import OTPVerification from "./pages/OTPVerification.jsx";
-
+import PrivateRouter from "./components/PrivateRouter.jsx";
 export default function App(){
     return (
         <>
@@ -14,9 +14,9 @@ export default function App(){
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/verify" element={<OTPVerification />} />
-                    <Route path="/" element={<Layout />}>
-                        <Route path="home" element={<HomePage />} />
-                        <Route path="bloggridview" element={<BlogGridView />} />
+                    <Route path="/" element={<PrivateRouter Component={<Layout />}/>}>
+                        <Route path="home" element={<PrivateRouter Component={<HomePage />}/>} />
+                        <Route path="bloggridview" element={<PrivateRouter Component={<BlogGridView/>}/>} />
                     </Route>
                 </Routes>
             </BrowserRouter>
