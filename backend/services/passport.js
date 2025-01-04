@@ -2,6 +2,7 @@ require('dotenv').config({path:'../.env'});
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const passport = require('passport');
 const User = require('../model/user');
+const {handleCreateNewCart} = require("../controllers/cart");
 
 
 passport.use(new GoogleStrategy({
@@ -20,6 +21,7 @@ passport.use(new GoogleStrategy({
                     profilePicture:profile.photos[0].value,
                     userType:'google'
                 });
+                await handleCreateNewCart(user._id);
             }
             return cb(null,user);
         }catch (error){

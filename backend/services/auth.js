@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 function setUser(user){
 
     return jwt.sign({
-        name: user.name,
+        id: user._id,
         email: user.email,
     },process.env.JWT_SECRET);
 }
@@ -18,9 +18,14 @@ function getUser(token){
     }
 }
 
-
+function giveUserIdFromCookies(token){
+    const user = getUser(token);
+    if(!user) return null;
+    return user.id;
+}
 
 module.exports = {
     setUser,
-    getUser
+    getUser,
+    giveUserIdFromCookies
 }

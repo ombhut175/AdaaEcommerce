@@ -2,6 +2,7 @@ const userModel = require('../model/user')
 const z = require('zod');
 const {sendOtpViaEmail} = require('../utils/MailServices');
 const jwt = require('jsonwebtoken');
+const {handleCreateNewCart} = require("./cart");
 
 
 //signupSendOtp method -----------------------------------------------------
@@ -24,7 +25,7 @@ const sendOtpToSignup = async (req, res) => {
         } else {
 
             //create new userModel
-            await userModel.create({
+            const newUser = await userModel.create({
                 name,
                 email,
                 otp,
@@ -32,10 +33,12 @@ const sendOtpToSignup = async (req, res) => {
                 otpExpiresAt,
                 userType: 'otp'
             })
+            await handleCreateNewCart(newUser._id);
         }
 
         //send otp
         await sendOtpViaEmail(email, otp)
+
 
         res.status(200).json({success: true, msg: "Otp send successful !"})
 

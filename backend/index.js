@@ -9,6 +9,7 @@ const cors = require('cors')
 const googleRoutes = require("./routes/googleRoutes");
 const passport = require('./services/passport');
 const session = require('express-session');
+const cartRoutes = require("./routes/cartRoutes");
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -29,7 +30,7 @@ mongoose.connect(process.env.MONGO_URL)
                 secret: process.env.SESSION_SECRET_KEY,
                 resave: false,
                 saveUninitialized: true,
-                cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 days
+                cookie: {maxAge: 7 * 24 * 60 * 60 * 1000} // 7 days
             })
         );
         // Body parsing
@@ -38,11 +39,15 @@ mongoose.connect(process.env.MONGO_URL)
         // Passport initialization
         app.use(passport.initialize());
         app.use(passport.session());
-        //google middleware
-        app.use('/api/google',googleRoutes);
 
         //routes
-        app.use('/api',authRouter)
+
+        //auth routes
+        app.use('/api/google', googleRoutes);
+        app.use('/api', authRouter)
+
+        //cart routes
+        app.use('/api/cart', cartRoutes)
 
         //listen at specific port
         app.listen(PORT, (err) => {
