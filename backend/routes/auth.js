@@ -5,11 +5,11 @@ const {forLogin,sendOtpToSignup,verifyOtpToSignup,sendOtpForgotPassword,verifyOt
 const router = express.Router();
 
 //routes
-router.post('/signup/sendOtp',sendOtpToSignup);
-router.post('/signup/verifyOtp',verifyOtpToSignup);
-router.post('/login/sendOtpForForgot',sendOtpForgotPassword);
-router.post('/login/verifyOtpForForgot',verifyOtpForgotPassword);
-router.post('/login/setNewPassword',setNewPassword);
+router.post('/signup/send-otp',sendOtpToSignup);
+router.post('/signup/verify-otp',verifyOtpToSignup);
+router.post('/login/send-otp-forgot',sendOtpForgotPassword);
+router.post('/login/verify-otp-forgot',verifyOtpForgotPassword);
+router.post('/login/set-new-password',setNewPassword);
 router.post('/login',forLogin);
 
 module.exports = router
