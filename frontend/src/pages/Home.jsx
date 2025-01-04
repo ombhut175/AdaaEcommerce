@@ -1,43 +1,27 @@
 import Footer from "../components/Footer";
 import 'flowbite';
-import Carousel from "./carosle.jsx";
+import Carousel from "../components/carosle.jsx";
 import SimpleSlider from "../components/Slider.jsx";
 import { useState } from "react";
-import Card_1 from "../components/Card_1.jsx";
-import Card_2 from "../components/Card_2.jsx";
+import Card_1 from "../components/Cards/Card_1.jsx";
+import Card_2 from "../components/Cards/Card_2.jsx";
+import Divider from "../components/Divider.jsx";
+import PromisesSection from "../components/PromisesSection.jsx";
 
 export default function HomePage() {
-    const [darkMode, setDarkMode] = useState(false);
-
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-        if (!darkMode) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-    };
     return (
-        <div className={`w-full ${darkMode ? "dark" : ""}`}>
-            {/* Dark Mode Toggle Button */}
-            <button
-                className="fixed top-4 right-4 p-2 bg-indigo-600 text-white rounded-full focus:outline-none"
-                onClick={toggleDarkMode}
-            >
-                {darkMode ? "Light" : "Dark"}
-            </button>
-
+        <div className='w-full'>
             <div className="flex items-center justify-center flex-col">
                 <div className="w-full flex flex-col items-center justify-center">
 
                     {/* text image */}
-                    <div className="absolute text-start text-indigo-800 font-bold text-lg italic">
+                    {/* <div className="absolute text-start text-indigo-800 font-bold text-lg italic">
                         LUXURY <br />FASHION <br />& ACCESSORIES
-                    </div>
+                    </div> */}
 
-                    <div className="absolute top-full rounded-3xl w-auto text-center py-2 px-10 bg-opacity-60 bg-black text-white">
+                    {/* <div className="absolute top-full rounded-3xl w-auto text-center py-2 px-10 bg-opacity-60 bg-black text-white">
                         Your Heading Here
-                    </div>
+                    </div> */}
 
                     {/* images */}
                     <div className="w-full">
@@ -55,9 +39,6 @@ export default function HomePage() {
                 </div>
             </div>
 
-            <div>
-                <SimpleSlider />
-            </div>
 
             {/* body start */}
             <div className="bg-gray-200 dark:bg-gray-900">
@@ -74,6 +55,7 @@ export default function HomePage() {
                     <Card_1 />
                     <Card_1 />
                 </div>
+                <PromisesSection/>
 
                 {/* Explore More Button */}
                 <div class="flex flex-col items-center justify-center space-y-4">
@@ -103,12 +85,7 @@ export default function HomePage() {
                         </a>
                     </div>
 
-                    {/* divider */}
-                    <div class="w-80 flex items-center justify-center space-x-4">
-                        <span class="w-32 h-1 bg-black dark:bg-slate-400 rounded-full"></span>
-                        <span class="text-2xl dark:text-slate-100">&#10070;</span>
-                        <span class="w-32 h-1 bg-black dark:bg-slate-400 rounded-full"></span>
-                    </div>
+                    <Divider/>
 
                     {/* text */}
                     <div class="sm:flex sm:justify-center sm:space-x-20 space-y-5 sm:space-y-0">
@@ -130,19 +107,14 @@ export default function HomePage() {
                         </div>
                     </div>
 
-
-                    {/* divider */}
-                    <div class="w-80 flex items-center justify-center space-x-4">
-                        <span class="w-32 h-1 bg-black dark:bg-slate-400 rounded-full"></span>
-                        <span class="text-2xl dark:text-slate-100">&#10070;</span>
-                        <span class="w-32 h-1 bg-black dark:bg-slate-400 rounded-full"></span>
-                    </div>
-
+                    <Divider/>
 
                     <h2 class="text-gray-800 font-bold text-lg dark:text-white">COLLECTIONS</h2>
                     <h1 class="font-robot dark:text-white">This should be Roboto font</h1>
 
                 </div>
+
+                <SimpleSlider />
 
                 <div className="bg-white">
                     <div className="w-full">
@@ -259,9 +231,7 @@ export default function HomePage() {
                     </div>
                 </div>
             </div>
-            <div>
-                <Footer />
-            </div>
+            <Footer />
         </div>
     );
 }

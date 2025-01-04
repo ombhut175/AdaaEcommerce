@@ -2,7 +2,7 @@
 function BottomNavigationBar() {
     return (
         <div className="w-full">
-            <div className="w-full bg-slate-100 justify-center items-center p-10 flex flex-col">
+            <div className="w-full bg-slate-300 justify-center items-center p-10 flex flex-col">
                 {/* button */}
                 <div className="mb-10">
                     <a className="group relative inline-block overflow-hidden border border-indigo-600 px-16 py-3 focus:outline-none focus:ring" href="#">
@@ -148,7 +148,7 @@ function BottomNavigationBar() {
             </div>
 
             {/* bottom line */}
-            <div className="w-full pt-10 pb-5 bg-emerald-100">
+            <div className="w-full pt-10 pb-5 bg-indigo-300">
                 <p className="text-center text-xs/relaxed text-indigo-500">
                     © Company 2022. All rights reserved.
                     <br />

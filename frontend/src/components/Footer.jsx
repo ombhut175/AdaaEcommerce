@@ -2,7 +2,7 @@
 function Footer() {
     return (
         <div className="w-full">
-            <footer className="bg-zinc-300">
+            <footer className="bg-zinc-300 ms-5 me-5 rounded">
                 <div className="mx-auto max-w-screen-xl px-4 pb-8 pt-16 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-md">
                         {/* Footer Heading */}
@@ -13,12 +13,12 @@ function Footer() {
 
                     <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-32">
                         <div className="mx-auto max-w-sm lg:max-w-none">
-                        {/* logo */}
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTblNVEx4GuR8vBCHczvzvksIqZG31AkJxvEQ&s"
-                            alt="Logo"
-                            className="h-50 w-auto rounded"
-                        />
+                            {/* logo */}
+                            <img
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTblNVEx4GuR8vBCHczvzvksIqZG31AkJxvEQ&s"
+                                alt="Logo"
+                                className="h-50 w-auto rounded"
+                            />
                             {/* Icons Start */}
                             <div className="mt-6 flex justify-center gap-4 lg:justify-center">
                                 <a className="text-gray-700 transition hover:text-gray-700/75"
@@ -94,57 +94,58 @@ function Footer() {
                                     </svg>
                                 </a>
                             </div>
-                                {/* Icons End */}
+                            {/* Icons End */}
                         </div>
 
                         {/* Other Options */}
-                        <div className="grid grid-cols-1 gap-8 text-center lg:grid-cols-3 lg:text-left">
+                        <div className="grid grid-cols-1 gap-20 text-center lg:grid-cols-3 lg:text-left">
                             <div>
-                                <strong className="font-medium text-indigo-800"> Services </strong>
+                                <strong className="font-medium text-indigo-800"> Information </strong>
                                 <ul className="mt-6 space-y-1">
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Marketing </a></li>
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#">Graphic Design</a></li>
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#">App Development</a></li>
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#">Web Development</a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> FAQ'S </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#">About Us</a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#">Our Blogs</a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#">Contact Us</a></li>
                                 </ul>
                             </div>
 
                             <div>
-                                <strong className="font-medium text-indigo-800"> About </strong>
+                                <strong className="font-medium text-indigo-800"> Customer Care </strong>
                                 <ul className="mt-6 space-y-1">
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> About </a></li>
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Careers </a></li>
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> History </a></li>
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Our Team </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Career </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Whoolesale </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Track Your Order </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Return & Exchange Form </a></li>
                                 </ul>
                             </div>
 
                             <div>
-                                <strong className="font-medium text-indigo-800"> Support </strong>
+                                <strong className="font-medium text-indigo-800"> Policies </strong>
                                 <ul className="mt-6 space-y-1">
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> FAQs </a></li>
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Contact </a></li>
-                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Live Chat </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Privcy Policy </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Refund Policy </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Shipping Policy </a></li>
+                                    <li><a className="text-gray-700 transition hover:text-gray-700/75" href="#"> Term Of Service </a></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
                     {/* Footer Botton Text */}
-                    <div className="mt-16 border-t border-gray-100 pt-8">
-                        <p className="text-center text-xs/relaxed text-gray-500">
-                            © Company 2022. All rights reserved.
-                            <br />
-                            Created with
-                            <a href="#" className="text-gray-700 underline transition hover:text-gray-700/75">Laravel</a>
-                            and
-                            <a href="#" className="text-gray-700 underline transition hover:text-gray-700/75"
-                            >Laravel Livewire</a
-                            >.
-                        </p>
-                    </div>
+
                 </div>
             </footer>
+            <div className="border-t border-gray-100 mx-5 my-1 rounded-md">
+                <p className="text-center text-xs/relaxed bg-indigo-100 p-5 text-gray-500">
+                    © Company 2022. All rights reserved.
+                    <br />
+                    Created with
+                    <a href="#" className="text-gray-700 underline transition hover:text-gray-700/75">Laravel</a>
+                    and
+                    <a href="#" className="text-gray-700 underline transition hover:text-gray-700/75"
+                    >Laravel Livewire</a>.
+                </p>
+            </div>
         </div>
     );
 }
