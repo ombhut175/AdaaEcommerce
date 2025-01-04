@@ -10,6 +10,7 @@ const googleRoutes = require("./routes/googleRoutes");
 const passport = require('./services/passport');
 const session = require('express-session');
 const cartRoutes = require("./routes/cartRoutes");
+const userRoutes = require("./routes/user");
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -46,12 +47,16 @@ mongoose.connect(process.env.MONGO_URL)
 
         //routes
 
-        //auth routes
+        //auth middlewares
         app.use('/api/google', googleRoutes);
         app.use('/api', authRouter)
 
-        //cart routes
+        //cart middlewares
         app.use('/api/cart', cartRoutes)
+
+        //user middleware
+
+        app.use('/api/user', userRoutes);
 
         //listen at specific port
         app.listen(PORT, (err) => {

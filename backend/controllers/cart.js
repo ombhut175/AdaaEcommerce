@@ -72,6 +72,7 @@ async function handleUpdateProductQuantity(req, res) {
     }
 }
 
+//adds any product to cart
 async function handleAddProductToCart(req, res) {
     try {
         const {productId} = req.params;
