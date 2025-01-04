@@ -35,7 +35,7 @@ mongoose.connect(process.env.MONGO_URL)
         );
         // Body parsing
         app.use(express.json());
-        app.use(express.urlencoded());
+        app.use(express.urlencoded({extended: true}));
         // Passport initialization
         app.use(passport.initialize());
         app.use(passport.session());

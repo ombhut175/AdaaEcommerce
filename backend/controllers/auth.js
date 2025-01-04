@@ -35,7 +35,8 @@ const sendOtpToSignup = async (req, res) => {
                 userType: 'otp'
             })
             await handleCreateNewCart(newUser._id);
-            setUser(newUser);
+            const token = setUser(newUser);
+            setUserCookies(res ,token);
         }
 
         //send otp
@@ -76,7 +77,7 @@ const verifyOtpToSignup = async (req, res) => {
 
         //sign a jwt token
         const token = setUser(User);
-        setUserCookies(token);
+        setUserCookies(res, token);
         res.status(200).json({message: 'User verified successfully', token});
 
     } catch (err) {
@@ -139,7 +140,7 @@ const verifyOtpForgotPassword = async (req, res) => {
 
         //sign a jwt token
         const token = setUser(User);
-        setUserCookies(token);
+        setUserCookies(res ,token);
         res.status(200).json({message: 'User verified successfully', token});
 
     } catch (err) {
@@ -188,10 +189,10 @@ const forLogin = async (req, res) => {
 
     if (data.password === password) {
         const token = setUser(data);
-        setUserCookies(token);
+        setUserCookies(res ,token);
 
         res.json({
-            success: true, msg: "Login Successfull"
+            success: true, msg: "Login Successful"
         })
     }
     res.json({success: false, msg: "Password Incorrect"})

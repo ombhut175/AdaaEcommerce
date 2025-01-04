@@ -1,12 +1,16 @@
 const Cart = require("../model/Cart");
 const {giveUserIdFromCookies} = require("../services/auth");
+const {ObjectId} = require("mongoose").Types;
 
 
 // gives whole cart of that user
 async function handleGetCart(req, res) {
     try {
-        const userId = giveUserIdFromCookies(req.cookies.token);
-        const cart = await Cart.find({userId});
+        console.log("from handleGetCart");
+        const userId = giveUserIdFromCookies(req.cookies.userId);
+        console.log(userId);
+        const cart = await Cart.find({userId :new ObjectId(userId)});
+        console.log(cart);
         if (!cart) return res.status(404).json({message: "Cart not found"});
         return res.status(200).json(cart);
     } catch (error) {

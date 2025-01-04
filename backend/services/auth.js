@@ -2,9 +2,7 @@ require('dotenv').config({path: '../.env'});
 const jwt = require('jsonwebtoken');
 const res = require("express/lib/response");
 
-
 function setUser(user) {
-
     return jwt.sign({
         id: user._id,
         email: user.email,
@@ -14,7 +12,7 @@ function setUser(user) {
 function getUser(token) {
     if (!token) return null;
     try {
-        return jwt.verify(token, process.env.SECRETKEY);
+        return jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
     }
 }
@@ -25,7 +23,7 @@ function giveUserIdFromCookies(token) {
     return user.id;
 }
 
-function setUserCookies(token) {
+function setUserCookies(res,token) {
     try {
         return res.cookie('userId', token, {
             httpOnly: true,
@@ -38,7 +36,7 @@ function setUserCookies(token) {
     }
 }
 
-function removeUserCookies(cookieName) {
+function removeUserCookies(res ,cookieName) {
     res.clearCookie(cookieName);
 }
 

@@ -1,9 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
+import axios from "axios";
 
 const Cart = () => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    console.log(backendUrl);
+    const [cart, setCart] = useState([]);
+    function getCart() {
+        axios.get(`${backendUrl}/api/cart`)
+            .then(res => {
+                setCart(res.data);
+            })
+    }
     return (
         <div>
-            <h1 className={`text-red-700`}>Cart</h1>
+            {JSON.stringify(cart)}
         </div>
     );
 };
