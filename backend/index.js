@@ -21,10 +21,14 @@ mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log(`Mongodb is connected`);
         const app = express();
-        app.use(cors());
         //middlewares
 
         app.use(cookieParser());
+        app.use(cors({
+            origin: 'http://localhost:5173', // Replace with your frontend's URL
+            credentials: true,              // Allow cookies to be sent
+        }));
+
         app.use(
             session({
                 secret: process.env.SESSION_SECRET_KEY,
