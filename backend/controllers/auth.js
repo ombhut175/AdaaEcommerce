@@ -3,6 +3,7 @@ const z = require('zod');
 const {sendOtpViaEmail} = require('../utils/MailServices');
 const jwt = require('jsonwebtoken');
 const {handleCreateNewCart} = require("./cart");
+const {setUser, setUserCookies} = require("../services/auth");
 
 
 //signupSendOtp method -----------------------------------------------------
@@ -34,6 +35,7 @@ const sendOtpToSignup = async (req, res) => {
                 userType: 'otp'
             })
             await handleCreateNewCart(newUser._id);
+            setUser(newUser);
         }
 
         //send otp
@@ -73,8 +75,8 @@ const verifyOtpToSignup = async (req, res) => {
         await User.save();
 
         //sign a jwt token
-        const token = jwt.sign({id: User._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
-        res.cookie('auth-token', token);
+        const token = setUser(User);
+        setUserCookies(token);
         res.status(200).json({message: 'User verified successfully', token});
 
     } catch (err) {
@@ -136,8 +138,8 @@ const verifyOtpForgotPassword = async (req, res) => {
         }
 
         //sign a jwt token
-        const token = jwt.sign({id: User._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
-        res.cookie('auth-token', token);
+        const token = setUser(User);
+        setUserCookies(token);
         res.status(200).json({message: 'User verified successfully', token});
 
     } catch (err) {
@@ -184,9 +186,9 @@ const forLogin = async (req, res) => {
         res.json({success: false, msg: "User Not found"});
     }
 
-    if (data.password == password) {
-        const token = jwt.sign({id: User._id}, process.env.JWT_SECRET, {expiresIn: '30d'});
-        res.cookie('auth-token', token);
+    if (data.password === password) {
+        const token = setUser(data);
+        setUserCookies(token);
 
         res.json({
             success: true, msg: "Login Successfull"
