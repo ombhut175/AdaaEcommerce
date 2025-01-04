@@ -12,7 +12,7 @@ function DiscountProductList(){
                 </div>
                 <Divider/>
             </div>
-            <div className="grid grid-cols-3 gap-20 p-20 dark:bg-gray-900">
+            <div className="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-20 p-20 dark:bg-gray-900">
                 <DiscountCard/>
                 <DiscountCard/>
                 <DiscountCard/>
