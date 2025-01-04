@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { setMode } from "../redux/slice/userPreferences";
 import { GoogleButton } from "../components/GoogleButton";
-import link from '../backendLink';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -13,6 +12,7 @@ const Login = () => {
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
     const navigate = useNavigate()
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const toggleDarkMode = () => {
         const newMode = !userPreferences.isDarkMode;
@@ -50,31 +50,31 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (true) {
-            console.log(link());
-            console.log('Form Submitted:', formData);
-            
-            fetch(link() + "/login",
-                {
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json'
-                    },credentials: 'include',
-                    method: "POST",
-                    body: JSON.stringify(formData)
-                })
-                .then(function(res){ return res.json() })
-                .then((res)=>{
-                    if(res.success==true){
-                        setIsLogin(true)
-                        localStorage.setItem('auth-token',res.token);
-                        setTimeout(()=>{
-                            navigate('/')
-                        },1000)
-                    }
-                })
-                .catch(function(res){ console.log(res) })
-        }
+        console.log('Form Submitted:', formData);
+        fetch(BACKEND_URL + "/login",
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }, credentials: 'include',
+                method: "POST",
+                body: JSON.stringify(formData)
+            })
+            .then(function (res) {
+                return res.json()
+            })
+            .then((res) => {
+                if (res.success === true) {
+                    setIsLogin(true)
+                    localStorage.setItem('auth-token', res.token);
+                    setTimeout(() => {
+                        navigate('/')
+                    }, 1000)
+                }
+            })
+            .catch(function (res) {
+                console.log(res)
+            })
     };
 
     return (

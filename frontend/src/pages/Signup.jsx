@@ -3,7 +3,6 @@ import { Link,useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMode } from '../redux/slice/userPreferences.js';
 import { GoogleButton } from '../components/GoogleButton.jsx';
-import link from '../backendLink.js';
 
 
 
@@ -16,6 +15,8 @@ const Signup = () => {
     const [isHidePass,setIsHidePass] = useState(true);
     const isDark = userPreferences.isDarkMode;
     const navigate = useNavigate();
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
     useEffect(() => {
         document.documentElement.classList.toggle('dark', isDark);
     }, [isDark]);
@@ -33,7 +34,7 @@ const Signup = () => {
             if (!passwordRegex.test(value)) {
                 error = 'Password must be at least 6 characters long, include at least one number, and one special character';
             }
-        }else if(name=='name' && value.length<2){
+        }else if(name==='name' && value.length<2){
             error = 'Enter minimum two letter';
         }else if(!error){
             setErrors({})
@@ -58,7 +59,7 @@ const Signup = () => {
             if(errors.length==undefined)
             {
                 console.log('Form submitted', formData);
-                fetch(link() + "/signup/send-otp",
+                fetch(BACKEND_URL + "/signup/send-otp",
                     {
                         headers: {
                         'Accept': 'application/json',
