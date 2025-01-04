@@ -10,6 +10,7 @@ const googleRoutes = require("./routes/googleRoutes");
 const passport = require('./services/passport');
 const session = require('express-session');
 const cartRoutes = require("./routes/cartRoutes");
+const userRoutes = require("./routes/user");
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -21,22 +22,14 @@ mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log(`Mongodb is connected`);
         const app = express();
-        // app.use(cors());
         //middlewares
-        const allowedOrigins = ['http://localhost:5173', 'https://your-production-domain.com'];
 
-        app.use(cors({
-            origin: (origin, callback) => {
-                if (!origin || allowedOrigins.includes(origin)) {
-                    callback(null, true);
-                } else {
-                    callback(new Error('Not allowed by CORS'));
-                }
-            },
-            credentials: true,
-        }));
-        
         app.use(cookieParser());
+        app.use(cors({
+            origin: 'http://localhost:5173', // Replace with your frontend's URL
+            credentials: true,              // Allow cookies to be sent
+        }));
+
         app.use(
             session({
                 secret: process.env.SESSION_SECRET_KEY,
@@ -54,12 +47,16 @@ mongoose.connect(process.env.MONGO_URL)
 
         //routes
 
-        //auth routes
+        //auth middlewares
         app.use('/api/google', googleRoutes);
         app.use('/api', authRouter)
 
-        //cart routes
+        //cart middlewares
         app.use('/api/cart', cartRoutes)
+
+        //user middleware
+
+        app.use('/api/user', userRoutes);
 
         //listen at specific port
         app.listen(PORT, (err) => {

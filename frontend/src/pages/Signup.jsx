@@ -17,6 +17,8 @@ const Signup = () => {
     const [isHidePass,setIsHidePass] = useState(true);
     const isDark = userPreferences.isDarkMode;
     const navigate = useNavigate();
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
     useEffect(() => {
         document.documentElement.classList.toggle('dark', isDark);
     }, [isDark]);
@@ -34,7 +36,7 @@ const Signup = () => {
             if (!passwordRegex.test(value)) {
                 error = 'Password must be at least 6 characters long, include at least one number, and one special character';
             }
-        }else if(name=='name' && value.length<2){
+        }else if(name==='name' && value.length<2){
             error = 'Enter minimum two letter';
         }else if(!error){
             setErrors({})

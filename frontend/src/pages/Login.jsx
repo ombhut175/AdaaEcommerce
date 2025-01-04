@@ -14,6 +14,7 @@ const Login = () => {
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
     const navigate = useNavigate()
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const toggleDarkMode = () => {
         const newMode = !userPreferences.isDarkMode;

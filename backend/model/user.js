@@ -5,7 +5,7 @@ const userSchema = mongoose.Schema(
         name: {type: String, required: true},
         email: {type: String, required: true, unique: true},
         password: {type: String},
-        profilePicture: {type: String},
+        profilePicture: {type: String , default: "https://res-console.cloudinary.com/dvyz3pp5z/thumbnails/v1/image/upload/v1735991146/ZGVmYXVsdC1wcm9maWxlLWFjY291bnRfaGF3eXhu/"},
         otp: {type: String},
         role: {type: [String], default: ["customer"]},
         status: {type: String, default: 'active'},
