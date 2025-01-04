@@ -176,7 +176,7 @@ const setNewPassword = async (req, res) => {
         const User = await userModel.findOne({email});
 
         //check is invalid or expiration
-        User.password = await bcrypt.hash(newPassword,5);
+        User.password = newPassword
         await User.save();
 
         res.status(200).json({success: true, message: 'Password changed successfully'});
@@ -190,14 +190,14 @@ const setNewPassword = async (req, res) => {
 
 const forLogin = async (req, res) => {
     const {email, password} = req.body;
-    try{
+
     if (!email && !password) {
-        return res.status(404).json({success: false, msg: "All feild are required !"});
+        res.json({success: false, msg: "All feild are required !"});
     }
 
     const data = await userModel.findOne({email});
     if (!data) {
-        res.status(404).json({success: false, msg: "User Not found"});
+        res.json({success: false, msg: "User Not found"});
     }
     const isPassValid = await bcrypt.compare(password,data.password)
     if (isPassValid) {
@@ -214,10 +214,6 @@ const forLogin = async (req, res) => {
         })
     }
     res.json({success: false, msg: "Password Incorrect"})
-    }catch(err){
-        console.log(err);
-        
-    }
 }
 module.exports = {
     sendOtpToSignup,

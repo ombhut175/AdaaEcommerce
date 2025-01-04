@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema(
         password: {type: String},
         profilePicture: {type: String},
         otp: {type: String},
-        role: {type: [String], default: ['customer']},//provide small letters
+        role: {type: [String], default: ["customer"]},
         status: {type: String, default: 'active'},
         devices: {type: [String], default: []},
         googleId: {type: String},

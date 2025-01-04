@@ -1,7 +1,7 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
-import Layout from "../Layout.jsx";
+import Layout from "./pages/Layout.jsx";
 import HomePage from "./pages/Home.jsx";
 import BlogGridView from "./pages/BlogGridView.jsx";
 import OTPVerification from "./pages/OTPVerification.jsx";

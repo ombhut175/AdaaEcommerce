@@ -7,7 +7,7 @@ import './index.css';
 
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import Layout from '../Layout';
+import Layout from './pages/Layout.jsx';
 import HomePage from './pages/Home';
 import BlogGridView from './pages/BlogGridView';
 import App from "./App.jsx";

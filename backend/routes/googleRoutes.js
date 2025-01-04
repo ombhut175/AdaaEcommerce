@@ -1,7 +1,7 @@
 require('dotenv').config({path:'../.env'});
 const googleRoutes = require('express').Router();
 const passport = require('passport');
-const {setUser} = require("../services/auth");
+const {setUser, setUserCookies, removeUserCookies} = require("../services/auth");
 
 
 
@@ -40,14 +40,11 @@ googleRoutes.get('/login/failed',(req,res)=>{
 googleRoutes.get('/callback', passport.authenticate('google', {
     failureRedirect: '/api/google/login/failed'
 }),(req,res)=>{
+    console.log("from googleRoutes / callback");
     const {user} = req;
+    console.log(user);
     const token = setUser(user);
-    res.cookie('userId',token,{
-        httpOnly: true,
-        secure: true,
-        sameSite: 'None', // For cross-origin cookie sharing
-        maxAge: 7 * 24 * 60 * 60 * 1000  //expires after 1 week
-    });
+    setUserCookies(res ,token);
 
     return res.redirect(`${process.env.CLIENT_URL}home`);
 });
@@ -55,6 +52,7 @@ googleRoutes.get('/callback', passport.authenticate('google', {
 googleRoutes.get('/logout',(req,res,next)=>{
     req.logout((err)=>{
         if (err){
+            removeUserCookies(res ,'userId');
             return next(err);
         }
         return res.redirect(process.env.CLIENT_URL);
