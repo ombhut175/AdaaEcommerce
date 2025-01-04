@@ -5,6 +5,7 @@ import Layout from "./pages/Layout.jsx";
 import HomePage from "./pages/Home.jsx";
 import BlogGridView from "./pages/BlogGridView.jsx";
 import Cart from "./pages/Cart.jsx";
+import {EditPage} from "./pages/EditPage.jsx";
 
 export default function App() {
     return (
@@ -17,6 +18,7 @@ export default function App() {
                         <Route path="home" element={<HomePage/>}/>
                         <Route path="bloggridview" element={<BlogGridView/>}/>
                         <Route path={'cart'} element={<Cart/>}/>
+                        <Route path={"editPage"} element={<EditPage />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
