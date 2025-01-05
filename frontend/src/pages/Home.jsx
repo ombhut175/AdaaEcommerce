@@ -44,7 +44,7 @@ export default function HomePage() {
             <div className="bg-gray-200 dark:bg-gray-900">
                 <div className="justify-center flex items-center flex-col">
                     <h1 className="mt-10 text-4xl font-bold text-indigo-800 dark:text-white">NEW ARRIVAL !</h1>
-                    <hr class="w-52 h-1 mx-auto my-4 bg-emerald-700 border-0 rounded md:my-5 dark:bg-gray-600" />
+                    <hr className="w-52 h-1 mx-auto my-4 bg-emerald-700 border-0 rounded md:my-5 dark:bg-gray-600" />
                 </div>
 
                 {/* cards */}
@@ -58,7 +58,7 @@ export default function HomePage() {
                 <PromisesSection/>
 
                 {/* Explore More Button */}
-                <div class="flex flex-col items-center justify-center space-y-4">
+                <div className="flex flex-col items-center justify-center space-y-4">
                     <div className="m-5">
                         <a
                             className="group relative inline-flex items-center overflow-hidden rounded bg-indigo-600 px-8 py-3 text-white focus:outline-none focus:ring active:bg-indigo-500"
@@ -88,29 +88,29 @@ export default function HomePage() {
                     <Divider/>
 
                     {/* text */}
-                    <div class="sm:flex sm:justify-center sm:space-x-20 space-y-5 sm:space-y-0">
-                        <div class="flex flex-col items-center">
-                            <h3 class="text-gray-800 dark:text-white font-bold text-xl">PRADA</h3>
-                            <h3 class="text-gray-800 dark:text-white font-bold text-xl">Cartier</h3>
+                    <div className="sm:flex sm:justify-center sm:space-x-20 space-y-5 sm:space-y-0">
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">PRADA</h3>
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">Cartier</h3>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <h3 class="text-gray-800 dark:text-white font-bold text-xl">BURBERRY</h3>
-                            <h3 class="text-gray-800 dark:text-white font-bold text-xl">GUCCI</h3>
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">BURBERRY</h3>
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">GUCCI</h3>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <h3 class="text-gray-800 dark:text-white font-bold text-xl">BOSS</h3>
-                            <h3 class="text-gray-800 dark:text-white font-bold text-xl">TIFFANY</h3>
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">BOSS</h3>
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">TIFFANY</h3>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <h3 class="text-gray-800 dark:text-white font-bold text-xl">PRADA</h3>
-                            <h3 class="text-gray-800 dark:text-white font-bold text-xl">Cartier</h3>
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">PRADA</h3>
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">Cartier</h3>
                         </div>
                     </div>
 
                     <Divider/>
 
-                    <h2 class="text-gray-800 font-bold text-lg dark:text-white">COLLECTIONS</h2>
-                    <h1 class="font-robot dark:text-white">This should be Roboto font</h1>
+                    <h2 className="text-gray-800 font-bold text-lg dark:text-white">COLLECTIONS</h2>
+                    <h1 className="font-robot dark:text-white">This should be Roboto font</h1>
 
                 </div>
 
@@ -133,12 +133,12 @@ export default function HomePage() {
                 </div>
 
                 <div>
-                    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="text-center">
-                            <h2 class="text-3xl font-bold text-indigo-800 sm:text-4xl">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center">
+                            <h2 className="text-3xl font-bold text-indigo-800 sm:text-4xl">
                                 @TRENDING
                             </h2>
-                            <div class="mt-4 text-gray-500 flex flex-wrap gap-3 justify-center">
+                            <div className="mt-4 text-gray-500 flex flex-wrap gap-3 justify-center">
                                 <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#2021</span>
                                 <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#spring</span>
                                 <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#collection</span>
@@ -147,13 +147,13 @@ export default function HomePage() {
                                 <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#openfashion</span>
                             </div>
                         </div>
-                        <div class="mt-10 text-center">
-                            <h2 class="text-3xl font-bold text-indigo-800 sm:text-5xl">
+                        <div className="mt-10 text-center">
+                            <h2 className="text-3xl font-bold text-indigo-800 sm:text-5xl">
                                 Open
                                 <br />
                                 Fashion
                             </h2>
-                            <p class="mt-4 text-xl text-gray-400 sm:text-2xl">
+                            <p className="mt-4 text-xl text-gray-400 sm:text-2xl">
                                 Making a luxurious lifestyle accessible for a generous group of women is our
                                 daily drive.
                             </p>
@@ -167,9 +167,9 @@ export default function HomePage() {
                 </div>
 
                 <div className="w-full">
-                    <div class="flex flex-col text-center">
-                        <h3 class="text-indigo-800 font-bold text-4xl dark:text-white">PRADA</h3>
-                        <h3 class="text-indigo-800 font-bold text-4xl dark:text-white">Cartier</h3>
+                    <div className="flex flex-col text-center">
+                        <h3 className="text-indigo-800 font-bold text-4xl dark:text-white">PRADA</h3>
+                        <h3 className="text-indigo-800 font-bold text-4xl dark:text-white">Cartier</h3>
                     </div>
                     <div className="mt-4 text-slate-600 text-xl text-center dark:text-white">
                         Cdskmckldmc kmk knkio nio jnmk n njio okjm ojio joijio olkjo kjmolj oijioj iojiojiojioj jiojio
