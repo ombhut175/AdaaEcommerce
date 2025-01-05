@@ -10,11 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@reduxjs/toolkit": "^2.5.0",
     "@tabler/icons-react": "^3.26.0",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
-    "dotenv": "^16.4.7",
     "flowbite": "^2.5.2",
     "framer-motion": "^11.15.0",
     "jwt-decode": "^4.0.0",
@@ -25,8 +25,10 @@
     "react-icons": "^5.4.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.1",
-    "react-toastify": "^11.0.2",
-    "tailwind-merge": "^2.6.0"
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1",
+    "tailwind-merge": "^2.6.0",
+    "tailwind-scrollbar-hide": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
