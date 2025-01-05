@@ -1,81 +1,98 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { setMode } from "../redux/slice/userPreferences";
+import { GoogleButton } from "../components/GoogleButton";
 
 const Login = () => {
-    const [isDark, setIsDark] = useState(false);
-    const [formData, setFormData] = useState({ mobile: '', password: '' });
-    const [errors, setErrors] = useState({ mobile: '', password: '' });
+    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [isLogin,setIsLogin] = useState(false);
+    const [isHidePass,setIsHidePass] = useState(true);
+    const [errors, setErrors] = useState({});
+    const userPreferences = useSelector(state => state.userPreferences);
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const toggleDarkMode = () => {
-        setIsDark(!isDark);
+        const newMode = !userPreferences.isDarkMode;
+        dispatch(setMode(newMode));
     };
 
     useEffect(() => {
-        if (isDark) {
-            document.documentElement.classList.add('dark');
+        const rootClass = document.documentElement.classList;
+        if (userPreferences.isDarkMode) {
+            rootClass.add('dark');
         } else {
-            document.documentElement.classList.remove('dark');
+            rootClass.remove('dark');
         }
-    }, [isDark]);
+    }, [userPreferences.isDarkMode]);
 
     const validate = (name, value) => {
         let error = '';
-        if (name === 'mobile') {
-            if (!/^[6-9]\d{9}$/.test(value)) {
-                error = 'Please enter a valid 10-digit mobile number';
-            }
+        if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
+            error = 'Please enter a valid email address';
         } else if (name === 'password') {
-            if (value.length < 6) {
-                error = 'Password must be at least 6 characters long';
+            const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/;
+            if (!passwordRegex.test(value)) {
+                error = 'Password must be at least 6 characters long, include at least one number, and one special character';
             }
         }
-        setErrors((prev) => ({ ...prev, [name]: error }));
+        setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
     };
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ ...prev, [name]: value }));
         validate(name, value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!errors.mobile && !errors.password) {
-            console.log('Form Submitted:', formData);
-            // Add login logic here
-        }
+        console.log('Form Submitted:', formData);
+        fetch(BACKEND_URL + "/login",
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }, credentials: 'include',
+                method: "POST",
+                body: JSON.stringify(formData)
+            })
+            .then(function (res) {
+                return res.json()
+            })
+            .then((res) => {
+                if (res.success === true) {
+                    setIsLogin(true)
+                    localStorage.setItem('auth-token', res.token);
+                    setTimeout(() => {
+                        navigate('/')
+                    }, 1000)
+                }
+            })
+            .catch(function (res) {
+                console.log(res)
+            })
     };
 
     return (
-        <div className="h-screen dark:bg-slate-800 bg-slate-50 flex justify-center items-center relative">
-            {/* Toggle Button Here */}
+        <div className="h-screen  flex justify-center items-center bg-slate-50 dark:bg-slate-800">
+            {/* Dark Mode Toggle */}
             <button
                 onClick={toggleDarkMode}
-                className="absolute top-10 right-10 focus:outline-none"
+                className="absolute top-10 right-10"
+                aria-label="Toggle Dark Mode"
             >
-                {!isDark ? (
+                {userPreferences.isDarkMode ? (
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
                         viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="w-6 h-6 text-slate-800 dark:text-slate-100"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-                        />
-                    </svg>
-                ) : (
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
                         fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
                         stroke="currentColor"
-                        className="w-6 h-6 text-slate-800 dark:text-slate-100"
+                        strokeWidth="1.5"
+                        className="w-6 h-6 text-slate-100"
                     >
                         <path
                             strokeLinecap="round"
@@ -83,70 +100,69 @@ const Login = () => {
                             d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
                         />
                     </svg>
+                ) : (
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        className="w-6 h-6 text-slate-800"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+                        />
+                    </svg>
                 )}
             </button>
 
-            {/* Login Card Here*/}
-            <div
-                className={`w-full max-w-md p-10 rounded-xl shadow-md ${
-                    isDark ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-800'
-                }`}
-            >
-                <h1 className="text-3xl md:text-4xl font-semibold mb-6 text-center">Login</h1>
+            {/* Login Form */}
+            <div className="w-full max-w-md md:hover:scale-105 transition-all p-8 bg-white dark:bg-slate-900 rounded-lg shadow-md">
+                <h1 className="text-3xl font-semibold text-center text-slate-800 dark:text-slate-100 mb-6">Login</h1>
+                
+                    <form className="max-w-md mx-auto" noValidate={true} >
+                        <div className="relative z-0 w-full mb-5 group">
+                            <input  type="email" name="email" id="floating_email" onChange={handleChange} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
+                            <label form="floating_email" className={` peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6`}>Email address</label>
+                            {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
+                        </div>
+                        <div className="relative z-0 w-full mb-5 group">
+                            <input type={`${isHidePass?"password":"text"}`} name="password" id="floating_password" onChange={handleChange} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-slate-500 focus:outline-none focus:ring-0 focus:border-slate-700 peer" placeholder=" " required />
+                            <label form="floating_password" className={`peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-slate-600 peer-focus:dark:text-slate-300 transition-all peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6`}>Password</label>
+                            {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
+                            {
+                            isHidePass ? <label className='absolute top-2 right-2'><button className='p-1' onClick={(e)=>{
+                                e.preventDefault()
+                                setIsHidePass(false)}}><i class="fa-regular fa-eye"></i></button></label>
+                            :<label className='absolute top-2 right-2'><button className='p-1' onClick={(e)=>{
+                                e.preventDefault()
+                                setIsHidePass(true)}}><i class="fa-regular fa-eye-slash"></i></button></label>
+                            }
+                        </div>
+                       </form>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="relative z-0 mb-6">
-                        <input
-                            type="tel"
-                            id="mobile"
-                            name="mobile"
-                            value={formData.mobile}
-                            onChange={handleChange}
-                            className="block py-2.5 px-0 w-full text-lg bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-slate-600 focus:outline-none focus:ring-0 focus:border-slate-600 peer"
-                            placeholder=" "
-                        />
-                        <label
-                            htmlFor="mobile"
-                            className="absolute text-lg text-gray-500 dark:text-slate-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-600 peer-focus:dark:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    <div className="text-center my-3">
+                        <button
+                            onClick={handleSubmit}
+                            className="w-full text-lg py-2 active:scale-95 transition-all bg-slate-800 text-white rounded-md dark:bg-slate-200 dark:text-slate-800"
+                            // disabled={errors.email || errors.password}
                         >
-                            Mobile Number
-                        </label>
-                        {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
+                            Login
+                        </button>
                     </div>
-
-                    <div className="relative z-0 mb-6">
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="block py-2.5 px-0 w-full text-lg bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-slate-600 focus:outline-none focus:ring-0 focus:border-slate-600 peer"
-                            placeholder=" "
-                        />
-                        <label
-                            htmlFor="password"
-                            className="absolute text-lg text-gray-500 dark:text-slate-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-600 peer-focus:dark:text-slate-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            Password
-                        </label>
-                        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                    <GoogleButton />
+                    <div className="text-center mt-4 my-2">
+                        <Link to="/signup" className="text-slate-800 dark:text-slate-400 underline">Create New Account </Link>
                     </div>
-
-                    <button
-                        type="submit"
-                        className="w-full px-8 py-2 bg-slate-800 md:text-xl active:scale-95 transition-all text-slate-50 rounded-md dark:bg-slate-200 dark:text-slate-800"
-                        disabled={errors.mobile || errors.password}
-                    >
-                        Login
-                    </button>
-
-                    <div className="w-full text-center mt-4">
-                        <Link to="/forgot-password" className="underline">
-                            Forgot password?
-                        </Link>
+                    <div className="text-center mt-4 my-2">
+                        <Link to="/signup" className="text-slate-800 dark:text-slate-400 underline">Forgot Password?</Link>
                     </div>
-                </form>
+                    {isLogin?<div className='p-2 text-green-500 text-lg text-center'>
+                        Login Successful
+                    </div>:""}
+                
             </div>
         </div>
     );

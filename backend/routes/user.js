@@ -1,11 +1,13 @@
 const express = require('express');
-const {sendOtp,verifyOtp} = require('../controllers/user')
+const upload = require('../middlewares/multer.middleware');
+const {changeProfilePicture, setProfilePictureToDefault} = require("../controllers/user");
 
-//delclaration 
+//declaration
 const router = express.Router();
 
 //routes
-router.post('/sendOtp',sendOtp);
-router.post('/verifyOtp',verifyOtp);
+
+router.post('/uploadProfilePicture', upload.single('profilePicture'), changeProfilePicture);
+router.delete('/setProfilePictureToDefault', setProfilePictureToDefault);
 
 module.exports = router
