@@ -15,7 +15,11 @@ export default {
   },
   plugins: [
     require('preline/plugin'),
+<<<<<<< HEAD
     require('flowbite/plugin')
+=======
+    require('tailwind-scrollbar-hide'),
+>>>>>>> 59de7bd441d5cb2673911293a5f621f5d0b2b0d1
   ],
   darkMode:'class'
 }

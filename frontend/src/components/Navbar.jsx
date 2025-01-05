@@ -36,6 +36,18 @@ function Navbar() {
         if (e.target.value === "") setIsFocused(false);
     };
 
+    const options = [
+        { name: 'Home', path: '/home' },
+        { name: 'About', path: '/about' },
+        { name: 'Contact', path: '/contact' },
+    ];
+
+    const options2 = [
+        { name: 'kutri', path: '/kurti' },
+        { name: 'Salvar', path: '/salvar' },
+        { name: 'Top', path: '/top' },
+    ];
+
     const navLinkClasses = `
         nav-link relative text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300 
         before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-blue-600 
@@ -54,20 +66,24 @@ function Navbar() {
                     <Link to="/home" className={navLinkClasses}>
                         Home
                     </Link>
-                    <Link to="/bloggridview" className={navLinkClasses}>
+                    <Link to="/blogGridView" className={navLinkClasses}>
                         BlogGridView
                     </Link>
-                    <Link to="#" className={navLinkClasses}>
-                        Services
+                    <Link to="/blogListView" className={navLinkClasses}>
+                        BlogListView
                     </Link>
-                    <Link to="#" className={navLinkClasses}>
-                        Contact
+                    <Link to="/productList" className={navLinkClasses}>
+                        Product
                     </Link>
+                    <Link to="/discountProductList" className={navLinkClasses}>
+                        Offers
+                    </Link>
+
+                    {/* Drop Down Menus */}
+                    <Dropdown buttonLabel="Views" options={options} />
+                    <Dropdown buttonLabel="Dress" options={options} />
                 </div>
-
-                {/* Drop Down Menus */}
-                <Dropdown buttonLabel="Menu 1" options={["Option 1", "Option 2", "Option 3"]} />
-
+               
                 {/* Search Bar */}
                 <div className="flex justify-center items-center">
                     <div className="relative">
@@ -117,16 +133,16 @@ function Navbar() {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div className="mobile-menu md:hidden bg-white dark:bg-gray-800 shadow-lg absolute w-full left-0 transform translate-y-0 opacity-100">
+                <div className="mobile-menu md:hidden bg-white bg-opacity-50 dark:bg-gray-800 shadow-lg absolute w-full left-0 transform translate-y-0 opacity-100">
                     <div className="container mx-auto px-4 py-4 space-y-4">
-                        <Link to="#" className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
+                        <Link to="/home" className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
                             Home
                         </Link>
-                        <Link to="#" className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
-                            About
+                        <Link className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
+                            <Dropdown buttonLabel="Views" options={options} />
                         </Link>
-                        <Link to="#" className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
-                            Services
+                        <Link  className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
+                            <Dropdown buttonLabel="Views" options={options2} />
                         </Link>
                         <Link to="#" className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
                             Contact
