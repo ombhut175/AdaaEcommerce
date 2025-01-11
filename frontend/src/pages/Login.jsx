@@ -29,17 +29,25 @@ const Login = () => {
         }
     }, [userPreferences.isDarkMode]);
 
-    const validate = (name, value) => {
+    const validateField = (name, value) => {
         let error = '';
-        if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
-            error = 'Please enter a valid email address';
-        } else if (name === 'password') {
-            const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/;
-            if (!passwordRegex.test(value)) {
-                error = 'Password must be at least 6 characters long, include at least one number, and one special character';
-            }
+        switch (name) {
+            case 'email':
+                if (!/\S+@\S+\.\S+/.test(value)) {
+                    error = 'Please enter a valid email address';
+                }
+                break;
+            case 'password':
+                if (!/^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/.test(value)) {
+                    error = 'Password must be at least 6 characters long, include at least one number, and one special character';
+                }
+                break;
+            
+            default:
+                break;
         }
-        setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
+        setErrors(prev => ({ ...prev, [name]: error }));
+        return !error;
     };
     
 
@@ -48,11 +56,22 @@ const Login = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
         validate(name, value);
     };
-
+    const validateForm = () => {
+        const newErrors = {};
+        Object.keys(formData).forEach(key => {
+            if (!validateField(key, formData[key])) {
+                newErrors[key] = errors[key] || `Please enter a valid ${key}`;
+            }
+        });
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (true) {
-            console.log('Form Submitted:', formData);
+        if(!validateForm()){
+            
+            return;
+        }
             
             setLoading(true);
             fetch(import.meta.env.VITE_BACKEND_URL+ "/api/login",
@@ -75,7 +94,8 @@ const Login = () => {
                     }
                 })
                 .catch(function(res){ console.log(res) })
-        }
+        
+            
     };
 
     return (
