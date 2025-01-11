@@ -1,4 +1,4 @@
-const addressModel = require('../model/address')
+const addressModel = require('../model/Address')
 const z = require('zod');
 
 const addressSchemaForValidation = z.object({

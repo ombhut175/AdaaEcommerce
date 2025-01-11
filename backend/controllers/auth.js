@@ -1,7 +1,7 @@
 const userModel = require('../model/user')
-const {sendOtpViaEmail} = require('../utils/MailServices');
+const {sendOtpViaEmail} = require('../utils/mailServices');
 const bcrypt = require('bcrypt');
-const tempUserModel = require('../model/tempUserModel');
+const tempUserModel = require('../model/TempUserModel');
 const { setUser } = require('../services/auth');
 
 //signupSendOtp method -----------------------------------------------------
