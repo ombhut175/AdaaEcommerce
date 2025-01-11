@@ -1,21 +1,27 @@
 import Footer from "../components/Footer";
 import 'flowbite';
-import Carousel from "./carosle.jsx";
+import Carousel from "../components/carosle.jsx";
+import SimpleSlider from "../components/Slider.jsx";
+import { useState } from "react";
+import Card_1 from "../components/Cards/Card_1.jsx";
+import Card_2 from "../components/Cards/Card_2.jsx";
+import Divider from "../components/Divider.jsx";
+import PromisesSection from "../components/PromisesSection.jsx";
 
 export default function HomePage() {
     return (
-        <div className="w-full">
+        <div className='w-full'>
             <div className="flex items-center justify-center flex-col">
                 <div className="w-full flex flex-col items-center justify-center">
 
                     {/* text image */}
-                    <div className="absolute text-start text-indigo-800 font-bold text-lg italic">
+                    {/* <div className="absolute text-start text-indigo-800 font-bold text-lg italic">
                         LUXURY <br />FASHION <br />& ACCESSORIES
-                    </div>
+                    </div> */}
 
-                    <div className="absolute top-full rounded-3xl w-auto text-center py-2 px-10 bg-opacity-60 bg-black text-white">
+                    {/* <div className="absolute top-full rounded-3xl w-auto text-center py-2 px-10 bg-opacity-60 bg-black text-white">
                         Your Heading Here
-                    </div>
+                    </div> */}
 
                     {/* images */}
                     <div className="w-full">
@@ -33,414 +39,199 @@ export default function HomePage() {
                 </div>
             </div>
 
-            <div className="bg-gray-200">
+
+            {/* body start */}
+            <div className="bg-gray-200 dark:bg-gray-900">
                 <div className="justify-center flex items-center flex-col">
-                    <h1 className="mt-10 text-4xl font-bold text-indigo-800">NEW ARRIVAL!</h1>
-                    <hr className="w-48 h-1 mx-auto my-4 bg-yellow-400 border-0 rounded md:my-10 dark:bg-gray-700" />
+                    <h1 className="mt-10 text-4xl font-bold text-indigo-800 dark:text-white">NEW ARRIVAL !</h1>
+                    <hr className="w-52 h-1 mx-auto my-4 bg-emerald-700 border-0 rounded md:my-5 dark:bg-gray-600" />
                 </div>
 
                 {/* cards */}
                 <div className="w-full h-auto flex flex-wrap justify-center gap-6 p-4">
-                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
-                        {/* Image */}
-                        <img
-                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
-                            src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
-                            alt="Sunset in the mountains"
-                        />
-                        {/* Img Text */}
-                        <div className="px-6 py-4 bg-white">
-                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
-                        </div>
-                        <div className="px-6 pb-2  bg-white">
-                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
-                        </div>
-                    </div>
-
-                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
-                        {/* Image */}
-                        <img
-                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
-                            src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
-                            alt="Sunset in the mountains"
-                        />
-                        {/* Img Text */}
-                        <div className="px-6 py-4  bg-white">
-                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
-                        </div>
-                        <div className="px-6 pb-2  bg-white">
-                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
-                        </div>
-                    </div>
-
-                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
-                        {/* Image */}
-                        <img
-                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
-                            src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
-                            alt="Sunset in the mountains"
-                        />
-                        {/* Img Text */}
-                        <div className="px-6 py-4  bg-white">
-                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
-                        </div>
-                        <div className="px-6 pb-2  bg-white">
-                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
-                        </div>
-                    </div>
-
-                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
-                        {/* Image */}
-                        <img
-                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
-                            src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
-                            alt="Sunset in the mountains"
-                        />
-                        {/* Img Text */}
-                        <div className="px-6 py-4  bg-white">
-                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
-                        </div>
-                        <div className="px-6 pb-2  bg-white">
-                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
-                        </div>
-                    </div>
-
-                    <div className="max-w-sm rounded-lg overflow-hidden shadow-lg transform transition duration-300 ease-in-out hover:scale-105 group">
-                        {/* Image */}
-                        <img
-                            className="w-full transition-opacity duration-300 ease-in-out group-hover:opacity-90"
-                            src="https://img.theloom.in/blog/wp-content/uploads/2024/03/thumb3.png"
-                            alt="Sunset in the mountains"
-                        />
-                        {/* Img Text */}
-                        <div className="px-6 py-4  bg-white">
-                            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
-                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla!</p>
-                        </div>
-                        <div className="px-6 pb-2  bg-white">
-                            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">$120</span>
-                        </div>
-                    </div>
+                    <Card_1 />
+                    <Card_1 />
+                    <Card_1 />
+                    <Card_1 />
+                    <Card_1 />
                 </div>
-                {/* card end */}
+                <PromisesSection/>
 
                 {/* Explore More Button */}
                 <div className="flex flex-col items-center justify-center space-y-4">
                     <div className="m-5">
                         <a
-                        className="group relative inline-flex items-center overflow-hidden rounded bg-indigo-600 px-8 py-3 text-white focus:outline-none focus:ring active:bg-indigo-500"
-                        href="#"
+                            className="group relative inline-flex items-center overflow-hidden rounded bg-indigo-600 px-8 py-3 text-white focus:outline-none focus:ring active:bg-indigo-500"
+                            href="#"
                         >
-                        <span className="absolute -start-full transition-all group-hover:start-4">
-                            <svg
-                            className="size-5 rtl:rotate-180"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"
-                            />
-                            </svg>
-                        </span>
+                            <span className="absolute -start-full transition-all group-hover:start-4">
+                                <svg
+                                    className="size-5 rtl:rotate-180"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                    />
+                                </svg>
+                            </span>
 
-                        <span className="text-lg font-medium transition-all group-hover:ms-4"> Explore More </span>
+                            <span className="text-lg font-medium transition-all group-hover:ms-4"> Explore More </span>
                         </a>
                     </div>
 
-                    {/* divider */}
-                    <div className="w-80 h-1 bg-black rounded-full flex flex-wrap flex-col justify-center ">
-                        <span className="w-80 h-1 bg-black rounded-full"></span>
-                        <span>⭐</span>
-                        <span className="w-80 h-1 bg-black rounded-full"></span>
-                    </div>
+                    <Divider/>
+
                     {/* text */}
-                    <div className="flex space-x-40 ">
-                        <div className="flex flex-col">
-                            <h3 className="text-gray-800 font-bold text-xl">PRADA</h3>
-                            <h3 className="text-gray-800 font-bold text-xl">Cartier</h3>
+                    <div className="sm:flex sm:justify-center sm:space-x-20 space-y-5 sm:space-y-0">
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">PRADA</h3>
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">Cartier</h3>
                         </div>
-                        <div className="flex flex-col">
-                            <h3 className="text-gray-800 font-bold text-xl">BURBERRY</h3>
-                            <h3 className="text-gray-800 font-bold text-xl">GUCCI</h3>
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">BURBERRY</h3>
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">GUCCI</h3>
                         </div>
-                        <div className="flex flex-col">
-                            <h3 className="text-gray-800 font-bold text-xl">BOSS</h3>
-                            <h3 className="text-gray-800 font-bold text-xl">TIFFANY & CO.</h3>
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">BOSS</h3>
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">TIFFANY</h3>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">PRADA</h3>
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xl">Cartier</h3>
                         </div>
                     </div>
 
-                    {/* divider */}
-                    <div className="w-60 h-1 bg-yellow-300 rounded-full"></div>
-                    
-                    <h2 className="text-gray-800 font-bold text-lg">COLLECTIONS</h2>
-                    <h1 className="font-roboto">This should be Roboto font</h1>
+                    <Divider/>
+
+                    <h2 className="text-gray-800 font-bold text-lg dark:text-white">COLLECTIONS</h2>
+                    <h1 className="font-robot dark:text-white">This should be Roboto font</h1>
 
                 </div>
+
+                <SimpleSlider />
+
                 <div className="bg-white">
                     <div className="w-full">
                         <img className="w-full h-auto p-10"
-                        src="https://www.worldfashionexchange.com/blog/wp-content/uploads/2024/01/PRADA.webp"/>
+                            src="https://www.worldfashionexchange.com/blog/wp-content/uploads/2024/01/PRADA.webp" />
                     </div>
                 </div>
             </div>
+            <div className="dark:bg-gray-900">
+                <div className="text-center pt-10 pb-6">
+                    <span className="flex items-center justify-center">
+                        <span className="h-px flex-1 ms-7 sm:ms-48 bg-black dark:bg-slate-400"></span>
+                        <span className="shrink-0 px-6 text-xl sm:text-4xl font-bold text-indigo-800 dark:text-white">JUST FOR YOU</span>
+                        <span className="h-px flex-1 me-7 sm:me-48 bg-black dark:bg-slate-400"></span>
+                    </span>
+                </div>
 
-            <div className="text-center mb-10">
-                <span className="flex items-center">
-                    <span className="h-px flex-1 ms-48 bg-black"></span>
-                    <span className="shrink-0 px-6 text-lg sm:text-4xl font-bold text-indigo-800">JUST FOR YOU</span>
-                    <span className="h-px flex-1 me-48 bg-black"></span>
-                </span>
-            </div>
-
-            <div>
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center">
-                        <h2 className="text-3xl font-bold text-indigo-800 sm:text-4xl">
-                        @TRENDING
-                        </h2>
-                        <div className="mt-4 text-gray-500">
-                            <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#2021</span>
-                            <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#spring</span>
-                            <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#collection</span>
-                            <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#fall</span>
-                            <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#autumncollection</span>
-                            <span className="bg-slate-300 text-white px-2 rounded-xl me-1">#openfashion</span>
+                <div>
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center">
+                            <h2 className="text-3xl font-bold text-indigo-800 sm:text-4xl">
+                                @TRENDING
+                            </h2>
+                            <div className="mt-4 text-gray-500 flex flex-wrap gap-3 justify-center">
+                                <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#2021</span>
+                                <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#spring</span>
+                                <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#collection</span>
+                                <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#fall</span>
+                                <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#autumncollection</span>
+                                <span className="bg-slate-400 text-white px-2 rounded-xl me-1">#openfashion</span>
+                            </div>
+                        </div>
+                        <div className="mt-10 text-center">
+                            <h2 className="text-3xl font-bold text-indigo-800 sm:text-5xl">
+                                Open
+                                <br />
+                                Fashion
+                            </h2>
+                            <p className="mt-4 text-xl text-gray-400 sm:text-2xl">
+                                Making a luxurious lifestyle accessible for a generous group of women is our
+                                daily drive.
+                            </p>
                         </div>
                     </div>
-                    <div className="mt-10 text-center">
-                        <h2 className="text-3xl font-bold text-indigo-800 sm:text-5xl">
-                        Open
-                        <br />
-                        Fashion
-                        </h2>
-                        <p className="mt-4 text-xl text-gray-500 sm:text-2xl">
-                        Making a luxurious lifestyle accessible for a generous group of women is our
-                        daily drive.
-                        </p>
+                </div>
+
+                {/* carousel */}
+                <div className="md:mx-40 mb-10 my-5 border border-gray-300 rounded-lg shadow-lg">
+                    <Carousel />
+                </div>
+
+                <div className="w-full">
+                    <div className="flex flex-col text-center">
+                        <h3 className="text-indigo-800 font-bold text-4xl dark:text-white">PRADA</h3>
+                        <h3 className="text-indigo-800 font-bold text-4xl dark:text-white">Cartier</h3>
                     </div>
-                </div>       
-            </div>
-
-            <div className="md:mx-40 mb-10 my-5 border border-gray-300 rounded-lg shadow-lg">
-                <Carousel />
-            </div>
-
-
-            {/* second carosle */}
-            <div>
-<div data-hs-carousel='{
-    "loadingClasses": "opacity-0"
-  }' className="relative">
-  <div className="hs-carousel flex space-x-2">
-    <div className="flex-none">
-      <div className="hs-carousel-pagination max-h-96 flex flex-col gap-y-2 overflow-y-auto">
-        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div className="flex justify-center h-full bg-gray-100 p-2 dark:bg-neutral-900">
-            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">First slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div className="flex justify-center h-full bg-gray-200 p-2 dark:bg-neutral-800">
-            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Second slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div className="flex justify-center h-full bg-gray-300 p-2 dark:bg-neutral-700">
-            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Third slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div className="flex justify-center h-full bg-gray-100 p-2 dark:bg-neutral-900">
-            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Fourth slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div className="flex justify-center h-full bg-gray-200 p-2 dark:bg-neutral-800">
-            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Fifth slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-pagination-item shrink-0 border rounded-md overflow-hidden cursor-pointer w-[150px] h-[150px] hs-carousel-active:border-blue-400">
-          <div className="flex justify-center h-full bg-gray-300 p-2 dark:bg-neutral-700">
-            <span className="self-center text-xs text-gray-800 transition duration-700 dark:text-white">Sixth slide</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div className="relative grow overflow-hidden min-h-96 bg-white rounded-lg">
-      <div className="hs-carousel-body absolute top-0 bottom-0 start-0 flex flex-nowrap transition-transform duration-700 opacity-0">
-        <div className="hs-carousel-slide">
-          <div className="flex justify-center h-full bg-gray-100 p-6 dark:bg-neutral-900">
-            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">First slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-slide">
-          <div className="flex justify-center h-full bg-gray-200 p-6 dark:bg-neutral-800">
-            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Second slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-slide">
-          <div className="flex justify-center h-full bg-gray-300 p-6 dark:bg-neutral-700">
-            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Third slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-slide">
-          <div className="flex justify-center h-full bg-gray-100 p-6 dark:bg-neutral-900">
-            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Fourth slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-slide">
-          <div className="flex justify-center h-full bg-gray-200 p-6 dark:bg-neutral-800">
-            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Fifth slide</span>
-          </div>
-        </div>
-        <div className="hs-carousel-slide">
-          <div className="flex justify-center h-full bg-gray-300 p-6 dark:bg-neutral-700">
-            <span className="self-center text-4xl text-gray-800 transition duration-700 dark:text-white">Sixth slide</span>
-          </div>
-        </div>
-      </div>
-
-      <button type="button" className="hs-carousel-prev hs-carousel-disabled:opacity-50 hs-carousel-disabled:pointer-events-none absolute inset-y-0 start-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 focus:outline-none focus:bg-gray-800/10 rounded-s-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-        <span className="text-2xl" aria-hidden="true">
-          <svg className="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m15 18-6-6 6-6"></path>
-          </svg>
-        </span>
-        <span className="sr-only">Previous</span>
-      </button>
-      <button type="button" className="hs-carousel-next hs-carousel-disabled:opacity-50 hs-carousel-disabled:pointer-events-none absolute inset-y-0 end-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 focus:outline-none focus:bg-gray-800/10 rounded-e-lg dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10">
-        <span className="sr-only">Next</span>
-        <span className="text-2xl" aria-hidden="true">
-          <svg className="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m9 18 6-6-6-6"></path>
-          </svg>
-        </span>
-      </button>
-    </div>
-  </div>
-</div>
-            </div>
-        
-            <div className="w-full">
-                <div className="flex flex-col text-center">
-                    <h3 className="text-indigo-800 font-bold text-4xl">PRADA</h3>
-                    <h3 className="text-indigo-800 font-bold text-4xl">Cartier</h3>
+                    <div className="mt-4 text-slate-600 text-xl text-center dark:text-white">
+                        Cdskmckldmc kmk knkio nio jnmk n njio okjm ojio joijio olkjo kjmolj oijioj iojiojiojioj jiojio
+                    </div>
                 </div>
-                <div className="mt-4 text-slate-600 text-xl text-center">
-                    Cdskmckldmc kmk knkio nio jnmk n njio okjm ojio joijio olkjo kjmolj oijioj iojiojiojioj jiojio
-                </div>
-            </div>
-            {/* Horizontle  Line */}
-            <div className="mt-5 sm:mx-96 border-t border-gray-500 pt-8"></div>
-            {/* 4 Part Images  */}
-            <div className="w-full bg-slate-200">
+
+                {/* Horizontle  Line */}
+                <div className="mt-5 sm:mx-96 border-t border-gray-500 pt-8"></div>
+
+                {/* 4 Part Images  */}
+                <div className="w-full bg-slate-200">
                     <div className="bg-white dark:bg-gray-900 p-5">
-                    <div className="flex flex-wrap justify-center gap-10">
-                        <div className="w-1/2 sm:w-1/3 h-72">
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYlpCM0AMyUaJajEp7gTpLFs6JsqK0-bU1uA&s"
-                            className="w-full h-full object-cover rounded-lg"
-                            alt="Image 1"
-                        />
-                        </div>
-                        <div className="w-1/2 sm:w-1/3 h-72">
-                        <img
-                            src="https://img.freepik.com/premium-photo/women-fashion-designer-waistline-with-measuring-tape-size-workshop-boutique-store-young-female-person-tailors-checking-measurement-body-clothing-line-style-production_590464-459961.jpg"
-                            className="w-full h-full object-cover rounded-lg"
-                            alt="Image 2"
-                        />
-                        </div>
-                        <div className="w-1/2 sm:w-1/3 h-72">
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxJl6_5VN8ZF0UQBIYvCtmsXuyuhpGBGkIeLsm3SqEUZ7lf3dkKsxgivocIxtIPQdWF2w&usqp=CAU"
-                            className="w-full h-full object-cover rounded-lg"
-                            alt="Image 3"
-                        />
-                        </div>
-                        <div className="w-1/2 sm:w-1/3 h-72">
-                        <img
-                            src="https://media.istockphoto.com/id/1338720994/photo/middle-aged-mature-woman-with-blond-hair-wearing-sunglasses-walking-on-city-streets-while.jpg?s=612x612&w=0&k=20&c=vljaPm9YoM5-544iiax5KIK8ixf2fIsW1Gga0o1_0Uc="
-                            className="w-full h-full object-cover rounded-lg"
-                            alt="Image 4"
-                        />
+                        <div className="flex flex-wrap justify-center gap-10">
+                            <Card_2 />
+                            <Card_2 />
+                            <Card_2 />
+                            <Card_2 />
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Title, subtitle and grid of blocked stats with value and title */}
-            <div>
-                <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-                    <div className="mx-auto max-w-3xl text-center">
-                        <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Trusted by eCommerce Businesses</h2>
+                {/* Title, subtitle and grid of blocked stats with value and title */}
+                <div>
+                    <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+                        <div className="mx-auto max-w-3xl text-center">
+                            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl dark:text-white">Trusted by eCommerce Businesses</h2>
 
-                        <p className="mt-4 text-gray-500 sm:text-xl">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione dolores laborum labore
-                        provident impedit esse recusandae facere libero harum sequi.
-                        </p>
+                            <p className="dark:text-white mt-4 text-gray-500 sm:text-xl">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione dolores laborum labore
+                                provident impedit esse recusandae facere libero harum sequi.
+                            </p>
+                        </div>
+
+                        <dl className="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 lg:grid-cols-4">
+                            <div className="flex flex-col rounded-lg bg-blue-50 px-4 py-8 text-center">
+                                <dt className="order-last text-lg font-medium text-gray-500">Total Sales</dt>
+
+                                <dd className="text-4xl font-extrabold text-blue-600 md:text-5xl">$4.8m</dd>
+                            </div>
+
+                            <div className="flex flex-col rounded-lg bg-blue-50 px-4 py-8 text-center">
+                                <dt className="order-last text-lg font-medium text-gray-500">Official Addons</dt>
+
+                                <dd className="text-4xl font-extrabold text-blue-600 md:text-5xl">24</dd>
+                            </div>
+
+                            <div className="flex flex-col rounded-lg bg-blue-50 px-4 py-8 text-center">
+                                <dt className="order-last text-lg font-medium text-gray-500">Total Addons</dt>
+
+                                <dd className="text-4xl font-extrabold text-blue-600 md:text-5xl">86</dd>
+                            </div>
+
+                            <div className="flex flex-col rounded-lg bg-blue-50 px-4 py-8 text-center">
+                                <dt className="order-last text-lg font-medium text-gray-500">Downloads</dt>
+
+                                <dd className="text-4xl font-extrabold text-blue-600 md:text-5xl">86k</dd>
+                            </div>
+                        </dl>
                     </div>
-
-                    <dl className="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 lg:grid-cols-4">
-                        <div className="flex flex-col rounded-lg bg-blue-50 px-4 py-8 text-center">
-                        <dt className="order-last text-lg font-medium text-gray-500">Total Sales</dt>
-
-                        <dd className="text-4xl font-extrabold text-blue-600 md:text-5xl">$4.8m</dd>
-                        </div>
-
-                        <div className="flex flex-col rounded-lg bg-blue-50 px-4 py-8 text-center">
-                        <dt className="order-last text-lg font-medium text-gray-500">Official Addons</dt>
-
-                        <dd className="text-4xl font-extrabold text-blue-600 md:text-5xl">24</dd>
-                        </div>
-
-                        <div className="flex flex-col rounded-lg bg-blue-50 px-4 py-8 text-center">
-                        <dt className="order-last text-lg font-medium text-gray-500">Total Addons</dt>
-
-                        <dd className="text-4xl font-extrabold text-blue-600 md:text-5xl">86</dd>
-                        </div>
-
-                        <div className="flex flex-col rounded-lg bg-blue-50 px-4 py-8 text-center">
-                        <dt className="order-last text-lg font-medium text-gray-500">Downloads</dt>
-
-                        <dd className="text-4xl font-extrabold text-blue-600 md:text-5xl">86k</dd>
-                        </div>
-                    </dl>
                 </div>
             </div>
-
-            <div>
-                <Footer/>
-            </div>
+            <Footer />
         </div>
     );
 }
-
-
-
-
-
-
-
-{/* <div>
-    <a href="#" className="group relative block bg-black rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 ease-in-out sm:w-[300px] sm:h-[400px] lg:w-[400px] lg:h-[500px]">
-        <img alt="fation Image"
-            src="https://images.unsplash.com/photo-1603871165848-0aa92c869fa1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=772&q=80"
-            className="inset-0 h-full w-full object-cover opacity-75 transition-opacity group-hover:opacity-50"
-        />
-        <div className="absolute bottom-0 w-full bg-black bg-opacity-75 text-white text-center py-4 transform translate-y-full group-hover:translate-y-0 transition duration-300 ease-in-out">
-            <p className="text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, amet!
-            </p>
-        </div>
-    </a>
-</div> */}

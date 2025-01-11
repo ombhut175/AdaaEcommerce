@@ -1,32 +1,42 @@
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Signup from "./pages/Signup.jsx";
-import Login from "./pages/Login.jsx";
-import Layout from "./pages/Layout.jsx";
-import HomePage from "./pages/Home.jsx";
-import BlogGridView from "./pages/BlogGridView.jsx";
-import OTPVerification from "./pages/OTPVerification.jsx";
-import PrivateRouter from "./components/PrivateRouter.jsx";
-import {ToastContainer} from 'react-toastify'
-import OTPForForgot from './pages/OTPForForgot.jsx'
-import SetNewPass from "./pages/SetNewPass.jsx";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-export default function App(){
+// Pages
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Layout from './pages/Layout';
+import HomePage from './pages/Home';
+import BlogListView from './components/BlogListView';
+import ProductList from './components/ProductList';
+import BuyNow from './components/BuyNow';
+import AddToCart from './components/AddToCart';
+import ProductDetails from './components/ProductDetails';
+import DiscountProductList from './components/DiscountProductList';
+import Cart from './pages/Cart';
+import { EditPage } from './pages/EditPage';
+import BlogGridView from "./components/BlogGridView.jsx";
+
+function App() {
     return (
-        <>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/verify-otp-forgot" element={<OTPForForgot />} />
-                    <Route path="/set-new-password" element={<SetNewPass />} />
-                    <Route path="/verify" element={<OTPVerification />} />
-                    <Route path="/" element={<PrivateRouter Component={<Layout />}/>}>
-                        <Route path="home" element={<PrivateRouter Component={<HomePage />}/>} />
-                        <Route path="bloggridview" element={<PrivateRouter Component={<BlogGridView/>}/>} />
-                    </Route>
-                </Routes>
-                <ToastContainer/>
-            </BrowserRouter>
-        </>
-    )
+            <Routes>
+                {/* Public Routes */}
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} />
+
+                {/* Protected Routes */}
+                <Route path="/" element={<Layout />}>
+                    <Route path="home" element={<HomePage />} />
+                    <Route path="blogGridView" element={<BlogGridView />} />
+                    <Route path="blogListView" element={<BlogListView />} />
+                    <Route path="productList" element={<ProductList />} />
+                    <Route path="buyNow" element={<BuyNow />} />
+                    <Route path="addToCart" element={<AddToCart />} />
+                    <Route path="productDetails" element={<ProductDetails />} />
+                    <Route path="discountProductList" element={<DiscountProductList />} />
+                    <Route path="cart" element={<Cart />} />
+                    <Route path="editPage" element={<EditPage />} />
+                </Route>
+            </Routes>
+    );
 }
+
+export default App;
