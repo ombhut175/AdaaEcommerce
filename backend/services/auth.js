@@ -27,7 +27,7 @@ function giveUserIdFromCookies(token) {
 
 function setUserCookies(res,token) {
     try {
-        return res.cookie('userId', token, {
+        return res.cookie('auth-token', token, {
             httpOnly: true,
             secure: true,
             sameSite: 'None', // For cross-origin cookie sharing

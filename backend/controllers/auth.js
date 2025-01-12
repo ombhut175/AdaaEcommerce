@@ -1,7 +1,7 @@
 const userModel = require('../model/user')
-const {sendOtpViaEmail} = require('../utils/MailServices');
+const {sendOtpViaEmail} = require('../utils/mailServices');
 const bcrypt = require('bcrypt');
-const tempUserModel = require('../model/tempUserModel');
+const tempUserModel = require('../model/TempUserModel');
 const { setUser } = require('../services/auth');
 
 //signupSendOtp method -----------------------------------------------------
@@ -22,7 +22,7 @@ const sendOtpToSignup = async (req, res) => {
         // Check if an unverified user already exists
         const tempUser = await tempUserModel.findOne({ email });
         if (tempUser) {
-            return res.status(400).json({ success: false, msg: "OTP already sent. Please verify." });
+            return res.status(400).json({ success: true, msg: "OTP already sent. Please verify." });
         }
 
         // Hash the password

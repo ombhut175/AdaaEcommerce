@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { setMode } from "../redux/slice/userPreferences";
-import { GoogleButton } from "../components/GoogleButton";
-
-
+import { setMode } from "../../redux/slice/userPreferences";
+import { GoogleButton } from "../../components/GoogleButton";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
+
+
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [isLogin,setIsLogin] = useState(false);
     const [isHidePass,setIsHidePass] = useState(true);
     const [errors, setErrors] = useState({});
     const [loading,setLoading] = useState(false);
+
+    const navigate = useNavigate()
+    //redux 
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
-    const navigate = useNavigate()
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
+    
+    //darkMode
     const toggleDarkMode = () => {
         const newMode = !userPreferences.isDarkMode;
         dispatch(setMode(newMode));
     };
 
+    //when click on dark mode then.. change root class
     useEffect(() => {
         const rootClass = document.documentElement.classList;
         if (userPreferences.isDarkMode) {
@@ -30,30 +35,56 @@ const Login = () => {
         }
     }, [userPreferences.isDarkMode]);
 
-    const validate = (name, value) => {
+    //validation of form
+    const validateField = (name, value) => {
         let error = '';
-        if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
-            error = 'Please enter a valid email address';
-        } else if (name === 'password') {
-            const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/;
-            if (!passwordRegex.test(value)) {
-                error = 'Password must be at least 6 characters long, include at least one number, and one special character';
-            }
+        switch (name) {
+            case 'email':
+                if (!/\S+@\S+\.\S+/.test(value)) {
+                    error = 'Please enter a valid email address';
+                }
+                break;
+            case 'password':
+                if (!/^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/.test(value)) {
+                    error = 'Password must be at least 6 characters long, include at least one number, and one special character';
+                }
+                break;
+            
+            default:
+                break;
         }
-        setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
+        setErrors(prev => ({ ...prev, [name]: error }));
+        return !error;
     };
     
-
+    //on change name and value pass in the validate field
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        validate(name, value);
+        validateField(name, value);
     };
+
+    //on submit event check all form field
+    const validateForm = () => {
+        const newErrors = {};
+        Object.keys(formData).forEach(key => {
+            if (!validateField(key, formData[key])) {
+                newErrors[key] = errors[key] || `Please enter a valid ${key}`;
+            }
+        });
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (true) {
-            console.log('Form Submitted:', formData);
+    
+        //check the all fields
+        if(!validateForm()){
+
+            return;
+        }
             
             setLoading(true);
             fetch(import.meta.env.VITE_BACKEND_URL+ "/api/login",
@@ -67,16 +98,22 @@ const Login = () => {
                 })
                 .then(function(res){ return res.json() })
                 .then((res)=>{
-                    if(res.success==true){
+                    console.log(res);
+                    
+                    if(res.success){
                         setIsLogin(true)
+                        toast.success(res.msg);
                         localStorage.setItem('auth-token',res.token);
                         setLoading(false);
-                            navigate('/')
+                        navigate('/')
                         
                     }
                 })
                 .catch(function(res){ console.log(res) })
-        }
+                .finally(() => {
+                    setLoading(false);
+                });
+            
     };
 
     return (
@@ -154,7 +191,7 @@ const Login = () => {
                         <button
                             onClick={handleSubmit}
                             className="w-full text-lg py-2 active:scale-95 transition-all bg-slate-800 text-white rounded-md dark:bg-slate-200 dark:text-slate-800"
-                            // disabled={errors.email || errors.password}
+                            disabled={errors.email || errors.password}
                         >
                             Login
                         </button>
@@ -191,9 +228,6 @@ const Login = () => {
                             }
                         }} className="text-slate-800 dark:text-slate-400 underline">Forgot Password?</Link>
                     </div>
-                    {isLogin?<div className='p-2 text-green-500 text-lg text-center'>
-                        Login Successful
-                    </div>:""}
                 
             </div>}
         </div>

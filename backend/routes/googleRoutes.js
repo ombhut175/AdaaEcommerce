@@ -45,7 +45,6 @@ googleRoutes.get('/callback', passport.authenticate('google', {
     console.log(user);
     const token = setUser(user);
     setUserCookies(res ,token);
-
     return res.redirect(`${process.env.CLIENT_URL}home`);
 });
 
