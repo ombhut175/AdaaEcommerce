@@ -29,7 +29,11 @@ mongoose.connect(process.env.MONGO_URL)
             origin: 'http://localhost:5173', // Replace with your frontend's URL
             credentials: true,              // Allow cookies to be sent
         }));
-
+        app.use((req, res, next) => {
+            res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL); // Frontend URL
+            res.header('Access-Control-Allow-Credentials', 'true');            // Allow cookies
+            next();
+        });
         app.use(
             session({
                 secret: process.env.SESSION_SECRET_KEY,

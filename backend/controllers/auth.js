@@ -22,7 +22,7 @@ const sendOtpToSignup = async (req, res) => {
         // Check if an unverified user already exists
         const tempUser = await tempUserModel.findOne({ email });
         if (tempUser) {
-            return res.status(400).json({ success: false, msg: "OTP already sent. Please verify." });
+            return res.status(400).json({ success: true, msg: "OTP already sent. Please verify." });
         }
 
         // Hash the password

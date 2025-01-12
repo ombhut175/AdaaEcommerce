@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { setMode } from "../redux/slice/userPreferences";
-import { GoogleButton } from "../components/GoogleButton";
-
-
+import { setMode } from "../../redux/slice/userPreferences";
+import { GoogleButton } from "../../components/GoogleButton";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
+
+
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [isLogin,setIsLogin] = useState(false);
     const [isHidePass,setIsHidePass] = useState(true);
     const [errors, setErrors] = useState({});
     const [loading,setLoading] = useState(false);
+
+    const navigate = useNavigate()
+    //redux 
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
-    const navigate = useNavigate()
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
+    
+    //darkMode
     const toggleDarkMode = () => {
         const newMode = !userPreferences.isDarkMode;
         dispatch(setMode(newMode));
     };
 
+    //when click on dark mode then.. change root class
     useEffect(() => {
         const rootClass = document.documentElement.classList;
         if (userPreferences.isDarkMode) {
@@ -30,6 +35,7 @@ const Login = () => {
         }
     }, [userPreferences.isDarkMode]);
 
+    //validation of form
     const validateField = (name, value) => {
         let error = '';
         switch (name) {
@@ -51,12 +57,14 @@ const Login = () => {
         return !error;
     };
     
-
+    //on change name and value pass in the validate field
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        validate(name, value);
+        validateField(name, value);
     };
+
+    //on submit event check all form field
     const validateForm = () => {
         const newErrors = {};
         Object.keys(formData).forEach(key => {
@@ -67,10 +75,14 @@ const Login = () => {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
+    
+        //check the all fields
         if(!validateForm()){
-            
+
             return;
         }
             
@@ -86,16 +98,21 @@ const Login = () => {
                 })
                 .then(function(res){ return res.json() })
                 .then((res)=>{
-                    if(res.success==true){
+                    console.log(res);
+                    
+                    if(res.success){
                         setIsLogin(true)
+                        toast.success(res.msg);
                         localStorage.setItem('auth-token',res.token);
                         setLoading(false);
-                            navigate('/')
+                        navigate('/')
                         
                     }
                 })
                 .catch(function(res){ console.log(res) })
-        
+                .finally(() => {
+                    setLoading(false);
+                });
             
     };
 
@@ -174,7 +191,7 @@ const Login = () => {
                         <button
                             onClick={handleSubmit}
                             className="w-full text-lg py-2 active:scale-95 transition-all bg-slate-800 text-white rounded-md dark:bg-slate-200 dark:text-slate-800"
-                            // disabled={errors.email || errors.password}
+                            disabled={errors.email || errors.password}
                         >
                             Login
                         </button>
@@ -211,9 +228,6 @@ const Login = () => {
                             }
                         }} className="text-slate-800 dark:text-slate-400 underline">Forgot Password?</Link>
                     </div>
-                    {isLogin?<div className='p-2 text-green-500 text-lg text-center'>
-                        Login Successful
-                    </div>:""}
                 
             </div>}
         </div>

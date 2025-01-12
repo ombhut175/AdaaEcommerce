@@ -35,13 +35,14 @@ const OTPVerification = () => {
             .then((data) => {
                 if (data.success) {
                     setIsVerified(true);
+                    toast.success(data.msg);
                     localStorage.setItem('auth-token',data.token)
                     navigate('/home'); // Redirect to home page after successful OTP verification
                     
                 } else {
                     console.log(data);
                     
-                    setErrors('Please try again.');
+                    setErrors(data.msg);
                 }
             })
             .catch((err) => {

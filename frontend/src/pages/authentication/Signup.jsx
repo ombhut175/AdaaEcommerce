@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setMode } from '../redux/slice/userPreferences.js';
-import { GoogleButton } from '../components/GoogleButton.jsx';
+import { setMode } from '../../redux/slice/userPreferences.js';
+import { GoogleButton } from '../../components/GoogleButton.jsx';
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
 const Signup = () => {
+
+
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
     const [errors, setErrors] = useState({});
     const [otpSend, setOtpSend] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isHidePass, setIsHidePass] = useState(true);
 
+    //redux
     const userPreferences = useSelector(state => state.userPreferences);
     const dispatch = useDispatch();
-    const [isHidePass, setIsHidePass] = useState(true);
     const isDark = userPreferences.isDarkMode;
+    
     const navigate = useNavigate();
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+    //change a dark mode 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', isDark);
     }, [isDark]);
@@ -27,6 +31,7 @@ const Signup = () => {
         dispatch(setMode(!isDark));
     };
 
+    //validate a fields
     const validateField = (name, value) => {
         let error = '';
         switch (name) {
@@ -52,6 +57,7 @@ const Signup = () => {
         return !error;
     };
 
+    //validate form
     const validateForm = () => {
         const newErrors = {};
         Object.keys(formData).forEach(key => {
@@ -63,6 +69,7 @@ const Signup = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+    //on change 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -89,21 +96,27 @@ const Signup = () => {
         })
             .then(res => res.json())
             .then(res => {
+                console.log(res);
+                
                 setLoading(false);
                 if (res.success) {
+                    toast.success(res.msg);
                     localStorage.setItem('email', formData.email);
                     setOtpSend(true);
                     navigate('/verify');
                 } else {
                     toast.error(res.msg);
-                    navigate('/login');
+                    navigate('/*');
                 }
             })
             .catch(err => {
                 console.error(err);
                 setLoading(false);
-            });
-    };
+            })
+            .finally(()=>{
+                setLoading(false);
+            })
+        };
 
     return (
         <div className="h-screen flex items-center justify-center dark:bg-slate-800 bg-slate-50">

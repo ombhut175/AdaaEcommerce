@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {toast} from 'react-toastify'
+
 const OTPForForgot = () => {
     const [otp, setOtp] = useState('');
     const [errors, setErrors] = useState('');
     const [isVerified, setIsVerified] = useState(false);
     const navigate = useNavigate();
-
+    
     // Handle OTP input change
     const handleOtpChange = (e) => {
         setOtp(e.target.value);
@@ -34,6 +36,7 @@ const OTPForForgot = () => {
             .then((data) => {
                 if (data.token) {
                     setIsVerified(true);
+                    toast.success(data.msg);
                     localStorage.setItem('auth-token',data.token);
                     navigate('/set-new-password'); 
                     
