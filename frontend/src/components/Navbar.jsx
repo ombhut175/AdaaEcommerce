@@ -68,7 +68,7 @@ export default function Navbar() {
                 <div className="col-span-1 hidden lg:flex items-center justify-center">
                     <button
                         onClick={toggleDarkMode}
-                        className={`p-2 rounded-full transition-colors ${
+                        className={`p-2 rounded-full transition-colors   ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-gray-100'
@@ -77,17 +77,9 @@ export default function Navbar() {
                         {isDark ? <Sun size={24} /> : <Moon size={24} />}
                     </button>
                     
+                    
                     <button
-                        className={`p-2 rounded-full transition-colors text-xl ${
-                            isDark 
-                            ? 'text-yellow-400 hover:bg-gray-800' 
-                            : 'text-gray-600 hover:bg-gray-100'
-                        }`}
-                    >
-                        <i class="fa-solid fa-cart-shopping"></i>
-                    </button>
-                    <button
-                        className={`p-2 rounded-full transition-colors text-xl ${
+                        className={`p-2 rounded-full transition-colors text-xl ms-3 ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-gray-100'
@@ -95,13 +87,13 @@ export default function Navbar() {
                     >
                         <i class="fa-regular fa-heart"></i> 
                     </button>
-                    {isLogin? <button className={`p-2 rounded-full transition-colors text-xl ${
+                    {isLogin? <button className={`p-2 rounded-full ms-3 transition-colors text-xl ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}>
                     <i class="fa-solid fa-user"></i>
-                    </button>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
+                    </button>:<button className={`px-5 py-2 mx-1 ms-3 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-slate-400'
@@ -112,6 +104,7 @@ export default function Navbar() {
 
                 {/* Mobile Menu Button */}
                 <div className="col-span-9 lg:hidden flex justify-end items-center pr-4 space-x-4">
+                    {/* dark */}
                     <button
                         onClick={toggleDarkMode}
                         className={`p-2 rounded-full transition-colors ${
@@ -123,15 +116,7 @@ export default function Navbar() {
                         {isDark ? <Sun size={24} /> : <Moon size={24} />}
                     </button>
                     
-                    <button
-                        className={`p-2 rounded-full transition-colors ${
-                            isDark 
-                            ? 'text-yellow-400 hover:bg-gray-800' 
-                            : 'text-gray-600 hover:bg-gray-100'
-                        }`}
-                    >
-                        <i class="fa-solid fa-cart-shopping"></i>
-                    </button>
+                    {/* wishList */}
                     <button
                         className={`p-2 rounded-full transition-colors text-lg ${
                             isDark 
