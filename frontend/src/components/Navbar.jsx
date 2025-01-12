@@ -23,8 +23,7 @@ export default function Navbar() {
         { title: "Gowns", subCategories: ["Evening Gowns", "Bridal Gowns", "Casual Gowns"] },
         { title: "Bottoms", subCategories: ["Palazzos", "Leggings", "Trousers"] },
         { title: "Tops", subCategories: ["Casual Tops", "Formal Tops", "Crop Tops"] },
-        { title: "About Us", subCategories: [] },
-        { title: "Contact Us", subCategories: [] },
+        { title: "About", subCategories: [] },
     ];
 
     const toggleCategory = (title) => {
@@ -42,7 +41,7 @@ export default function Navbar() {
                 <div className="col-span-8 hidden lg:flex justify-center items-center space-x-6">
                     {navItems.map((navItem) => (
                         <div className="relative group text-xl" key={navItem.title}>
-                            <div className={`cursor-pointer transition-colors ${isDark ? 'text-gray-200 hover:text-blue-400' : 'text-gray-800 hover:text-blue-600'}`}>
+                            <div className={`cursor-pointer transition-colors ${isDark ? 'text-gray-200 hover:text-yellow-400' : 'text-gray-800 hover:text-yellow-400'}`}>
                                 {navItem.title}
                             </div>
                             {navItem.subCategories.length > 0 && (
@@ -142,6 +141,15 @@ export default function Navbar() {
                     >
                         <i class="fa-regular fa-heart"></i> 
                     </button>
+                    {
+                        isLogin? <button className={`p-2 rounded-full transition-colors text-lg ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}>
+                    <i class="fa-solid fa-user"></i>
+                    </button>:<></>
+                    }
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         className={`p-2 rounded-md transition-colors ${
@@ -152,6 +160,7 @@ export default function Navbar() {
                     >
                         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
+                   
                 </div>
             </div>
 
@@ -201,13 +210,7 @@ export default function Navbar() {
                             )}
                         </div>
                     ))}
-                    {isLogin? <button className={`p-2 rounded-full transition-colors text-lg ${
-                            isDark 
-                            ? 'text-yellow-400 hover:bg-gray-800' 
-                            : 'text-gray-600 hover:bg-gray-100'
-                        }`}>
-                    <i class="fa-solid fa-user"></i>
-                    </button>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
+                    {isLogin?<></>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-slate-400'
