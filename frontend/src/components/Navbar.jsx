@@ -1,160 +1,221 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Dropdown from "../components/Dropdown1";
+import { useState } from "react";
+import { Menu, X, ChevronDown, ChevronUp, Moon, Sun } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setMode } from "../redux/slice/userPreferences";
 
-function Navbar() {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+    const [openCategory, setOpenCategory] = useState(null);
+    const [isLogin,setIsLogin]=useState(true)
+    
+    // Redux state and dispatch
+    const isDark = useSelector(state => state.userPreferences.isDarkMode);
+    const dispatch = useDispatch();
+    
+    // Toggle dark mode
     const toggleDarkMode = () => {
-        setIsDarkMode(!isDarkMode);
-        document.documentElement.classList.toggle("dark");
+        dispatch(setMode(!isDark));
     };
-
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
-    };
-
-    useEffect(() => {
-        // Add fade-in animation to nav links
-        const navLinks = document.querySelectorAll(".nav-link");
-        navLinks.forEach((link, index) => {
-            link.style.animationDelay = `${index * 0.1}s`;
-        });
-
-        // Toggle dark mode based on system preference
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            setIsDarkMode(true);
-            document.documentElement.classList.add("dark");
-        }
-    }, []);
-
-    const [isFocused, setIsFocused] = useState(false);
-
-    const handleFocus = () => setIsFocused(true);
-    const handleBlur = (e) => {
-        if (e.target.value === "") setIsFocused(false);
-    };
-
-    const options = [
-        { name: 'Home', path: '/home' },
-        { name: 'About', path: '/about' },
-        { name: 'Contact', path: '/contact' },
+    
+    const navItems = [
+        { title: "Home", subCategories: [] },
+        { title: "Kurtas", subCategories: ["Casual Kurtas", "Designer Kurtas", "Party Wear"] },
+        { title: "Gowns", subCategories: ["Evening Gowns", "Bridal Gowns", "Casual Gowns"] },
+        { title: "Bottoms", subCategories: ["Palazzos", "Leggings", "Trousers"] },
+        { title: "Tops", subCategories: ["Casual Tops", "Formal Tops", "Crop Tops"] },
+        { title: "About Us", subCategories: [] },
+        { title: "Contact Us", subCategories: [] },
     ];
 
-    const options2 = [
-        { name: 'kutri', path: '/kurti' },
-        { name: 'Salvar', path: '/salvar' },
-        { name: 'Top', path: '/top' },
-    ];
-
-    const navLinkClasses = `
-        nav-link relative text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300 
-        before:content-[''] before:absolute before:left-0 before:bottom-0 before:w-full before:h-[2px] before:bg-blue-600 
-        before:scale-x-0 hover:before:scale-x-100 before:origin-right hover:before:origin-left before:transition-transform before:duration-300`;
-
+    const toggleCategory = (title) => {
+        setOpenCategory(openCategory === title ? null : title);
+    };
+    
     return (
-        <header className="bg-white dark:bg-gray-800 shadow-lg h-16">
-            <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
-                <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTblNVEx4GuR8vBCHczvzvksIqZG31AkJxvEQ&s"
-                    alt="Logo"
-                    className="h-12 w-auto"
-                />
-
-                <div className="hidden md:flex space-x-6">
-                    <Link to="/home" className={navLinkClasses}>
-                        Home
-                    </Link>
-                    <Link to="/blogGridView" className={navLinkClasses}>
-                        BlogGridView
-                    </Link>
-                    <Link to="/blogListView" className={navLinkClasses}>
-                        BlogListView
-                    </Link>
-                    <Link to="/productList" className={navLinkClasses}>
-                        Product
-                    </Link>
-                    <Link to="/discountProductList" className={navLinkClasses}>
-                        Offers
-                    </Link>
-
-                    {/* Drop Down Menus */}
-                    <Dropdown buttonLabel="Views" options={options} />
-                    <Dropdown buttonLabel="Dress" options={options} />
+        <nav className={`relative shadow-md ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+            <div className="grid grid-cols-12 h-24">
+                <div className="md:col-span-2 col-span-3  flex items-center justify-center">
+                    <img src="/images/adaa-jaipur-logo.png" alt="logo" className="w-20 h-20 " />
                 </div>
-               
-                {/* Search Bar */}
-                <div className="flex justify-center items-center">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            className={`bg-white h-10 px-5 pr-10 rounded-full text-sm focus:outline-offset-1 transition-all duration-300 ease-in-out w-12 ${isFocused ? "w-64" : ""}`}
-                            placeholder="Search..."
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
-                        />
-                        <button type="submit" className="absolute right-0 top-0 mt-3 mr-4">
-                            <svg className="h-6 w-6 fill-current text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z" />
-                            </svg>
-                        </button>
-                    </div>
+                
+                {/* Desktop Navigation */}
+                <div className="col-span-8 hidden lg:flex justify-center items-center space-x-6">
+                    {navItems.map((navItem) => (
+                        <div className="relative group text-xl" key={navItem.title}>
+                            <div className={`cursor-pointer transition-colors ${isDark ? 'text-gray-200 hover:text-blue-400' : 'text-gray-800 hover:text-blue-600'}`}>
+                                {navItem.title}
+                            </div>
+                            {navItem.subCategories.length > 0 && (
+                                <div className={`absolute left-0 mt-2 w-48 shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
+                                    {navItem.subCategories.map((subCategory) => (
+                                        <div
+                                            key={subCategory}
+                                            className={`px-4 py-2 cursor-pointer transition-colors ${
+                                                isDark 
+                                                ? 'text-gray-300 hover:bg-gray-700' 
+                                                : 'text-gray-800 hover:bg-gray-50'
+                                            }`}
+                                        >
+                                            {subCategory}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
 
-                {/* Toggle Button */}
-                <div className="hidden md:flex items-center space-x-4">
+                {/* Theme Toggle */}
+                <div className="col-span-1 hidden lg:flex items-center justify-center">
                     <button
                         onClick={toggleDarkMode}
-                        className="text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white focus:outline-none transition-colors duration-300"
+                        className={`p-2 rounded-full transition-colors ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
                     >
-                        {isDarkMode ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                        ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                            </svg>
-                        )}
+                        {isDark ? <Sun size={24} /> : <Moon size={24} />}
                     </button>
+                    
+                    <button
+                        className={`p-2 rounded-full transition-colors text-xl ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                    >
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </button>
+                    <button
+                        className={`p-2 rounded-full transition-colors text-xl ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                    >
+                        <i class="fa-regular fa-heart"></i> 
+                    </button>
+                    {isLogin? <button className={`p-2 rounded-full transition-colors text-xl ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}>
+                    <i class="fa-solid fa-user"></i>
+                    </button>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-slate-400'
+                        }`}>
+                    Login
+                    </button>}
                 </div>
 
                 {/* Mobile Menu Button */}
-                <button
-                    onClick={toggleMobileMenu}
-                    className="md:hidden text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white focus:outline-none transition-colors duration-300"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </nav>
-
-            {/* Mobile Menu */}
-            {isMobileMenuOpen && (
-                <div className="mobile-menu md:hidden bg-white bg-opacity-50 dark:bg-gray-800 shadow-lg absolute w-full left-0 transform translate-y-0 opacity-100">
-                    <div className="container mx-auto px-4 py-4 space-y-4">
-                        <Link to="/home" className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
-                            Home
-                        </Link>
-                        <Link className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
-                            <Dropdown buttonLabel="Views" options={options} />
-                        </Link>
-                        <Link  className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
-                            <Dropdown buttonLabel="Views" options={options2} />
-                        </Link>
-                        <Link to="#" className="block text-gray-700 dark:text-gray-200 hover:text-indigo-800 dark:hover:text-white transition-colors duration-300">
-                            Contact
-                        </Link>
-                        <Link to="#" className="inline-block bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300">
-                            Sign Up
-                        </Link>
-                    </div>
+                <div className="col-span-9 lg:hidden flex justify-end items-center pr-4 space-x-4">
+                    <button
+                        onClick={toggleDarkMode}
+                        className={`p-2 rounded-full transition-colors ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                    >
+                        {isDark ? <Sun size={24} /> : <Moon size={24} />}
+                    </button>
+                    
+                    <button
+                        className={`p-2 rounded-full transition-colors ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                    >
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </button>
+                    <button
+                        className={`p-2 rounded-full transition-colors text-lg ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                    >
+                        <i class="fa-regular fa-heart"></i> 
+                    </button>
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className={`p-2 rounded-md transition-colors ${
+                            isDark 
+                            ? 'text-gray-200 hover:bg-gray-800' 
+                            : 'text-gray-800 hover:bg-gray-100'
+                        }`}
+                    >
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
                 </div>
-            )}
-        </header>
-    );
-};
+            </div>
 
-export default Navbar;
+            {/* Mobile Navigation */}
+            <div
+                className={`fixed inset-0 z-50 transition-transform duration-300 ease-in-out ${
+                    isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                } lg:hidden ${isDark ? 'bg-gray-900' : 'bg-white'}`}
+                style={{ top: '6rem' }}
+            >
+                <div className="h-full overflow-y-auto pb-20">
+                    {navItems.map((navItem) => (
+                        <div key={navItem.title} className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-100'}`}>
+                            <div
+                                className={`flex items-center justify-between px-6 py-4 cursor-pointer ${
+                                    isDark ? 'text-gray-200' : 'text-gray-800'
+                                }`}
+                                onClick={() => toggleCategory(navItem.title)}
+                            >
+                                <span className="text-lg font-medium">{navItem.title}</span>
+                                {navItem.subCategories.length > 0 && (
+                                    openCategory === navItem.title ? 
+                                    <ChevronUp size={20} /> : 
+                                    <ChevronDown size={20} />
+                                )}
+                            </div>
+                            
+                            {navItem.subCategories.length > 0 && (
+                                <div
+                                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                        openCategory === navItem.title ? 'max-h-96' : 'max-h-0'
+                                    }`}
+                                >
+                                    {navItem.subCategories.map((subCategory) => (
+                                        <div
+                                            key={subCategory}
+                                            className={`px-8 py-3 transition-colors ${
+                                                isDark 
+                                                ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' 
+                                                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                                            }`}
+                                        >
+                                            {subCategory}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                    {isLogin? <button className={`p-2 rounded-full transition-colors text-lg ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}>
+                    <i class="fa-solid fa-user"></i>
+                    </button>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-slate-400'
+                        }`}>
+                    Login
+                    </button>}
+                </div>
+            </div>
+        </nav>
+    );
+}
