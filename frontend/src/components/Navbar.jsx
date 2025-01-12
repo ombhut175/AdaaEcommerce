@@ -7,7 +7,9 @@ export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [openCategory, setOpenCategory] = useState(null);
     const [isLogin,setIsLogin]=useState(true)
-    
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const imagesPath = `${BACKEND_URL}/api/static`;
+
     // Redux state and dispatch
     const isDark = useSelector(state => state.userPreferences.isDarkMode);
     const dispatch = useDispatch();
@@ -23,7 +25,8 @@ export default function Navbar() {
         { title: "Gowns", subCategories: ["Evening Gowns", "Bridal Gowns", "Casual Gowns"] },
         { title: "Bottoms", subCategories: ["Palazzos", "Leggings", "Trousers"] },
         { title: "Tops", subCategories: ["Casual Tops", "Formal Tops", "Crop Tops"] },
-        { title: "About", subCategories: [] },
+        { title: "About Us", subCategories: [] },
+        { title: "Contact Us", subCategories: [] },
     ];
 
     const toggleCategory = (title) => {
@@ -34,14 +37,14 @@ export default function Navbar() {
         <nav className={`relative shadow-md ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
             <div className="grid grid-cols-12 h-24">
                 <div className="md:col-span-2 col-span-3  flex items-center justify-center">
-                    <img src="/images/adaa-jaipur-logo.png" alt="logo" className="w-20 h-20 " />
+                    <img src={`${imagesPath}/adaa-jaipur-logo.png`} alt="logo" className="w-20 h-20 " />
                 </div>
                 
                 {/* Desktop Navigation */}
                 <div className="col-span-8 hidden lg:flex justify-center items-center space-x-6">
                     {navItems.map((navItem) => (
                         <div className="relative group text-xl" key={navItem.title}>
-                            <div className={`cursor-pointer transition-colors ${isDark ? 'text-gray-200 hover:text-yellow-400' : 'text-gray-800 hover:text-yellow-400'}`}>
+                            <div className={`cursor-pointer transition-colors ${isDark ? 'text-gray-200 hover:text-blue-400' : 'text-gray-800 hover:text-blue-600'}`}>
                                 {navItem.title}
                             </div>
                             {navItem.subCategories.length > 0 && (
@@ -79,21 +82,30 @@ export default function Navbar() {
                     
                     
                     <button
-                        className={`p-2 rounded-full transition-colors text-xl ms-3 ${
+                        className={`p-2 rounded-full transition-colors text-xl ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}
                     >
-                        <i class="fa-regular fa-heart"></i> 
+                        <i className="fa-solid fa-cart-shopping"></i>
+                    </button>
+                    <button
+                        className={`p-2 rounded-full transition-colors text-xl ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                    >
+                        <i className="fa-regular fa-heart"></i>
                     </button>
                     {isLogin? <button className={`p-2 rounded-full ms-3 transition-colors text-xl ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}>
-                    <i class="fa-solid fa-user"></i>
-                    </button>:<button className={`px-5 py-2 mx-1 ms-3 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
+                    <i className="fa-solid fa-user"></i>
+                    </button>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-slate-400'
@@ -116,7 +128,15 @@ export default function Navbar() {
                         {isDark ? <Sun size={24} /> : <Moon size={24} />}
                     </button>
                     
-                    {/* wishList */}
+                    <button
+                        className={`p-2 rounded-full transition-colors ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                    >
+                        <i className="fa-solid fa-cart-shopping"></i>
+                    </button>
                     <button
                         className={`p-2 rounded-full transition-colors text-lg ${
                             isDark 
@@ -124,17 +144,8 @@ export default function Navbar() {
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}
                     >
-                        <i class="fa-regular fa-heart"></i> 
+                        <i className="fa-regular fa-heart"></i>
                     </button>
-                    {
-                        isLogin? <button className={`p-2 rounded-full transition-colors text-lg ${
-                            isDark 
-                            ? 'text-yellow-400 hover:bg-gray-800' 
-                            : 'text-gray-600 hover:bg-gray-100'
-                        }`}>
-                    <i class="fa-solid fa-user"></i>
-                    </button>:<></>
-                    }
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         className={`p-2 rounded-md transition-colors ${
@@ -145,7 +156,6 @@ export default function Navbar() {
                     >
                         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
-                   
                 </div>
             </div>
 
@@ -195,7 +205,13 @@ export default function Navbar() {
                             )}
                         </div>
                     ))}
-                    {isLogin?<></>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
+                    {isLogin? <button className={`p-2 rounded-full transition-colors text-lg ${
+                            isDark 
+                            ? 'text-yellow-400 hover:bg-gray-800' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}>
+                    <i className="fa-solid fa-user"></i>
+                    </button>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-slate-400'

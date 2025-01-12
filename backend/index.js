@@ -11,6 +11,7 @@ const passport = require('./services/passport');
 const session = require('express-session');
 const cartRoutes = require("./routes/cartRoutes");
 const userRoutes = require("./routes/user");
+const path = require("node:path");
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -49,6 +50,8 @@ mongoose.connect(process.env.MONGO_URL)
         app.use(passport.initialize());
         app.use(passport.session());
 
+        //static files
+        app.use('/api/static',express.static(path.join(__dirname, 'public/staticPictures')));
         //routes
 
         //auth middlewares
