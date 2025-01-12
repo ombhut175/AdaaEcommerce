@@ -7,7 +7,9 @@ export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [openCategory, setOpenCategory] = useState(null);
     const [isLogin,setIsLogin]=useState(true)
-    
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const imagesPath = `${BACKEND_URL}/api/static`;
+
     // Redux state and dispatch
     const isDark = useSelector(state => state.userPreferences.isDarkMode);
     const dispatch = useDispatch();
@@ -35,7 +37,7 @@ export default function Navbar() {
         <nav className={`relative shadow-md ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
             <div className="grid grid-cols-12 h-24">
                 <div className="md:col-span-2 col-span-3  flex items-center justify-center">
-                    <img src="/images/adaa-jaipur-logo.png" alt="logo" className="w-20 h-20 " />
+                    <img src={`${imagesPath}/adaa-jaipur-logo.png`} alt="logo" className="w-20 h-20 " />
                 </div>
                 
                 {/* Desktop Navigation */}
@@ -85,7 +87,7 @@ export default function Navbar() {
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}
                     >
-                        <i class="fa-solid fa-cart-shopping"></i>
+                        <i className="fa-solid fa-cart-shopping"></i>
                     </button>
                     <button
                         className={`p-2 rounded-full transition-colors text-xl ${
@@ -94,14 +96,14 @@ export default function Navbar() {
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}
                     >
-                        <i class="fa-regular fa-heart"></i> 
+                        <i className="fa-regular fa-heart"></i>
                     </button>
                     {isLogin? <button className={`p-2 rounded-full transition-colors text-xl ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}>
-                    <i class="fa-solid fa-user"></i>
+                    <i className="fa-solid fa-user"></i>
                     </button>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
@@ -131,7 +133,7 @@ export default function Navbar() {
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}
                     >
-                        <i class="fa-solid fa-cart-shopping"></i>
+                        <i className="fa-solid fa-cart-shopping"></i>
                     </button>
                     <button
                         className={`p-2 rounded-full transition-colors text-lg ${
@@ -140,7 +142,7 @@ export default function Navbar() {
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}
                     >
-                        <i class="fa-regular fa-heart"></i> 
+                        <i className="fa-regular fa-heart"></i>
                     </button>
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -206,7 +208,7 @@ export default function Navbar() {
                             ? 'text-yellow-400 hover:bg-gray-800' 
                             : 'text-gray-600 hover:bg-gray-100'
                         }`}>
-                    <i class="fa-solid fa-user"></i>
+                    <i className="fa-solid fa-user"></i>
                     </button>:<button className={`px-5 py-2 mx-1 bg-slate-800 text-white  rounded-full transition-colors text-lg ${
                             isDark 
                             ? 'text-yellow-400 hover:bg-gray-800' 
