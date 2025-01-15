@@ -160,7 +160,7 @@ const Login = () => {
             {/* Login Form */}
             {loading?/* From Uiverse.io by Fresnel11 */ 
 <div
-  class="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"
+  className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"
 ></div>
 :
             <div className="w-full max-w-md md:hover:scale-105 transition-all p-8 bg-white dark:bg-slate-900 rounded-lg shadow-md">
@@ -179,10 +179,10 @@ const Login = () => {
                             {
                             isHidePass ? <label className='absolute top-2 right-2'><button className='p-1' onClick={(e)=>{
                                 e.preventDefault()
-                                setIsHidePass(false)}}><i class="fa-regular fa-eye dark:text-slate-400"></i></button></label>
+                                setIsHidePass(false)}}><i className="fa-regular fa-eye dark:text-slate-400"></i></button></label>
                             :<label className='absolute top-2 right-2 dark:text-slate-400'><button className='p-1' onClick={(e)=>{
                                 e.preventDefault()
-                                setIsHidePass(true)}}><i class="fa-regular fa-eye-slash"></i></button></label>
+                                setIsHidePass(true)}}><i className="fa-regular fa-eye-slash"></i></button></label>
                             }
                         </div>
                        </form>
