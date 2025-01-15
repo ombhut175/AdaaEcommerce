@@ -12,6 +12,7 @@ const session = require('express-session');
 const cartRoutes = require("./routes/cartRoutes");
 const userRoutes = require("./routes/user");
 const path = require("node:path");
+const productRouter = require('./routes/products')
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -64,6 +65,9 @@ mongoose.connect(process.env.MONGO_URL)
         //user middleware
 
         app.use('/api/user', userRoutes);
+
+        //products middleware
+        app.use('/api/products', productRouter);
 
         //listen at specific port
         app.listen(PORT, (err) => {
