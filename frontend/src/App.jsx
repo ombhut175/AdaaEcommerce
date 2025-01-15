@@ -8,6 +8,7 @@ import Layout from './Layout.jsx'
 import Home from './pages/Home.jsx';
 import OTPForForgot from './pages/authentication/OTPForForgot.jsx';
 import SetNewPass from './pages/authentication/SetNewPass.jsx';
+import Testing from "./components/Testing.jsx";
 function App() {
     return (
             <Routes>
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                 </Route>
+                <Route path={'/testing'} element={<Testing />}/>
             </Routes>
     );
 }
