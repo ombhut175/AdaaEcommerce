@@ -38,27 +38,25 @@ const uploadOnCloudinaryForProducts = async (localFilePath, dealerAndProductDeta
     try {
         if (!localFilePath) return null;
 
-        // Upload the file with a consistent public_id for each user
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto",
-            public_id: dealerAndProductDetails.publicId, // Ensures same public_id is used to overwrite
-            overwrite: true,// Ensures existing file with same public_id is replaced
+            public_id: dealerAndProductDetails.publicId,
+            overwrite: true,
             folder: dealerAndProductDetails.folderPath,
         });
 
-        if (fs.existsSync(localFilePath)) {
+        // Delete file only after successful upload
+        if (response && fs.existsSync(localFilePath)) {
             fs.unlinkSync(localFilePath);
         }
+
         return response;
     } catch (error) {
-        // Remove the locally saved temporary file if the upload fails
-        if (fs.existsSync(localFilePath)) {
-            fs.unlinkSync(localFilePath);
-        }
-        console.log('Error uploading to Cloudinary:', error);
-        return null;
+        console.error('Error uploading to Cloudinary:', error);
+        return null; // Do not delete the file on failure
     }
 };
+
 
 
 module.exports = {

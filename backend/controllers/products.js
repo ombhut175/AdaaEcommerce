@@ -34,11 +34,18 @@ const addProduct = async (req, res) => {
 
             // Step 3: Upload files to Cloudinary
             for (const file of uploadedFiles) {
-                console.log(file.path);
-                const result = await uploadOnCloudinaryForProducts(file.path, {
+                const filePath = file.path;
+                console.log("Uploaded files:", uploadedFiles.map(file => file.path));
+
+                if (!fs.existsSync(filePath)) {
+                    console.error(`File not found: ${filePath}`);
+                    continue; // Skip to the next file
+                }
+
+                const result = await uploadOnCloudinaryForProducts(filePath, {
                     folderPath: `${savedProduct.dealerId}/${productId}`,
                     publicId: `${savedProduct.dealerId}${productId}${file.originalname}`,
-                })
+                });
 
                 if (result) {
                     cloudinaryResponses.push({
@@ -46,8 +53,8 @@ const addProduct = async (req, res) => {
                         cloudinaryUrl: result.url,
                     });
                 }
-
             }
+
 
             savedProduct.images.push(...cloudinaryResponses.map(resp => resp.cloudinaryUrl));
 

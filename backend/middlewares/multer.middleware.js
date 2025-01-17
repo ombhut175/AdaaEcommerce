@@ -41,22 +41,39 @@ const storage = multer.diskStorage({
 });
 
 const storageForProducts = multer.diskStorage({
-    destination: (req, file, cb) => {
-        // Create a folder for user and product dynamically
-        const userId = giveUserIdFromCookies(req.cookies.authToken);
-        const dir = path.join(`${tempDir}/${userId}`);
+    destination: async (req, file, cb) => {
         try {
-            fs.mkdirSync(dir, { recursive: true });
+            const userId = giveUserIdFromCookies(req.cookies.authToken);
+
+            // Validate userId
+            if (!userId) {
+                return cb(new Error("Invalid user ID"), false);
+            }
+
+            const dir = path.join(tempDir, userId);
+
+            // Asynchronously create the directory
+            await fs.promises.mkdir(dir, { recursive: true });
+            cb(null, dir);
         } catch (error) {
-            console.error("Error creating directory:", dir, error);
-            cb(new Error("Failed to create upload directory"));
+            console.error("Error in destination callback:", error);
+            cb(new Error("Failed to set upload directory"), false);
         }
     },
     filename: (req, file, cb) => {
-        const index = req.files.indexOf(file) + 1;
-        cb(null, `file_${index}${path.extname(file.originalname)}`);
+        try {
+
+            // Generate the file name
+            const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+            const filename = `${uniqueSuffix}${path.extname(file.originalname)}`;
+            cb(null, filename);
+        } catch (error) {
+            console.error("Error in filename callback:", error);
+            cb(new Error("Failed to set file name"), false);
+        }
     },
 });
+
 
 const upload = multer({storage: storage});
 const uploadForProducts = multer({storage: storageForProducts});
