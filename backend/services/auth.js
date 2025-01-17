@@ -12,7 +12,7 @@ function setUser(user) {
 function getUser(token) {
     if (!token) return null;
     try {
-        return jwt.verify(token,process.env.SECRETKEY);
+        return jwt.verify(token,process.env.JWT_SECRET);
     } catch (err) {
         console.log(err);
         
@@ -27,7 +27,7 @@ function giveUserIdFromCookies(token) {
 
 function setUserCookies(res,token) {
     try {
-        return res.cookie('auth-token', token, {
+        return res.cookie('authToken', token, {
             httpOnly: true,
             secure: true,
             sameSite: 'None', // For cross-origin cookie sharing

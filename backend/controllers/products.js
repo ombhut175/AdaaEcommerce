@@ -9,10 +9,13 @@ const addProduct = async (req, res) => {
     if (!req.body) {
         return res.json({success: false, msg: "Please add product details"})
     }
-
+    console.log("from addProduct");
     try {
+        console.log(req.body);
         const {name, title, description, price} = req.body;
-        const user = getUser(req.cookies.auth_token);
+        const user = getUser(req.cookies.authToken);
+        console.log(user);
+
         const newProduct = new productModel({
             name,
             title,
@@ -27,18 +30,17 @@ const addProduct = async (req, res) => {
         // Step 2: Upload files to local storage and Cloudinary
         const uploadedFiles = req.files;
         if (uploadedFiles && uploadedFiles.length > 0) {
-
             const cloudinaryResponses = [];
 
             // Step 3: Upload files to Cloudinary
             for (const file of uploadedFiles) {
+                console.log(file.path);
                 const result = await uploadOnCloudinaryForProducts(file.path, {
                     folderPath: `${savedProduct.dealerId}/${productId}`,
                     publicId: `${savedProduct.dealerId}${productId}${file.originalname}`,
                 })
 
                 if (result) {
-
                     cloudinaryResponses.push({
                         originalName: file.originalname,
                         cloudinaryUrl: result.url,
@@ -52,7 +54,7 @@ const addProduct = async (req, res) => {
             await savedProduct.save();
 
             // Step 5: Send success response
-            return res.json({
+            return res.status(200).json({
                 message: "Product created and files uploaded to Cloudinary!",
                 product: savedProduct,
                 uploadedFiles: cloudinaryResponses,
@@ -62,6 +64,7 @@ const addProduct = async (req, res) => {
         }
 
     } catch (err) {
+        console.log(err);
         return res.status(500).json({success: false, message: 'Failed to add product', error: err.message});
     }
 };

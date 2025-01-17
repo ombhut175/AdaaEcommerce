@@ -46,8 +46,9 @@ const uploadOnCloudinaryForProducts = async (localFilePath, dealerAndProductDeta
             folder: dealerAndProductDetails.folderPath,
         });
 
-        // Remove the locally saved temporary file after upload
-        fs.unlinkSync(localFilePath);
+        if (fs.existsSync(localFilePath)) {
+            fs.unlinkSync(localFilePath);
+        }
         return response;
     } catch (error) {
         // Remove the locally saved temporary file if the upload fails

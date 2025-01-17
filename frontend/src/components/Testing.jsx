@@ -9,6 +9,8 @@ const Testing = () => {
         description:'',
         price:'',
     });
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    console.log(`${BACKEND_URL}/api/products/add`);
 
     const handleFileChange = (e, index) => {
         const updatedFiles = [...files];
@@ -32,9 +34,12 @@ const Testing = () => {
         formData.append("description", data.description);
         formData.append("price", data.price);
 
+        console.log(formData);
+
         try {
-            const response = await axios.post("URL HERE", formData, { withCredentials: true });
-            if (response.ok) {
+            const response = await axios.post(`${BACKEND_URL}/api/products/add`, formData, { withCredentials: true });
+            console.log("after response:");
+            if (response.status === 200) {
                 console.log("Files uploaded successfully");
             } else {
                 console.log("Error uploading files");
@@ -53,7 +58,7 @@ const Testing = () => {
                 id="email"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="name"
-                onChange={(e)=> setData({...data,email: e.target.value})}
+                onChange={(e)=> setData({...data,name: e.target.value})}
                 required
             />
             <input

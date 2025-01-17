@@ -40,9 +40,7 @@ googleRoutes.get('/login/failed',(req,res)=>{
 googleRoutes.get('/callback', passport.authenticate('google', {
     failureRedirect: '/api/google/login/failed'
 }),(req,res)=>{
-    console.log("from googleRoutes / callback");
     const {user} = req;
-    console.log(user);
     const token = setUser(user);
     setUserCookies(res ,token);
     return res.redirect(`${process.env.CLIENT_URL}home`);

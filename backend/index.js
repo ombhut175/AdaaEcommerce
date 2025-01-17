@@ -69,6 +69,13 @@ mongoose.connect(process.env.MONGO_URL)
         //products middleware
         app.use('/api/products', productRouter);
 
+
+        //checking
+        app.get('/', (req, res) => {
+            console.log("ok ok");
+            return res.status(200).send({message: 'ok'});
+        });
+
         //listen at specific port
         app.listen(PORT, (err) => {
             if (err) {
