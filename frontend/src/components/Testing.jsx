@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 
 const Testing = () => {
@@ -10,7 +10,6 @@ const Testing = () => {
         price:'',
     });
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-    console.log(`${BACKEND_URL}/api/products/add`);
 
     const handleFileChange = (e, index) => {
         const updatedFiles = [...files];
@@ -34,7 +33,6 @@ const Testing = () => {
         formData.append("description", data.description);
         formData.append("price", data.price);
 
-        console.log(formData);
 
         try {
             const response = await axios.post(`${BACKEND_URL}/api/products/add`, formData, { withCredentials: true });
@@ -53,6 +51,7 @@ const Testing = () => {
 
     return (
         <>
+            {JSON.stringify(data)}
             <input
                 type="email"
                 id="email"

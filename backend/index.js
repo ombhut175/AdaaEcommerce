@@ -28,14 +28,12 @@ mongoose.connect(process.env.MONGO_URL)
 
         app.use(cookieParser());
         app.use(cors({
-            origin: 'http://localhost:5173', // Replace with your frontend's URL
+            origin: 'http://localhost:5173', // Match the exact URL without trailing slash
             credentials: true,              // Allow cookies to be sent
+            methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific methods
+            allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'], // Specify allowed headers
         }));
-        app.use((req, res, next) => {
-            res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL); // Frontend URL
-            res.header('Access-Control-Allow-Credentials', 'true');            // Allow cookies
-            next();
-        });
+
         app.use(
             session({
                 secret: process.env.SESSION_SECRET_KEY,
@@ -52,7 +50,7 @@ mongoose.connect(process.env.MONGO_URL)
         app.use(passport.session());
 
         //static files
-        app.use('/api/static',express.static(path.join(__dirname, 'public/staticPictures')));
+        app.use('/api/static', express.static(path.join(__dirname, 'public/staticPictures')));
         //routes
 
         //auth middlewares
