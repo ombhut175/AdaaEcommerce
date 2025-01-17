@@ -15,10 +15,6 @@ router.delete('/:id',removeProduct);
 router.patch('/:id',updateProduct);
 router.post('/add',uploadForProducts.array('files',10),addProduct);
 router.post('/filter',filterProduct);
-// router.post('/add',(req,res)=>{
-//     console.log("ok ok ok");
-//     return res.json({message : "ok ok"});
-// });
 
 
 module.exports = router

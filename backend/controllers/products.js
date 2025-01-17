@@ -4,17 +4,14 @@ const {uploadOnCloudinary, uploadOnCloudinaryForProducts} = require("../services
 const {getUser} = require("../services/auth");
 const fs = require("node:fs");
 
-// Add a new product
+// Add a new product along with photos
 const addProduct = async (req, res) => {
     if (!req.body) {
         return res.json({success: false, msg: "Please add product details"})
     }
-    console.log("from addProduct");
     try {
-        console.log(req.body);
         const {name, title, description, price} = req.body;
         const user = getUser(req.cookies.authToken);
-        console.log(user);
 
         const newProduct = new productModel({
             name,
@@ -35,16 +32,17 @@ const addProduct = async (req, res) => {
             // Step 3: Upload files to Cloudinary
             for (const file of uploadedFiles) {
                 const filePath = file.path;
-                console.log("Uploaded files:", uploadedFiles.map(file => file.path));
 
                 if (!fs.existsSync(filePath)) {
                     console.error(`File not found: ${filePath}`);
                     continue; // Skip to the next file
                 }
 
-                const result = await uploadOnCloudinaryForProducts(filePath, {
+                const fileIndex = uploadedFiles.indexOf(file) + 1;
+
+                const result = await uploadOnCloudinaryForProducts(file.path, {
                     folderPath: `${savedProduct.dealerId}/${productId}`,
-                    publicId: `${savedProduct.dealerId}${productId}${file.originalname}`,
+                    publicId: `${savedProduct.dealerId}/${productId}/file_${fileIndex}`,
                 });
 
                 if (result) {
