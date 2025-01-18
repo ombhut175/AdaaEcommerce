@@ -3,20 +3,29 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "node_modules/preline/dist/*.js",
-    "./node_modules/flowbite/**/*.js"
   ],
+  darkMode: 'class',
   theme: {
     extend: {
-      fontFamily: {
-        roboto: ['Roboto', 'sans-serif'], // Custom font family
+      colors: {
+        primary: '#1a1a1a',
+        secondary: '#646cff',
+      },
+      animation: {
+        'slide-in': 'slideIn 0.5s ease-out',
+        'fade-in': 'fadeIn 0.5s ease-out',
+      },
+      keyframes: {
+        slideIn: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
       },
     },
   },
-  plugins: [
-    require('preline/plugin'),
-    require('flowbite/plugin'),
-    require('tailwind-scrollbar-hide'), // Merged plugin
-  ],
-  darkMode: 'class', // Enable dark mode based on a CSS class
-};
+  plugins: [],
+}

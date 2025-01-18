@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 const testimonials = [
@@ -31,8 +31,12 @@ const testimonials = [
 export default function Testimonials() {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const setActiveTestimonial = (index) => {
-    setActiveIndex(index);
+  const nextTestimonial = () => {
+    setActiveIndex((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevTestimonial = () => {
+    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
   return (
@@ -52,53 +56,49 @@ export default function Testimonials() {
         </motion.div>
 
         <div className="relative max-w-4xl mx-auto">
-          <div className="overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                transition={{ duration: 0.6 }}
-                className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-8"
-              >
-                <div className="flex items-center gap-6">
-                  <img
-                    src={testimonials[activeIndex].image}
-                    alt={testimonials[activeIndex].name}
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
-                  <div>
-                    <div className="flex text-yellow-400 mb-2">
-                      {'★'.repeat(testimonials[activeIndex].rating)}
-                    </div>
-                    <p className="text-gray-700 dark:text-gray-300 mb-4">
-                      {testimonials[activeIndex].text}
-                    </p>
-                    <h4 className="font-semibold text-black dark:text-white">
-                      {testimonials[activeIndex].name}
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      {testimonials[activeIndex].role}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <div className="flex justify-center mt-8 gap-2">
-            {testimonials.map((_, index) => (
-              <div
-                key={index}
-                onClick={() => setActiveTestimonial(index)}
-                className={`w-4 h-4 rounded-full cursor-pointer ${
-                  index === activeIndex
-                    ? 'bg-black dark:bg-white'
-                    : 'bg-gray-400 dark:bg-gray-600'
-                }`}
+          <motion.div
+            key={activeIndex}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-8"
+          >
+            <div className="flex items-center gap-6">
+              <img
+                src={testimonials[activeIndex].image}
+                alt={testimonials[activeIndex].name}
+                className="w-16 h-16 rounded-full object-cover"
               />
-            ))}
+              <div>
+                <div className="flex text-yellow-400 mb-2">
+                  {'★'.repeat(testimonials[activeIndex].rating)}
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 mb-4">
+                  {testimonials[activeIndex].text}
+                </p>
+                <h4 className="font-semibold text-black dark:text-white">
+                  {testimonials[activeIndex].name}
+                </h4>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {testimonials[activeIndex].role}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="flex justify-center mt-8 gap-4">
+            <button
+              onClick={prevTestimonial}
+              className="p-2 rounded-full bg-black dark:bg-white text-white dark:text-black"
+            >
+              ←
+            </button>
+            <button
+              onClick={nextTestimonial}
+              className="p-2 rounded-full bg-black dark:bg-white text-white dark:text-black"
+            >
+              →
+            </button>
           </div>
         </div>
       </div>

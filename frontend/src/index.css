@@ -1,7 +1,114 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
-/* fon font : In your global CSS file */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #1a1a1a;
+  --secondary: #646cff;
+  color-scheme: light;
+}
+
+.dark {
+  --primary: #ffffff;
+  --secondary: #747bff;
+  color-scheme: dark;
+}
+
+/* Enhanced transitions */
+* {
+  @apply transition-all duration-200;
+}
+
+/* Text color transitions */
+.text-gray-600,
+.text-gray-700,
+.text-gray-900,
+.text-black,
+.text-white {
+  @apply transition-colors duration-200;
+}
+
+/* Hover effects */
+.hover\:text-primary-500:hover {
+  @apply text-indigo-500 transition-colors duration-200;
+}
+
+.dark .hover\:text-primary-400:hover {
+  @apply text-indigo-400 transition-colors duration-200;
+}
+
+/* Input focus animations */
+input:focus,
+textarea:focus,
+select:focus {
+  @apply transform scale-[1.02] transition-transform duration-200;
+}
+
+/* Button hover animations */
+button:not(:disabled),
+a {
+  @apply transition-all duration-200;
+}
+
+button:not(:disabled):hover,
+a:hover {
+  @apply transform scale-105;
+}
+
+button:not(:disabled):active,
+a:active {
+  @apply transform scale-95;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-all duration-300;
+}
+
+.card-hover:hover {
+  @apply transform -translate-y-2 shadow-xl;
+}
+
+/* Dark mode specific styles */
+.dark .timer-text {
+  @apply text-gray-200;
+}
+
+.dark .cart-text {
+  @apply text-gray-200;
+}
+
+.dark .price-text {
+  @apply text-gray-200;
+}
+
+/* Performance optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}

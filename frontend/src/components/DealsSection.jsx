@@ -49,7 +49,7 @@ export default function DealsSection() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black rounded-md"
+            className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black rounded-md hover:shadow-lg transition-all duration-300"
           >
             Buy Now
           </motion.button>
@@ -57,14 +57,18 @@ export default function DealsSection() {
 
         <div className="flex justify-center gap-8 mb-12">
           {Object.entries(timeLeft).map(([unit, value]) => (
-            <div key={unit} className="text-center">
-              <div className="text-3xl font-bold bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-2">
+            <motion.div
+              key={unit}
+              whileHover={{ scale: 1.05 }}
+              className="text-center"
+            >
+              <div className="text-3xl font-bold bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-2 timer-text">
                 {String(value).padStart(2, '0')}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400 capitalize">
                 {unit}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -76,19 +80,19 @@ export default function DealsSection() {
           ].map((image, index) => (
             <motion.div
               key={index}
-              whileHover={{ y: -10 }}
-              className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden"
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <img
                 src={image}
                 alt={`Product ${index + 1}`}
-                className="w-full h-80 object-cover"
+                className="w-full h-80 object-cover transform hover:scale-105 transition-transform duration-500"
               />
               <div className="p-6">
                 <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                   0{index + 1} — Spring Sale
                 </div>
-                <div className="text-xl font-bold text-black dark:text-white mb-2">
+                <div className="text-xl font-bold text-black dark:text-gray-200 mb-2">
                   30% OFF
                 </div>
               </div>
