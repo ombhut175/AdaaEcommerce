@@ -22,6 +22,9 @@ const DealerProducts = lazy(() => import('./components/DealerProducts'));
 const DealerProductDetail = lazy(() => import('./components/DealerProductDetail'));
 const DealerProductForm = lazy(() => import('./components/DealerProductForm'));
 const AdminPanel = lazy(() => import('./components/AdminPanel.jsx'));
+const DeliveryList = lazy(()=> import("./components/DeliveryList.jsx"));
+const DeliveryDetails = lazy(()=>import("./components/DeliveryDetails.jsx"));
+const UserDetails = lazy(()=>import("./components/UserDetails.jsx"));
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -81,6 +84,11 @@ function App() {
                 <Route path="/dealer/products/new" element={<DealerProductForm />} />
                 <Route path="/dealer/products/:id/edit" element={<DealerProductForm />} />
 
+
+                <Route path="/delivery" element={<DeliveryList />} />
+                <Route path="/delivery/:id" element={<DeliveryDetails />} />
+                <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/admin/user/:id" element={<UserDetails />} />
               </Routes>
               <Footer />
             </Suspense>
