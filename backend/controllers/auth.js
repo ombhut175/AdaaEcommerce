@@ -154,7 +154,7 @@ const verifyOtpForgotPassword = async (req, res) => {
             sameSite: true ? 'None' : 'Lax', // Adjust SameSite attribute for cross-origin requests
             path: '/', // Ensure the cookie is accessible for all routes
         });
-        res.status(200).json({message: 'User verified successfully', token});
+        res.status(200).json({success:true,message: 'User verified successfully', token});
 
     } catch (err) {
 
@@ -176,7 +176,7 @@ const setNewPassword = async (req, res) => {
         const User = await userModel.findOne({email});
 
         //check is invalid or expiration
-        User.password = newPassword
+        User.password = await bcrypt.hash(newPassword,5);
         await User.save();
 
         res.status(200).json({success: true, message: 'Password changed successfully'});

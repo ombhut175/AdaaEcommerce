@@ -1,17 +1,99 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 function SignUp() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: ''
-  })
+  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [errors, setErrors] = useState({});
+  const [otpSend, setOtpSend] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle sign up logic
+  const [isHidePass, setIsHidePass] = useState(true);
+  const navigate = useNavigate();
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+  const validate = (name, value) => {
+    let error = '';
+    if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
+      error = 'Please enter a valid email address';
+    } else if (name === 'password') {
+      const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/;
+      if (!passwordRegex.test(value)) {
+        error = 'Password must be at least 6 characters long, include at least one number, and one special character';
+      }
+    } else if (name === 'name' && value.length < 2) {
+      error = 'Enter minimum two letter';
+    } else if (!error) {
+      setErrors({})
+      return true;
+    }
+    setErrors(prev => ({ ...prev, [name]: error }));
+    return false;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    validate(name, value);
+
+  };
+
+  const validateForm = () => {
+    console.log(formData);
+
+    if (!formData.name) {
+      setErrors(prev => ({ ...prev, name: "Please enter Name" }));
+    } if (!formData.email) {
+      setErrors(prev => ({ ...prev, email: "Please enter Email" }));
+    } if (!formData.password) {
+      setErrors(prev => ({ ...prev, password: "Please enter Password" }));
+    }
+    if(errors.length==undefined){
+      return true
+    }else{
+      return false
+    }
   }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      
+      setLoading(true)
+      fetch(BACKEND_URL + "/api/signup/send-otp",
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          method: "POST",
+          body: JSON.stringify(formData)
+        })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          
+          if (res.success) {
+              
+            localStorage.setItem('email', formData.email)
+            localStorage.setItem('name', formData.name)
+            localStorage.setItem('password', formData.password)
+            setOtpSend(true);
+            setLoading(false)
+            toast(res.msg);
+            navigate('/confirm-code')
+          } else {
+            setLoading(false)
+            toast(res.msg)
+            navigate('/signin')
+
+          }
+
+        })
+        .catch(function (err) { console.log(err) })
+    }
+  };
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
@@ -52,28 +134,45 @@ function SignUp() {
                 <input
                   type="text"
                   placeholder="Full Name"
+                  name='name'
                   className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-300"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={handleChange}
                 />
+                {errors.name && <span className="text-red-700">{errors.name}</span>}
               </div>
               <div className="transform hover:scale-105 transition-all duration-300">
                 <input
                   type="email"
                   placeholder="Email Address"
                   className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-300"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  name='email'
+                  onChange={handleChange}
                 />
+                {errors.email && <span className="text-red-700">{errors.email}</span>}
               </div>
-              <div className="transform hover:scale-105 transition-all duration-300">
+              <div className="relative">
                 <input
-                  type="password"
+                  type={isHidePass ? "password" : "text"}
                   placeholder="Password"
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-300"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  name="password"
+                  className="relative w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
+                  onChange={handleChange}
                 />
+                {errors.password && <span className="text-red-700">{errors.password}</span>}
+                <button
+                  type="button"
+                  className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 p-1"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsHidePass(!isHidePass);
+                  }}
+                >
+                  {isHidePass ? (
+                    <i className="fa-regular fa-eye"></i>
+                  ) : (
+                    <i className="fa-regular fa-eye-slash"></i>
+                  )}
+                </button>
               </div>
             </div>
 

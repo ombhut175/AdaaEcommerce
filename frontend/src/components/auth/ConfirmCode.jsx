@@ -1,14 +1,79 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 function ConfirmCode() {
-  const [code, setCode] = useState('')
+  const [otp, setOtp] = useState('')
+  const [errors, setErrors] = useState('');
+  const navigate = useNavigate();
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  const handleSubmit = (e) => {
+// Function to verify the OTP entered by the user
+const handleSubmit = (e) => {
     e.preventDefault()
-    // Handle confirmation code logic
-  }
+    if (!otp || otp.length !== 6) {
+        setErrors('Please enter a valid 6-digit OTP.');
+        return;
+    }
+    setErrors('');
 
+    // Assume you already have the email sent earlier
+    const email = localStorage.getItem('email'); // Retrieve email from storage
+    
+    fetch(BACKEND_URL+ '/api/signup/verify-otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, otp }),
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.success) {
+                localStorage.setItem('authToken',data.token)
+                toast(data.msg);
+                navigate('/home'); // Redirect to home page after successful OTP verification
+                
+            } else {
+                console.log(data);
+                
+                setErrors('Please try again.');
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            setErrors('Error verifying OTP.');
+        });
+};
+// const handleResend = (e)=>{
+//   e.preventDefault()
+  
+//   fetch(BACKEND_URL + "/api/signup/send-otp",
+//     {
+//       headers: {
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json'
+//       },
+//       credentials: 'include',
+//       method: "POST",
+//       body: JSON.stringify({email:localStorage.email,password:localStorage.password,name:localStorage.name})
+//     })
+//     .then((res) => res.json())
+//     .then((res) => {
+//       console.log(res);
+      
+//       if (res.success) {
+      
+//         toast("Resend successful");
+//       } else {
+//         toast(res.msg)
+//         navigate('/signin')
+
+//       }
+
+//     })
+//     .catch(function (err) { console.log(err) })
+// }
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
       <div className="flex-1 hidden lg:block">
@@ -35,9 +100,10 @@ function ConfirmCode() {
                 type="text"
                 placeholder="Confirmation Code"
                 className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 dark:border-teal-600 dark:bg-gray-800 dark:text-orange-300 dark:placeholder-teal-400 transition-all duration-300"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
+                name="otp"
+                onChange={(e) => setOtp(e.target.value)}
               />
+              {errors && <span className='text-red-700'>{errors}</span>}
             </div>
 
             <button
@@ -47,15 +113,15 @@ function ConfirmCode() {
               Recover Account
             </button>
 
-            <p className="text-center text-sm animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            {/* <p className="text-center text-sm animate-fadeIn" style={{ animationDelay: '0.4s' }}>
               Didn't receive Confirmation Code?{' '}
               <button
                 className="text-gray-900 dark:text-teal-400 hover:text-gray-700 dark:hover:text-teal-300 transition-all duration-300 hover:scale-110 inline-block"
-                onClick={() => {/* Handle resend logic */}}
+                onClick={handleResend}
               >
                 Resend Now
               </button>
-            </p>
+            </p> */}
           </form>
 
           <p className="text-center text-sm text-gray-600 dark:text-teal-300 animate-fadeIn" style={{ animationDelay: '0.6s' }}>
