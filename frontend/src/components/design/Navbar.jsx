@@ -14,7 +14,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
               className="text-2xl font-bold text-black dark:text-white"
               whileHover={{ scale: 1.05 }}
             >
-              FASCO
+              ADAA
             </motion.h1>
           </Link>
 

@@ -3,28 +3,33 @@ import { motion, AnimatePresence, LazyMotion, domAnimation } from 'framer-motion
 import { FaShoppingCart, FaArrowUp } from 'react-icons/fa';
 import { useInView } from 'react-intersection-observer';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Navbar from './components/design/Navbar.jsx';
+import SignIn from "./components/auth/SignIn.jsx";
+import SignUp from "./components/auth/SignUp.jsx";
+import ForgotPassword from "./components/auth/ForgotPassword.jsx";
+import ResetPassword from "./components/auth/ResetPassword.jsx";
+import ConfirmCode from "./components/auth/ConfirmCode.jsx";
 
 // Lazy load components
-const Hero = lazy(() => import('./components/Hero'));
-const Brands = lazy(() => import('./components/Brands'));
-const DealsSection = lazy(() => import('./components/DealsSection'));
-const NewArrivals = lazy(() => import('./components/NewArrivals'));
-const InstagramFeed = lazy(() => import('./components/InstagramFeed'));
-const Testimonials = lazy(() => import('./components/Testimonials'));
-const Newsletter = lazy(() => import('./components/Newsletter'));
-const Footer = lazy(() => import('./components/Footer'));
-const Cart = lazy(() => import('./components/Cart'));
-const Shop = lazy(() => import('./components/Shop'));
-const ProductDetail = lazy(() => import('./components/ProductDetail'));
-const Checkout = lazy(() => import('./components/Checkout'));
-const DealerProducts = lazy(() => import('./components/DealerProducts'));
-const DealerProductDetail = lazy(() => import('./components/DealerProductDetail'));
-const DealerProductForm = lazy(() => import('./components/DealerProductForm'));
-const AdminPanel = lazy(() => import('./components/AdminPanel.jsx'));
-const DeliveryList = lazy(()=> import("./components/DeliveryList.jsx"));
-const DeliveryDetails = lazy(()=>import("./components/DeliveryDetails.jsx"));
-const UserDetails = lazy(()=>import("./components/UserDetails.jsx"));
+const Hero = lazy(() => import('./components/design/Hero.jsx'));
+const Brands = lazy(() => import('./components/design/Brands.jsx'));
+const DealsSection = lazy(() => import('./components/design/DealsSection.jsx'));
+const NewArrivals = lazy(() => import('./components/design/NewArrivals.jsx'));
+const InstagramFeed = lazy(() => import('./components/design/InstagramFeed.jsx'));
+const Testimonials = lazy(() => import('./components/design/Testimonials.jsx'));
+const Newsletter = lazy(() => import('./components/design/Newsletter.jsx'));
+const Footer = lazy(() => import('./components/design/Footer.jsx'));
+const Cart = lazy(() => import('./components/user/Cart.jsx'));
+const Shop = lazy(() => import('./components/design/Shop.jsx'));
+const ProductDetail = lazy(() => import('./components/user/ProductDetail.jsx'));
+const Checkout = lazy(() => import('./components/user/Checkout.jsx'));
+const DealerProducts = lazy(() => import('./components/dealer/DealerProducts.jsx'));
+const DealerProductDetail = lazy(() => import('./components/dealer/DealerProductDetail.jsx'));
+const DealerProductForm = lazy(() => import('./components/dealer/DealerProductForm.jsx'));
+const AdminPanel = lazy(() => import('./components/admin/AdminPanel.jsx'));
+const DeliveryList = lazy(()=> import("./components/deliveryBoy/DeliveryList.jsx"));
+const DeliveryDetails = lazy(()=>import("./components/deliveryBoy/DeliveryDetails.jsx"));
+const UserDetails = lazy(()=>import("./components/user/UserDetails.jsx"));
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -72,6 +77,13 @@ function App() {
               </div>
             }>
               <Routes>
+                {/*userLogin Routes*/}
+                <Route path="/signin" element={<SignIn />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/confirm-code" element={<ConfirmCode />} />
+
                 <Route path="/" element={<HomePage />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/shop" element={<Shop />} />
