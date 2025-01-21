@@ -2,6 +2,12 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaCreditCard, FaLock } from 'react-icons/fa';
+import axios from 'axios'
+
+const RAZOR_API_KEY = import.meta.env.RAZOR_API_KEY
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+
+
 
 const inputVariants = {
   focus: { scale: 1.02, transition: { type: "spring", stiffness: 300 } },
@@ -40,7 +46,45 @@ export default function Checkout() {
   const [saveInfo, setSaveInfo] = useState(false);
   const [savePaymentInfo, setSavePaymentInfo] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState('');
+  const [amount,setAmount] = useState(20000);
 
+  const handlePayNow = async () => {
+    try {
+      const { data: { order } } = await axios.post(BACKEND_URL + "/api/payment", {
+        amount,
+      });
+  
+      const options = {
+        key: RAZOR_API_KEY,  // Use key to make Razorpay payment call
+        amount: order.amount, // Amount from the backend order response
+        currency: "INR",
+        name: "adaa-jaipur",
+        description: "Tutorial of RazorPay",
+        image: "https://avatars.githubusercontent.com/u/25058652?v=4",
+        order_id: order.id,
+        callback_url: BACKEND_URL + "/api/paymentVerification",  // Ensure this endpoint exists and works
+        prefill: {
+          name: "Gaurav Kumar",
+          email: "gaurav.kumar@example.com",
+          contact: "9999999999"
+        },
+        notes: {
+          "address": "Razorpay Corporate Office"
+        },
+        theme: {
+          color: "#121212"
+        }
+      };
+  
+      // Open Razorpay checkout
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error("Error during payment initiation:", error);
+      alert("There was an error initiating the payment.");
+    }
+  };
+  
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -70,7 +114,7 @@ export default function Checkout() {
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-gray-600 dark:text-gray-400">Have an account?</span>
                 <motion.div whileHover={{ scale: 1.05 }}>
-                  <Link to="/login" className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
+                  <Link to="/login" className="text-slate-600 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 transition-colors">
                     Create Account
                   </Link>
                 </motion.div>
@@ -81,7 +125,7 @@ export default function Checkout() {
                 whileTap="tap"
                 type="email"
                 placeholder="Email Address"
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-slate-700 dark:hover:border-slate-500"
               />
             </motion.div>
 
@@ -95,7 +139,7 @@ export default function Checkout() {
                   whileTap="tap"
                   value={selectedCountry}
                   onChange={(e) => setSelectedCountry(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-slate-700 dark:hover:border-slate-500"
                 >
                   <option value="" className="dark:bg-gray-800">Country / Region</option>
                   {countries.map(country => (
@@ -114,7 +158,7 @@ export default function Checkout() {
                       whileTap="tap"
                       type="text"
                       placeholder={placeholder}
-                      className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                      className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-slate-700 dark:hover:border-slate-500"
                     />
                   ))}
                 </div>
@@ -125,7 +169,7 @@ export default function Checkout() {
                   whileTap="tap"
                   type="text"
                   placeholder="Address"
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-slate-700 dark:hover:border-slate-500"
                 />
 
                 <div className="grid grid-cols-2 gap-4">
@@ -137,7 +181,7 @@ export default function Checkout() {
                       whileTap="tap"
                       type="text"
                       placeholder={placeholder}
-                      className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                      className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-slate-700 dark:hover:border-slate-500"
                     />
                   ))}
                 </div>
@@ -150,7 +194,7 @@ export default function Checkout() {
                     type="checkbox"
                     checked={saveInfo}
                     onChange={(e) => setSaveInfo(e.target.checked)}
-                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-700 transition-colors"
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-slate-900 dark:border-gray-700 transition-colors"
                   />
                   <span className="text-gray-700 dark:text-gray-300">Save This Info For Future</span>
                 </motion.label>
@@ -166,7 +210,7 @@ export default function Checkout() {
                   className="flex items-center justify-between p-3 border border-gray-300 rounded-md dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-200"
                 >
                   <div className="flex items-center space-x-2">
-                    <FaCreditCard className="text-indigo-600 dark:text-indigo-400" />
+                    <FaCreditCard className="text-slate-600 dark:text-slate-400" />
                     <span className="text-gray-700 dark:text-gray-300">Credit Card</span>
                   </div>
                   <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6" />
@@ -179,7 +223,7 @@ export default function Checkout() {
                     whileTap="tap"
                     type="text"
                     placeholder="Card Number"
-                    className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                    className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-slate-700 dark:hover:border-slate-500"
                   />
                   <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 </motion.div>
@@ -193,7 +237,7 @@ export default function Checkout() {
                       whileTap="tap"
                       type="text"
                       placeholder={placeholder}
-                      className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                      className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-slate-700 dark:hover:border-slate-500"
                     />
                   ))}
                 </div>
@@ -204,7 +248,7 @@ export default function Checkout() {
                   whileTap="tap"
                   type="text"
                   placeholder="Card Holder Name"
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200 hover:border-slate-700 dark:hover:border-slate-500"
                 />
 
                 <motion.label 
@@ -215,7 +259,7 @@ export default function Checkout() {
                     type="checkbox"
                     checked={savePaymentInfo}
                     onChange={(e) => setSavePaymentInfo(e.target.checked)}
-                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-700 transition-colors"
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-slate-900 dark:border-gray-700 transition-colors"
                   />
                   <span className="text-gray-700 dark:text-gray-300">Save This Info For Future</span>
                 </motion.label>
@@ -223,10 +267,11 @@ export default function Checkout() {
             </motion.div>
 
             <motion.button
+            onClick={handlePayNow}
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white py-3 rounded-md font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+              className="w-full bg-slate-900 hover:bg-slate-900 dark:bg-slate-50 dark:hover:bg-slate-50 text-white dark:text-black py-3 rounded-md font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
             >
               <FaLock className="text-sm" />
               <span>Pay Now</span>
@@ -273,13 +318,13 @@ export default function Checkout() {
                   whileTap="tap"
                   type="text"
                   placeholder="Discount code"
-                  className="flex-1 p-2 border border-gray-300 rounded-l-md focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200"
+                  className="flex-1 p-2 border border-gray-300 rounded-l-md focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition-all duration-200"
                 />
                 <motion.button
                   variants={buttonVariants}
                   whileHover="hover"
                   whileTap="tap"
-                  className="px-4 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded-r-md transition-colors duration-200"
+                  className="px-4 bg-slate-900 hover:bg-slate-700 dark:bg-slate-50 dark:hover:bg-slate-100 text-white dark:text-black rounded-r-md transition-colors duration-200"
                 >
                   Apply
                 </motion.button>

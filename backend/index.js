@@ -32,12 +32,7 @@ mongoose.connect(process.env.MONGO_URL)
         //middlewares
 
         app.use(cookieParser());
-        app.use(cors({
-            origin: 'http://localhost:5173', // Match the exact URL without trailing slash
-            credentials: true,              // Allow cookies to be sent
-            methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific methods
-            allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'], // Specify allowed headers
-        }));
+        app.use(cors());
 
         app.use(
             session({
