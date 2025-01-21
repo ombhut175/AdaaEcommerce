@@ -1,7 +1,7 @@
 require('dotenv').config({path:'../.env'});
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const passport = require('passport');
-const User = require('../model/user');
+const User = require('../model/User');
 const {handleCreateNewCart} = require("../controllers/cart");
 
 

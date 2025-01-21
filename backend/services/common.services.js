@@ -1,4 +1,4 @@
-const User = require('../model/user');
+const User = require('../model/User');
 const {getUser} = require("./auth");
 
 async function giveUserFromDb(token){

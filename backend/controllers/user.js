@@ -1,4 +1,4 @@
-const user = require('../model/user')
+const user = require('../model/User')
 const jwt = require('jsonwebtoken');
 const {giveUserFromDb} = require("../services/common.services");
 const {uploadOnCloudinary} = require("../services/cloudinary");

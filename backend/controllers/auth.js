@@ -1,4 +1,4 @@
-const userModel = require('../model/user')
+const userModel = require('../model/User')
 const {sendOtpViaEmail} = require('../services/MailServices');
 const bcrypt = require('bcrypt');
 const tempUserModel = require('../model/TempUserModel');
