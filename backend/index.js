@@ -13,8 +13,8 @@ const cartRoutes = require("./routes/cartRoutes");
 const userRoutes = require("./routes/user");
 const path = require("node:path");
 const productRouter = require('./routes/products')
-const validateLogin = require("./middlewares/requiredLogin");
-const checkForDealerAuthentication = require("./middlewares/dealer");
+const {validateLogin} = require("./middlewares/requiredLogin");
+const {checkForDealerAuthentication} = require("./middlewares/dealer");
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -60,7 +60,7 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api', authRouter)
 
         //cart middlewares
-        app.use('/api/cart', validateLogin ,cartRoutes)
+        app.use('/api/cart', validateLogin ,cartRoutes);
 
         //user middleware
 

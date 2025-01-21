@@ -1,4 +1,4 @@
-import {giveUserFromDb} from "../services/common.services";
+const {giveUserFromDb} = "../services/common.services";
 
 async function validateLogin(req, res, next) {
     try {
