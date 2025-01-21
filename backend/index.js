@@ -15,10 +15,13 @@ const path = require("node:path");
 const productRouter = require('./routes/products')
 const {validateLogin} = require("./middlewares/requiredLogin");
 const {checkForDealerAuthentication} = require("./middlewares/dealer");
+const paymentRouter =require('./routes/payment')
 
 //configuration--------------------------------------------------
 dotenv.config()
 const PORT = process.env.PORT;
+
+
 
 //mongodb connection----------------------------------------------------------------
 
@@ -75,6 +78,10 @@ mongoose.connect(process.env.MONGO_URL)
             console.log("ok ok");
             return res.status(200).send({message: 'ok'});
         });
+
+        //payment
+        app.use('/api',paymentRouter)
+
 
         //listen at specific port
         app.listen(PORT, (err) => {
