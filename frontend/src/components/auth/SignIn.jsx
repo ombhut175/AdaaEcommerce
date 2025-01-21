@@ -1,6 +1,7 @@
 import { useState,useEffect } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
+import {GoogleButton} from "./GoogleButton.jsx";
 function SignIn() {
   const [formData, setFormData] = useState({
     email: '',
@@ -107,6 +108,10 @@ const validateForm = ()=>{
       }
   };
 
+    const handleSignInWithGoogle = () => {
+        window.location.href=import.meta.env.VITE_BACKENDURL + '/api/google';
+    }
+
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
       <div className="flex-1 hidden lg:block">
@@ -123,14 +128,7 @@ const validateForm = ()=>{
           </div>
 
           <div className="flex gap-4 mb-6">
-            <button className="flex-1 flex items-center justify-center gap-2 p-2 border border-gray-300 rounded-lg hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-all duration-200">
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
-              <span className="text-sm text-gray-700 dark:text-gray-200">Sign up with Google</span>
-            </button>
-            <button className="flex-1 flex items-center justify-center gap-2 p-2 border border-gray-300 rounded-lg hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-all duration-200">
-              <img src="https://www.google.com/gmail/about/static/images/logo-gmail.png?cache=1adba63" alt="Email" className="w-5 h-5" />
-              <span className="text-sm text-gray-700 dark:text-gray-200">Sign up with Email</span>
-            </button>
+            <GoogleButton />
           </div>
 
           <div className="relative">

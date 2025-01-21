@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
 import { FaMoon, FaSun } from 'react-icons/fa';
-import { Link, useLocation } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 
 export default function Navbar({ darkMode, setDarkMode }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed w-full bg-white dark:bg-gray-900 shadow-md z-50">
@@ -55,6 +56,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+              onClick={()=> navigate('/signIn')}
             >
               Sign In
             </motion.button>
@@ -62,6 +64,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md"
+              onClick={()=> navigate('/signUp')}
             >
               Sign Up
             </motion.button>

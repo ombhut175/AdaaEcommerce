@@ -78,8 +78,8 @@ function App() {
             }>
               <Routes>
                 {/*userLogin Routes*/}
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/signup" element={<SignUp />} />
+                <Route path="/signIn" element={<SignIn />} />
+                <Route path="/signUp" element={<SignUp />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/confirm-code" element={<ConfirmCode />} />

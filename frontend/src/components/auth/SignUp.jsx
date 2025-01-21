@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import {GoogleButton} from "./GoogleButton.jsx";
 
 function SignUp() {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -113,10 +114,7 @@ function SignUp() {
           </div>
 
           <div className="flex gap-4 mb-6 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
-            <button className="flex-1 flex items-center justify-center gap-2 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105 hover:shadow-md">
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
-              <span className="text-sm text-gray-700 dark:text-gray-200">Sign up with Google</span>
-            </button>
+            <GoogleButton />
           </div>
 
           <div className="relative animate-fadeIn" style={{ animationDelay: '0.3s' }}>
@@ -183,10 +181,10 @@ function SignUp() {
               Create Account
             </button>
 
-            <p className="text-center text-sm animate-fadeIn" style={{ animationDelay: '0.5s' }}>
+            <p className="text-center text-sm animate-fadeIn dark:text-white" style={{ animationDelay: '0.5s' }}>
               Already have an account?{' '}
               <Link
-                to="/signin"
+                to="/signIn"
                 className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-all duration-300 hover:scale-110 inline-block"
               >
                 Login
