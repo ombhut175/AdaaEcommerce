@@ -1,15 +1,50 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import { useState,useEffect } from 'react'
+import { Link,useNavigate } from 'react-router-dom'
+import {toast} from 'react-toastify'
 function ResetPassword() {
   const [formData, setFormData] = useState({
     newPassword: '',
     confirmPassword: ''
   })
+  const [errors, setErrors] = useState('');
+    const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Handle password reset logic
+    if (!formData.newPassword || !formData.confirmPassword) {
+      setErrors('Both fields are required.');
+      return;
+  }
+
+  if (formData.newPassword !== formData.confirmPassword) {
+      setErrors('Passwords do not match.');
+      return;
+  }
+
+  setErrors('');
+
+  const email = localStorage.getItem('email'); // Retrieve email from localStorage
+
+  fetch(import.meta.env.VITE_BACKEND_URL + '/api/login/set-new-password', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, newPassword: formData.confirmPassword }),
+  })
+      .then((res) => res.json())
+      .then((data) => {
+          if (data.success) {
+              toast.success('Password changed successfully!');
+              navigate('/'); // Redirect to home page after success
+          } else {
+              setErrors(data.msg || 'An error occurred. Please try again.');
+          }
+      })
+      .catch((err) => {
+          console.log(err);
+          setErrors('Failed to set new password. Please try again.');
+      });
   }
 
   return (
@@ -37,14 +72,14 @@ function ResetPassword() {
                 onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
               />
               <input
-                type="password"
+                type="text"
                 placeholder="Confirm Password"
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               />
             </div>
-
+            {errors && <span className='text-red-700'>{errors}</span>}
             <button
               type="submit"
               className="w-full bg-black text-white p-3 rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"

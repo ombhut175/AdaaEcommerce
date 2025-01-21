@@ -1,16 +1,111 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import { useState,useEffect } from 'react'
+import { Link,useNavigate } from 'react-router-dom'
+import {toast} from 'react-toastify'
 function SignIn() {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
+  const [errors, setErrors] = useState({});
+  const [loading,setLoading] = useState(false);
+  const navigate = useNavigate()
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const [isHidePass,setIsHidePass] = useState(true);
+  const validate = (name, value) => {
+      let error = '';
+      if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
+          error = 'Please enter a valid email address';
+      } else if (name === 'password') {
+          const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/;
+          if (!passwordRegex.test(value)) {
+              error = 'Password must be at least 6 characters long, include at least one number, and one special character';
+          }
+      }
+      setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
+    };
+  
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle sign in logic
+  const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData(prev => ({ ...prev, [name]: value }));
+      validate(name, value);
+  };
+const validateForm = ()=>{
+  console.log(formData);
+  
+  if(!formData.email && !formData.password){
+    setErrors(prev => ({...prev ,"password":"Please enter Password"}))
+    setErrors(prev => ({...prev ,"email":"Please enter Email"}))
   }
+  else if(!formData.password){
+    setErrors(prev => ({...prev ,"password":"Please enter Password"}))
+  }else if(!formData.email){
+    setErrors(prev => ({...prev ,"email":"Please enter Email"}))
+
+  }
+  return true
+}
+
+  const handleForgot = (e)=>{
+    e.preventDefault()
+
+    if(!formData.email){
+      setErrors({"email":"Please Enter Email"})
+    }
+    fetch(BACKEND_URL+ '/api/login/send-otp-forgot', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email:formData.email }),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+          toast(data.msg);
+          navigate('/forgot-password'); // Redirect to home page after successful OTP verification
+          
+      } else {
+          console.log(data);
+          toast(data.msg)
+          setErrors('Please try again.');
+      }
+    })
+    .catch((err) => {
+        console.log(err);
+        setErrors('Error verifying OTP.');
+    });
+  }
+  const handleSubmit = (e) => {
+      e.preventDefault();
+      if (validateForm()) {
+          console.log('Form Submitted:', formData);
+          
+          setLoading(true);
+          fetch( BACKEND_URL + "/api/login",
+              {
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },credentials: 'include',
+                  method: "POST",
+                  body: JSON.stringify(formData)
+              })
+              .then((res)=> res.json())
+              .then((res)=>{
+                console.log(res);
+                
+                  if(res.success){
+                      localStorage.setItem('authToken',res.token);
+                      setLoading(false);
+                      toast(res.msg);
+                          navigate('/')
+                      
+                  } 
+              })
+              .catch(function(res){ console.log(res) })
+      }
+  };
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
@@ -47,26 +142,43 @@ function SignIn() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6" noValidate>
             <div className="space-y-4">
               <div>
                 <input
                   type="email"
                   placeholder="Email"
+                  name='email'
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={handleChange}
                 />
+                {errors.email && <span className='text-red-700'>{errors.email}</span>}
               </div>
-              <div>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
-              </div>
+              <div className="relative">
+  <input
+    type={isHidePass ? "password" : "text"} 
+    placeholder="Password"
+    name="password"
+    className="relative w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
+    onChange={handleChange}
+  />
+  {errors.password && <span className="text-red-700">{errors.password}</span>}
+  <button
+    type="button"
+    className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 p-1"
+    onClick={(e) => {
+      e.preventDefault();
+      setIsHidePass(!isHidePass); 
+    }}
+  >
+    {isHidePass ? (
+      <i className="fa-regular fa-eye"></i> 
+    ) : (
+      <i className="fa-regular fa-eye-slash"></i> 
+    )}
+  </button>
+</div>
+
             </div>
 
             <button
@@ -83,12 +195,12 @@ function SignIn() {
               >
                 Register Now
               </Link>
-              <Link
-                to="/forgot-password"
+              <button
                 className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200"
+                onClick={handleForgot}
               >
                 Forgot Password?
-              </Link>
+              </button>
             </div>
           </form>
 
