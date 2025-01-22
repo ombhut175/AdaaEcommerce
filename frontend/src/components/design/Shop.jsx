@@ -1,20 +1,45 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
-const products = [
-  { id: 1, name: 'Shiny Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80', colors: ['red', 'blue', 'black'] },
-  { id: 2, name: 'Long Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&q=80', colors: ['pink', 'white', 'black'] },
-  { id: 3, name: 'Full Sweater', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&q=80', colors: ['blue', 'gray', 'black'] },
-  { id: 4, name: 'White Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?auto=format&fit=crop&q=80', colors: ['white', 'cream'] },
-  { id: 5, name: 'Colorful Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&q=80', colors: ['red', 'blue', 'green'] },
-  { id: 6, name: 'White Shirt', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80', colors: ['white', 'black'] },
-];
+import axios from 'axios';
 
 export default function Shop() {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState('grid');
+  const [products , setProducts] = useState([  { id: 1, name: 'Shiny Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80', colors: ['red', 'blue', 'black'] },
+    { id: 2, name: 'Long Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&q=80', colors: ['pink', 'white', 'black'] },
+    { id: 3, name: 'Full Sweater', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&q=80', colors: ['blue', 'gray', 'black'] },
+    { id: 4, name: 'White Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?auto=format&fit=crop&q=80', colors: ['white', 'cream'] },
+    { id: 5, name: 'Colorful Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&q=80', colors: ['red', 'blue', 'green'] },
+    { id: 6, name: 'White Shirt', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80', colors: ['white', 'black'] },
+  ])
+  useEffect(() => {
+    const controller = new AbortController(); // Create an AbortController
 
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products`, {
+          signal: controller.signal, // Attach the AbortController signal
+        });
+        console.log(response.data);
+        
+        // setProducts(response.data);
+      } catch (err) {
+        if (axios.isCancel(err) || err.name === 'CanceledError') {
+          console.log('Request canceled:', err.message);
+        } else {
+          console.error('Error fetching products:', err);
+          setError('Failed to load products. Please try again later.');
+        }
+      }
+    };
+
+    fetchProducts();
+
+    return () => {
+      controller.abort(); // Cancel the request on component unmount
+    };
+  }, []);
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
   };

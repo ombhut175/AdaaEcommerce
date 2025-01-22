@@ -210,7 +210,7 @@ const forLogin = async (req, res) => {
         });
 
         return res.json({
-            success: true, msg: "Login Successful",token
+            success: true, msg: "Login Successful",token,profilePicture : data.profilePicture
         })
     }else{
         res.json({success: false, msg: "Password Incorrect"})
