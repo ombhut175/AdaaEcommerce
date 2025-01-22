@@ -11,6 +11,7 @@ async function handleGetCart(req, res) {
         if (!cart) return res.status(404).json({message: "Cart not found"});
         return res.status(200).json({
             products: cart.cartItems,
+            totalAmount: cart.cartTotalAmount
         });
     } catch (error) {
         return res.status(500).json({message: error.message});
@@ -104,6 +105,30 @@ async function handleAddProductToCart(req, res) {
     }
 }
 
+async function getTotalAmountFromCart(req, res) {
+    try {
+        const userId = giveUserIdFromCookies(req.cookies.token);
+        const cart = await Cart.findOne({userId: new ObjectId(userId)})
+            .populate('cartItems.productId');
+
+        let totalAmount = 0;
+        cart.cartItems.forEach(item => {
+            const product = item.productId;
+            const price = product.price || 0;
+            const quantity = item.quantity || 1;
+            const discount = item.discount || 0;
+
+            const itemTotal = quantity * (price - (price * discount / 100));
+            totalAmount += itemTotal;
+        });
+
+        return res.status(200).json({ totalAmount });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'An error occurred while calculating the total amount.' });
+    }
+}
+
 
 module.exports = {
     handleGetCart,
@@ -111,4 +136,5 @@ module.exports = {
     handleDeleteProductFromCart,
     handleUpdateProductQuantity,
     handleAddProductToCart,
+    getTotalAmountFromCart
 }
