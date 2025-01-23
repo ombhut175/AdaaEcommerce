@@ -30,9 +30,13 @@ mongoose.connect(process.env.MONGO_URL)
         console.log(`Mongodb is connected`);
         const app = express();
         //middlewares
+        app.use(cors({
+            origin: process.env.CLIENT_URL, // Allow this specific origin
+            methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
+            credentials: true // If you're using cookies or authentication
+        }));
 
         app.use(cookieParser());
-        app.use(cors());
 
         app.use(
             session({
@@ -65,7 +69,7 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api/user', userRoutes);
 
         //products middleware
-        app.use('/api/products',validateLogin,checkForDealerAuthentication, productRouter);
+        app.use('/api/products', productRouter);
 
 
         //checking

@@ -5,7 +5,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 export default function Navbar({ darkMode, setDarkMode }) {
   const location = useLocation();
   const navigate = useNavigate();
-
+  
   return (
     <nav className="fixed w-full bg-white dark:bg-gray-900 shadow-md z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,6 +52,25 @@ export default function Navbar({ darkMode, setDarkMode }) {
             >
               {darkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
             </motion.button>
+            
+
+            {localStorage.getItem('authToken')!=null?
+            <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            whileHover={{
+                scale: 1.1,
+                boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.2)',
+            }}
+            className="relative flex items-center justify-center rounded-full overflow-hidden border-4 border-gray-200 shadow-lg w-10 h-10"
+        >
+            <img
+                src={localStorage.getItem('profilePicture')}
+                className="w-full h-full object-cover "
+            />
+        </motion.div>:
+          <>  
 
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -68,7 +87,9 @@ export default function Navbar({ darkMode, setDarkMode }) {
             >
               Sign Up
             </motion.button>
-          </div>
+            </>
+          }
+</div>
         </div>
       </div>
     </nav>

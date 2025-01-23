@@ -2,11 +2,14 @@ import { useState,useEffect } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
 import {GoogleButton} from "./GoogleButton.jsx";
+
+
 function SignIn() {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
+
   const [errors, setErrors] = useState({});
   const [loading,setLoading] = useState(false);
   const navigate = useNavigate()
@@ -97,7 +100,9 @@ const validateForm = ()=>{
                 console.log(res);
                 
                   if(res.success){
+
                       localStorage.setItem('authToken',res.token);
+                      localStorage.setItem('profilePicture',res.profilePicture);
                       setLoading(false);
                       toast(res.msg);
                           navigate('/')
