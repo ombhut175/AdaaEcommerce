@@ -1,7 +1,7 @@
 const express = require('express');
 const {address} = require('../controllers/address')
 
-//delclaration 
+//declaration
 const router = express.Router();
 
 //routes

@@ -11,6 +11,7 @@ const passport = require('./services/passport');
 const session = require('express-session');
 const cartRoutes = require("./routes/cartRoutes");
 const userRoutes = require("./routes/user");
+const orderRoutes = require("./routes/orderRoutes");
 const path = require("node:path");
 const productRouter = require('./routes/products')
 const {validateLogin} = require("./middlewares/requiredLogin");
@@ -61,12 +62,17 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api/google', googleRoutes);
         app.use('/api', authRouter)
 
+        //verification middlewares
+
+        app.use('/api',validateLogin);
+
         //cart middlewares
-        app.use('/api/cart', validateLogin ,cartRoutes);
+        app.use('/api/cart', cartRoutes);
 
         //user middleware
 
         app.use('/api/user', userRoutes);
+        app.use('/api/orders' ,orderRoutes);
 
         //products middleware
         app.use('/api/products', productRouter);
@@ -79,7 +85,7 @@ mongoose.connect(process.env.MONGO_URL)
         });
 
         //payment
-        app.use('/api',paymentRouter)
+        app.use('/api/payment',paymentRouter)
 
 
         //listen at specific port

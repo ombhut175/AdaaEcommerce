@@ -16,10 +16,6 @@ const cartSchema = mongoose.Schema({
             required: true,
             default: 1
         },
-        discount: {
-            type: Number,
-            default: 0
-        },
     }],
     createdAt: {
         type: Date,

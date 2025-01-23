@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema(
     {
-        dealerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Dealer'},
+        dealerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true},
         name: {type: String, required: true},
         title: {type: String, required: true},
         description: {type: String},

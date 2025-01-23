@@ -1,4 +1,4 @@
-const productModel = require('../model/Products');
+const productModel = require('../models/Products');
 const {giveUserFromDb} = require("../services/common.services");
 const {uploadOnCloudinary, uploadOnCloudinaryForProducts} = require("../services/cloudinary");
 const {getUser} = require("../services/auth");
@@ -168,7 +168,7 @@ const filterProduct = async (req, res) => {
         let productsByFilter = await productModel.find(filterData)
         productsByFilter = productsByFilter.filter((product) => product.stock > 0)
 
-        if (productsByFilter.length == 0) {
+        if (productsByFilter.length === 0) {
             return res.json({success: true, msg: "Products not available"})
         }
 

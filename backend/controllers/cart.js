@@ -1,4 +1,4 @@
-const Cart = require("../model/Cart");
+const Cart = require("../models/Cart");
 const {giveUserIdFromCookies} = require("../services/auth");
 const {ObjectId} = require("mongoose").Types;
 
@@ -118,7 +118,7 @@ async function getTotalAmountFromCart(userId) {
             const product = item.productId;
             const price = product.price || 0;
             const quantity = item.quantity || 1;
-            const discount = item.discount || 0;
+            const discount = product.discountPercent || 0;
 
             const itemTotal = quantity * (price - (price * discount / 100));
             totalAmount += itemTotal;

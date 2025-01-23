@@ -7,9 +7,6 @@ const router = express.Router();
 
 //routes
 router.get('/',getAllProducts);
-router.get('/checking',(req,res)=>{
-    return res.json({message : "ok ok"});
-})
 router.get('/:id',getProduct);
 router.delete('/:id',removeProduct);
 router.patch('/:id',updateProduct);
