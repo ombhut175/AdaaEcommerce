@@ -9,9 +9,12 @@ async function handleGetCart(req, res) {
         const userId = giveUserIdFromCookies(req.cookies.userId);
         const cart = await Cart.findOne({userId: new ObjectId(userId)});
         if (!cart) return res.status(404).json({message: "Cart not found"});
+
+        const totalAmount = await getTotalAmountFromCart(userId);
+
         return res.status(200).json({
             products: cart.cartItems,
-            totalAmount: cart.cartTotalAmount
+            totalAmount,
         });
     } catch (error) {
         return res.status(500).json({message: error.message});
@@ -105,9 +108,8 @@ async function handleAddProductToCart(req, res) {
     }
 }
 
-async function getTotalAmountFromCart(req, res) {
+async function getTotalAmountFromCart(userId) {
     try {
-        const userId = giveUserIdFromCookies(req.cookies.token);
         const cart = await Cart.findOne({userId: new ObjectId(userId)})
             .populate('cartItems.productId');
 
@@ -122,10 +124,9 @@ async function getTotalAmountFromCart(req, res) {
             totalAmount += itemTotal;
         });
 
-        return res.status(200).json({ totalAmount });
+        return totalAmount;
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ message: 'An error occurred while calculating the total amount.' });
     }
 }
 
