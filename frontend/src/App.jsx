@@ -103,7 +103,7 @@ function App() {
                 <Route path="/admin/user/:id" element={<UserDetails />} />
               </Routes>
               <Footer />
-            </Suspense>
+            </Suspense> 
 
             <Link to="/cart">
               <motion.button
