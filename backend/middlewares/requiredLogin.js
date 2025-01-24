@@ -8,6 +8,7 @@ async function validateLogin(req, res, next) {
         }
         return next();
     }catch(error) {
+        console.log(error);
         return res.status(400).send("Error in Server");
     }
 }

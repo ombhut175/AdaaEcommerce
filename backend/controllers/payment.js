@@ -4,10 +4,10 @@ const instance = new Razorpay({ key_id: process.env.RAZOR_API_KEY, key_secret: p
 const Payment = require('../models/Payment')
 
 const checkout = async (req,res)=>{
-    options = {
-        amount: req.body.amount,  
-        currency: "INR"
-      };
+  let options = {
+    amount: req.body.amount,
+    currency: "INR"
+  };
       const order = await instance.orders.create(options);
 
       res.status(200).json({

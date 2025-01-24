@@ -99,6 +99,8 @@ function App() {
 
                 <Route path="/delivery" element={<DeliveryList />} />
                 <Route path="/delivery/:id" element={<DeliveryDetails />} />
+
+
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/admin/user/:id" element={<UserDetails />} />
               </Routes>
@@ -150,5 +152,6 @@ const HomePage = memo(() => (
     <Newsletter />
   </>
 ));
+
 
 export default memo(App);

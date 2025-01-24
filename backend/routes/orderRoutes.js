@@ -11,10 +11,12 @@ const {
 //declaration
 const router = express.Router();
 
+
 router.get('/', getOrdersByUserId);
 router.get('/ordersByStatus', getOrdersByStatus);
 router.post('/', createOrder);
 router.post('/addAllProductsOfCart', addAllProductsOfCart);
 router.put('/updateOrder', updateOrder);
+
 
 module.exports = router;
