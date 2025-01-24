@@ -1,3 +1,4 @@
+const { type } = require('express/lib/response');
 const mongoose = require('mongoose');
 
 const ordersSchema = mongoose.Schema({
@@ -5,7 +6,7 @@ const ordersSchema = mongoose.Schema({
     items: [{
         productId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'products',
+            ref: 'Product',
         },
         price: {
             type: Number,
@@ -15,7 +16,7 @@ const ordersSchema = mongoose.Schema({
         },
         addressId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'addresses',
+            ref: 'Address',
         },
         quantity: {
             type: Number,
@@ -42,6 +43,9 @@ const ordersSchema = mongoose.Schema({
         },
         deliveryDate: {
             type: Date,
+        },
+        returnReason:{
+            type:String
         }
     }]
 })
