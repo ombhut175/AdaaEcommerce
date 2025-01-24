@@ -10,7 +10,7 @@ const addProduct = async (req, res) => {
         return res.json({success: false, msg: "Please add product details"})
     }
     try {
-        const {name, title, description, price} = req.body;
+        const {name, title, description, price , color} = req.body;
         const user = getUser(req.cookies.authToken);
 
         const newProduct = new productModel({
@@ -41,7 +41,7 @@ const addProduct = async (req, res) => {
                 const fileIndex = uploadedFiles.indexOf(file) + 1;
 
                 const result = await uploadOnCloudinaryForProducts(file.path, {
-                    folderPath: `${savedProduct.dealerId}/${productId}`,
+                    folderPath: `${savedProduct.dealerId}/${productId}/${color}`,
                     publicId: `${savedProduct.dealerId}/${productId}/file_${fileIndex}`,
                 });
 

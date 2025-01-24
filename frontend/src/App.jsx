@@ -1,7 +1,6 @@
 import { useState, useEffect, lazy, Suspense, memo } from 'react';
 import { motion, AnimatePresence, LazyMotion, domAnimation } from 'framer-motion';
 import { FaShoppingCart, FaArrowUp } from 'react-icons/fa';
-import { useInView } from 'react-intersection-observer';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/design/Navbar.jsx';
 import SignIn from "./components/auth/SignIn.jsx";
@@ -9,6 +8,7 @@ import SignUp from "./components/auth/SignUp.jsx";
 import ForgotPassword from "./components/auth/ForgotPassword.jsx";
 import ResetPassword from "./components/auth/ResetPassword.jsx";
 import ConfirmCode from "./components/auth/ConfirmCode.jsx";
+import Testing from "./components/Testing.jsx";
 
 // Lazy load components
 const Hero = lazy(() => import('./components/design/Hero.jsx'));
@@ -103,6 +103,8 @@ function App() {
 
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/admin/user/:id" element={<UserDetails />} />
+
+                <Route path={'/testing'} element={<Testing />} />
               </Routes>
               <Footer />
             </Suspense>

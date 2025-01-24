@@ -10,7 +10,12 @@ const productSchema = mongoose.Schema(
         price: {type: Number, required: true},
         categoryOfProduct: {type: String},
         size: [String],
-        color: String,
+        colors: [
+            {
+                colorName: {type: String, required: true}, // e.g., "Red", "Blue"
+                images: {type: [String], required: true}, // Array of image URLs specific to this color
+            },
+        ],
         material: String,
         discountPercent: {type: Number},
         productType: {
@@ -18,36 +23,35 @@ const productSchema = mongoose.Schema(
             default: 'new',
         },
         stock: {type: Number, default: 0},
-        reviews: {
-            userId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
+        reviews: [
+            {
+                userId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User',
+                },
+                rating: {
+                    type: Number,
+                    min: 0,
+                    max: 5,
+                },
+                comment: {
+                    type: String,
+                    trim: true,
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now, // Timestamp for each review
+                },
             },
-            rating: {
-                type: Number,
-                min: 0,
-                max: 5,
-            },
-            comment: {
-                type: String,
-                trim: true,
-            },
-            createdAt: {
-                type: Date,
-                default: Date.now, // Timestamp for each review
-            },
-        },
-        images: [String],
+        ],
         features: [String],
         offers: {
             bankOffers: String,
-            partnersOffers: String
+            partnersOffers: String,
         },
         warrantyDetails: String,
         addedAt: Date,
         updatedAt: Date,
-
-
     },
     {timestamps: true}
 );
