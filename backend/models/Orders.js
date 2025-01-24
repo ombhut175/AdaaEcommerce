@@ -7,14 +7,14 @@ const ordersSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'products',
         },
-        price:{
+        price: {
             type: Number,
         },
         discount: {
             type: Number,
         },
-        addressId : {
-            type : mongoose.Schema.Types.ObjectId,
+        addressId: {
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'addresses',
         },
         quantity: {
@@ -22,22 +22,26 @@ const ordersSchema = mongoose.Schema({
             required: true,
             default: 1
         },
-        paymentMethod : {
+        orderType: {
+            type: String,
+            required: true,
+        },
+        paymentMethod: {
             type: "string",
         },
-        paymentStatus : {
+        paymentStatus: {
             type: "string",
         },
         orderStatus: {
             type: "string",
             default: "success",
         },
-        orderDate:{
-            type : Date,
+        orderDate: {
+            type: Date,
             default: Date.now,
         },
-        deliveryDate:{
-            type : Date,
+        deliveryDate: {
+            type: Date,
         }
     }]
 })

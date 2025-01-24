@@ -13,6 +13,10 @@ const productSchema = mongoose.Schema(
         color: String,
         material: String,
         discountPercent: {type: Number},
+        productType: {
+            type: String,
+            default: 'new',
+        },
         stock: {type: Number, default: 0},
         reviews: {
             userId: {
@@ -26,7 +30,7 @@ const productSchema = mongoose.Schema(
             },
             comment: {
                 type: String,
-                trim: true, // Remove unnecessary whitespace
+                trim: true,
             },
             createdAt: {
                 type: Date,

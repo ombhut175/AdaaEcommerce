@@ -90,14 +90,7 @@ mongoose.connect(process.env.MONGO_URL)
 
         //listen at specific port
         app.listen(PORT, (err) => {
-            if (err) {
-                console.log(`Error is occurred in program : ${err}`);
-
-            } else {
-
-                console.log(`Server started at ${PORT}`);
-
-            }
+            console.log(err ? `Error is occurred in program : ${err}` : `Server started at ${PORT}`);
         })
     })
     .catch((err) => {
