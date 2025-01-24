@@ -148,7 +148,7 @@ async function getOrdersByStatus(req, res) {
 
 async function requestReturn(req, res) {
     try {
-        const userId = '6782acdb04fd7d79e0000c3d';
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
         const { productId, reason } = req.body;
 
         const updatedOrder = await Orders.findOneAndUpdate(
@@ -219,7 +219,7 @@ async function requestReturn(req, res) {
 // Request an exchange
 async function requestExchange(req, res) {
     try {
-        const userId = '6782acdb04fd7d79e0000c3d';
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
         const { productId, reason} = req.body;
         exchangeProductId= productId
         const updatedOrder = await Orders.findOneAndUpdate(
