@@ -1,19 +1,57 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { FaUpload } from 'react-icons/fa';
 
 export default function Hero() {
+  const [isAdmin] = useState(false); // For demo purposes
+  const [images, setImages] = useState({
+    left: "https://images.unsplash.com/photo-1520975661595-6453be3f7070?auto=format&fit=crop&q=80",
+    right: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80"
+  });
+  const [hoveredImage, setHoveredImage] = useState(null);
+
+  const handleImageChange = (side, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImages(prev => ({
+          ...prev,
+          [side]: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="pt-16 grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
       <motion.div
         initial={{ opacity: 0, x: -100 }}
         animate={{ opacity: 1, x: 0 }}
-        className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden"
+        className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden"
+        onMouseEnter={() => isAdmin && setHoveredImage('left')}
+        onMouseLeave={() => setHoveredImage(null)}
       >
         <img 
-          src="https://images.unsplash.com/photo-1520975661595-6453be3f7070?auto=format&fit=crop&q=80" 
+          src={images.left}
           alt="Fashion Model" 
           className="w-full h-full object-cover" 
         />
+        {isAdmin && hoveredImage === 'left' && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <label className="cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleImageChange('left', e)}
+              />
+              <FaUpload className="text-white text-3xl" />
+            </label>
+          </div>
+        )}
       </motion.div>
 
       <motion.div
@@ -43,13 +81,28 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0, x: 100 }}
         animate={{ opacity: 1, x: 0 }}
-        className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden"
+        className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden"
+        onMouseEnter={() => isAdmin && setHoveredImage('right')}
+        onMouseLeave={() => setHoveredImage(null)}
       >
         <img 
-          src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80" 
+          src={images.right}
           alt="Fashion Model" 
           className="w-full h-full object-cover" 
         />
+        {isAdmin && hoveredImage === 'right' && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <label className="cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleImageChange('right', e)}
+              />
+              <FaUpload className="text-white text-3xl" />
+            </label>
+          </div>
+        )}
       </motion.div>
     </div>
   );

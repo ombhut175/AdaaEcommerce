@@ -16,60 +16,135 @@
 
 /* Enhanced transitions */
 * {
-  @apply transition-all duration-200;
+  @apply transition-all duration-300 ease-in-out;
 }
 
-/* Text color transitions */
-.text-gray-600,
-.text-gray-700,
-.text-gray-900,
-.text-black,
-.text-white {
-  @apply transition-colors duration-200;
+/* Smooth hover transitions */
+.hover-transition {
+  @apply transition-transform duration-300 ease-out hover:scale-105;
 }
 
-/* Hover effects */
-.hover\:text-primary-500:hover {
-  @apply text-indigo-500 transition-colors duration-200;
+/* Enhanced button animations */
+.button-hover {
+  @apply transform transition-all duration-300 ease-out;
 }
 
-.dark .hover\:text-primary-400:hover {
-  @apply text-indigo-400 transition-colors duration-200;
+.button-hover:hover {
+  @apply scale-105 shadow-lg;
+  filter: brightness(1.1);
 }
 
-/* Input focus animations */
-input:focus,
-textarea:focus,
-select:focus {
-  @apply transform scale-[1.02] transition-transform duration-200;
+.button-hover:active {
+  @apply scale-95;
 }
 
-/* Button hover animations */
-button:not(:disabled),
-a {
-  @apply transition-all duration-200;
-}
-
-button:not(:disabled):hover,
-a:hover {
-  @apply transform scale-105;
-}
-
-button:not(:disabled):active,
-a:active {
-  @apply transform scale-95;
-}
-
-/* Card hover effects */
+/* Card animations */
 .card-hover {
-  @apply transition-all duration-300;
+  @apply transition-all duration-300 ease-out;
 }
 
 .card-hover:hover {
   @apply transform -translate-y-2 shadow-xl;
+  filter: brightness(1.02);
 }
 
-/* Dark mode specific styles */
+/* Input field animations */
+.input-focus {
+  @apply transition-all duration-200 ease-out;
+}
+
+.input-focus:focus {
+  @apply transform scale-[1.02] shadow-md;
+  filter: brightness(1.02);
+}
+
+/* Image hover effects */
+.image-hover {
+  @apply transition-transform duration-500 ease-out;
+}
+
+.image-hover:hover {
+  @apply scale-110;
+}
+
+/* Text hover animations */
+.text-hover {
+  @apply transition-colors duration-200 ease-out;
+}
+
+.text-hover:hover {
+  @apply text-indigo-600 dark:text-indigo-400;
+}
+
+/* Loading animations */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.loading-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.2) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Page transitions */
+.page-enter {
+  @apply opacity-0 translate-y-4;
+}
+
+.page-enter-active {
+  @apply opacity-100 translate-y-0 transition-all duration-500 ease-out;
+}
+
+.page-exit {
+  @apply opacity-100;
+}
+
+.page-exit-active {
+  @apply opacity-0 transition-all duration-300 ease-in;
+}
+
+/* Scroll animations */
+.scroll-reveal {
+  @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+}
+
+.scroll-reveal.visible {
+  @apply opacity-100 translate-y-0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500 dark:bg-gray-500;
+}
+
+/* Focus outline - Remove default and add custom focus styles */
+:focus {
+  @apply outline-none;
+}
+
+button:focus, a:focus {
+  @apply outline-none ring-0;
+}
+
+/* Dark mode text colors */
 .dark .timer-text {
   @apply text-gray-200;
 }
@@ -82,14 +157,7 @@ a:active {
   @apply text-gray-200;
 }
 
-/* Performance optimizations */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-
-/* Custom animations */
+/* Floating animation */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -99,16 +167,70 @@ a:active {
   animation: float 3s ease-in-out infinite;
 }
 
+/* Pulse animation */
 @keyframes pulse-soft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
 }
 
 .animate-pulse-soft {
   animation: pulse-soft 2s ease-in-out infinite;
 }
 
+/* Success animation */
+@keyframes success-checkmark {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.success-animation {
+  animation: success-checkmark 0.5s ease-out forwards;
+}
+
+/* Error shake animation */
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.error-animation {
+  animation: error-shake 0.5s ease-in-out;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+  @apply antialiased;
+}
+
+/* Performance optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  backface-visibility: hidden;
+}
+
+/* Responsive hover effects */
+@media (hover: hover) {
+  .hover-scale:hover {
+    @apply scale-105;
+  }
+  
+  .hover-bright:hover {
+    filter: brightness(1.1);
+  }
+  
+  .hover-lift:hover {
+    @apply -translate-y-1 shadow-lg;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  .touch-feedback:active {
+    @apply bg-opacity-80;
+  }
 }

@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { FaUpload } from 'react-icons/fa';
 
 export default function DealsSection() {
+  const [isAdmin] = useState(true); // For demo purposes
   const [timeLeft, setTimeLeft] = useState({
     days: 2,
     hours: 5,
     minutes: 5,
     seconds: 30
   });
+  const [images, setImages] = useState([
+    'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80'
+  ]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -31,6 +39,19 @@ export default function DealsSection() {
 
     return () => clearInterval(timer);
   }, []);
+
+  const handleImageChange = (index, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newImages = [...images];
+        newImages[index] = reader.result;
+        setImages(newImages);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="py-16 px-4">
@@ -73,21 +94,32 @@ export default function DealsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80',
-            'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80'
-          ].map((image, index) => (
+          {images.map((image, index) => (
             <motion.div
               key={index}
               whileHover={{ y: -10, scale: 1.02 }}
-              className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+              className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+              onMouseEnter={() => isAdmin && setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
             >
               <img
                 src={image}
                 alt={`Product ${index + 1}`}
                 className="w-full h-80 object-cover transform hover:scale-105 transition-transform duration-500"
               />
+              {isAdmin && hoveredIndex === index && (
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageChange(index, e)}
+                    />
+                    <FaUpload className="text-white text-3xl" />
+                  </label>
+                </div>
+              )}
               <div className="p-6">
                 <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                   0{index + 1} — Spring Sale

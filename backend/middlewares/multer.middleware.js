@@ -41,19 +41,21 @@ const storage = multer.diskStorage({
 });
 
 const storageForProducts = multer.diskStorage({
-    destination: async (req, file, cb) => {
+    destination: (req, file, cb) => {
         try {
             const userId = giveUserIdFromCookies(req.cookies.authToken);
-
-            // Validate userId
             if (!userId) {
                 return cb(new Error("Invalid user ID"), false);
             }
 
-            const dir = path.join(tempDir, userId);
+            const colorName = file.fieldname;
+            if (!colorName) {
+                return cb(new Error("Color name is missing in fieldname"), false);
+            }
 
-            // Asynchronously create the directory
-            await fs.promises.mkdir(dir, { recursive: true });
+            const dir = path.join(tempDir, userId, colorName);
+            fs.mkdirSync(dir, { recursive: true });
+
             cb(null, dir);
         } catch (error) {
             console.error("Error in destination callback:", error);
@@ -62,10 +64,9 @@ const storageForProducts = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         try {
-
-            // Generate the file name
-            const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-            const filename = `${uniqueSuffix}${path.extname(file.originalname)}`;
+            const colorName = file.fieldname;
+            const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+            const filename = `${colorName}-${uniqueSuffix}${path.extname(file.originalname)}`;
             cb(null, filename);
         } catch (error) {
             console.error("Error in filename callback:", error);
@@ -75,8 +76,24 @@ const storageForProducts = multer.diskStorage({
 });
 
 
+const uploadForProducts = multer({
+    storage: storageForProducts,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error("Only image files are allowed"), false);
+        }
+    },
+});
+
+
+
+
 const upload = multer({storage: storage});
-const uploadForProducts = multer({storage: storageForProducts});
+
 
 module.exports = upload;
 module.exports = uploadForProducts;

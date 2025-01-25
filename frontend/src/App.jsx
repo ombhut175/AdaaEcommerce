@@ -1,63 +1,54 @@
 import { useState, useEffect, lazy, Suspense, memo } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import { motion, AnimatePresence, LazyMotion, domAnimation } from 'framer-motion';
 import { FaShoppingCart, FaArrowUp } from 'react-icons/fa';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectDarkMode } from './store/features/themeSlice';
+
+// Components
 import Navbar from './components/design/Navbar.jsx';
+import Hero from './components/design/Hero.jsx';
+import Brands from './components/design/Brands.jsx';
+import DealsSection from './components/design/DealsSection.jsx';
+import NewArrivals from './components/design/NewArrivals.jsx';
+import InstagramFeed from './components/design/InstagramFeed.jsx';
+import Testimonials from './components/design/Testimonials.jsx';
+import Newsletter from './components/design/Newsletter.jsx';
+import Footer from './components/design/Footer.jsx';
+import Cart from './components/customer/Cart.jsx';
+import Shop from './components/design/Shop.jsx';
+import ProductDetail from './components/customer/ProductDetail.jsx';
+import Checkout from './components/customer/Checkout.jsx';
+import UserProfile from './components/customer/UserProfile.jsx';
+import EditProfile from './components/customer/EditProfile.jsx';
+import Deals from './components/pages/Deals';
+import NewArrivalsPage from './components/pages/NewArrivalsPage';
+import Wishlist from './components/customer/Wishlist.jsx';
+import SearchResults from './components/design/SearchResults.jsx';
 import SignIn from "./components/auth/SignIn.jsx";
 import SignUp from "./components/auth/SignUp.jsx";
 import ForgotPassword from "./components/auth/ForgotPassword.jsx";
 import ResetPassword from "./components/auth/ResetPassword.jsx";
 import ConfirmCode from "./components/auth/ConfirmCode.jsx";
-import Testing from "./components/Testing.jsx";
-
-// Lazy load components
-const Hero = lazy(() => import('./components/design/Hero.jsx'));
-const Brands = lazy(() => import('./components/design/Brands.jsx'));
-const DealsSection = lazy(() => import('./components/design/DealsSection.jsx'));
-const NewArrivals = lazy(() => import('./components/design/NewArrivals.jsx'));
-const InstagramFeed = lazy(() => import('./components/design/InstagramFeed.jsx'));
-const Testimonials = lazy(() => import('./components/design/Testimonials.jsx'));
-const Newsletter = lazy(() => import('./components/design/Newsletter.jsx'));
-const Footer = lazy(() => import('./components/design/Footer.jsx'));
-// const Cart = lazy(() => import('./components/user/Cart.jsx'));
-const Shop = lazy(() => import('./components/design/Shop.jsx'));
-const ProductDetail = lazy(() => import('./components/user/ProductDetail.jsx'));
-const Checkout = lazy(() => import('./components/user/Checkout.jsx'));
-const DealerProducts = lazy(() => import('./components/dealer/DealerProducts.jsx'));
-const DealerProductDetail = lazy(() => import('./components/dealer/DealerProductDetail.jsx'));
-const DealerProductForm = lazy(() => import('./components/dealer/DealerProductForm.jsx'));
-const AdminPanel = lazy(() => import('./components/admin/AdminPanel.jsx'));
-const DeliveryList = lazy(()=> import("./components/deliveryBoy/DeliveryList.jsx"));
-const DeliveryDetails = lazy(()=>import("./components/deliveryBoy/DeliveryDetails.jsx"));
-const UserDetails = lazy(()=>import("./components/user/UserDetails.jsx"));
+import DealerProducts from "./components/dealer/DealerProducts.jsx";
+import DealerProductDetail from "./components/dealer/DealerProductDetail.jsx";
+import DealerProductForm from "./components/dealer/DealerProductForm.jsx";
+import DeliveryList from "./components/deliveryBoy/DeliveryList.jsx";
+import DeliveryDetails from "./components/deliveryBoy/DeliveryDetails.jsx";
+import AdminPanel from "./components/admin/AdminPanel.jsx";
+import UserDetails from "./components/admin/UserDetails.jsx";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    return savedMode ? JSON.parse(savedMode) : false;
-  });
+  const darkMode = useSelector(selectDarkMode);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('darkMode', JSON.stringify(darkMode));
-  }, [darkMode]);
-
-  useEffect(() => {
-    let timeoutId;
     const handleScroll = () => {
-      if (!timeoutId) {
-        timeoutId = setTimeout(() => {
-          setShowScrollTop(window.scrollY > 300);
-          timeoutId = null;
-        }, 100);
-      }
+      setShowScrollTop(window.scrollY > 300);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (timeoutId) clearTimeout(timeoutId);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToTop = () => {
@@ -65,81 +56,92 @@ function App() {
   };
 
   return (
-    <Router>
-      <LazyMotion features={domAnimation}>
-        <div className={darkMode ? 'dark' : ''}>
-          <div className="min-h-screen bg-white dark:bg-gray-900">
-            <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-            
-            <Suspense fallback={
+    <LazyMotion features={domAnimation}>
+      <div className={darkMode ? 'dark' : ''}>
+        <div className="min-h-screen bg-white dark:bg-gray-900">
+          <Navbar />
+
+          <Suspense
+            fallback={
               <div className="flex items-center justify-center min-h-screen">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black dark:border-white"></div>
               </div>
-            }>
-              <Routes>
-                {/*userLogin Routes*/}
-                <Route path="/signIn" element={<SignIn />} />
-                <Route path="/signUp" element={<SignUp />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/confirm-code" element={<ConfirmCode />} />
+            }
+          >
+            <Routes>
 
-                <Route path="/" element={<HomePage />} />
-                {/* <Route path="/cart" element={<Cart />} /> */}
-                <Route path="/shop" element={<Shop />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/cart" element={<Checkout />} />
-                
-                {/* Dealer Routes */}
-                <Route path="/dealer/products" element={<DealerProducts />} />
-                <Route path="/dealer/products/:id" element={<DealerProductDetail />} />
-                <Route path="/dealer/products/new" element={<DealerProductForm />} />
-                <Route path="/dealer/products/:id/edit" element={<DealerProductForm />} />
+              {/*userLogin Routes*/}
+              <Route path="/signIn" element={<SignIn />} />
+              <Route path="/signUp" element={<SignUp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/confirm-code" element={<ConfirmCode />} />
+
+              {/* Main Routes */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+
+              {/* User Profile Routes */}
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/profile/edit" element={<EditProfile />} />
+
+              {/* Additional Pages */}
+              <Route path="/deals" element={<Deals />} />
+              <Route path="/new-arrivals" element={<NewArrivalsPage />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/search" element={<SearchResults />} />
+
+              {/* Dealer Routes */}
+              <Route path="/dealer/products" element={<DealerProducts />} />
+              <Route path="/dealer/products/:id" element={<DealerProductDetail />} />
+              <Route path="/dealer/products/new" element={<DealerProductForm />} />
+              <Route path="/dealer/products/:id/edit" element={<DealerProductForm />} />
 
 
-                <Route path="/delivery" element={<DeliveryList />} />
-                <Route path="/delivery/:id" element={<DeliveryDetails />} />
+              <Route path="/delivery" element={<DeliveryList />} />
+              <Route path="/delivery/:id" element={<DeliveryDetails />} />
 
 
-                <Route path="/admin" element={<AdminPanel />} />
-                <Route path="/admin/user/:id" element={<UserDetails />} />
+              <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/admin/user/:id/edit" element={<UserDetails />} />
+            </Routes>
+            <Footer />
+          </Suspense>
 
-                <Route path={'/testing'} element={<Testing />} />
-              </Routes>
-              <Footer />
-            </Suspense>
+          {/* Cart and Scroll-to-Top Buttons */}
+          <Link to="/cart">
+            <motion.button
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+              className="fixed bottom-8 right-8 p-4 bg-black dark:bg-white text-white dark:text-black rounded-full shadow-lg z-50 hover:bg-gray-900 dark:hover:bg-gray-100"
+            >
+              <FaShoppingCart size={24} />
+            </motion.button>
+          </Link>
 
-            <Link to="/cart">
+          <AnimatePresence>
+            {showScrollTop && (
               <motion.button
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="fixed bottom-8 right-8 p-4 bg-black dark:bg-white text-white dark:text-black rounded-full shadow-lg z-50 hover:bg-gray-900 dark:hover:bg-gray-100"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                onClick={scrollToTop}
+                className="fixed bottom-24 right-8 p-4 bg-gray-800 dark:bg-gray-200 text-white dark:text-black rounded-full shadow-lg z-50 hover:bg-gray-700 dark:hover:bg-gray-300"
               >
-                <FaShoppingCart size={24} />
+                <FaArrowUp size={24} />
               </motion.button>
-            </Link>
-
-            <AnimatePresence>
-              {showScrollTop && (
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  onClick={scrollToTop}
-                  className="fixed bottom-24 right-8 p-4 bg-gray-800 dark:bg-gray-200 text-white dark:text-black rounded-full shadow-lg z-50 hover:bg-gray-700 dark:hover:bg-gray-300"
-                >
-                  <FaArrowUp size={24} />
-                </motion.button>
-              )}
-            </AnimatePresence>
-          </div>
+            )}
+          </AnimatePresence>
         </div>
-      </LazyMotion>
-    </Router>
+      </div>
+    </LazyMotion>
   );
 }
 
@@ -154,6 +156,5 @@ const HomePage = memo(() => (
     <Newsletter />
   </>
 ));
-
 
 export default memo(App);

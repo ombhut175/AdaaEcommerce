@@ -7,29 +7,42 @@ const fs = require("node:fs");
 // Add a new product along with photos
 const addProduct = async (req, res) => {
     if (!req.body) {
-        return res.json({success: false, msg: "Please add product details"})
+        return res.json({ success: false, msg: "Please add product details" });
     }
     try {
-        const {name, title, description, price , color} = req.body;
+        const { name, title, description, price, colors } = req.body;
+
+        // Parse the colors array from JSON
+        const parsedColors = JSON.parse(colors);
+
+        // Initialize colors array with empty images
+        const colorsArray = parsedColors.map((color) => ({
+            colorName: color.colorName,
+            images: [], // Images will be added after upload
+        }));
+
+        // Get user information from the cookies
         const user = getUser(req.cookies.authToken);
 
+        // Create a new product document
         const newProduct = new productModel({
             name,
             title,
             description,
             price,
             dealerId: user.id,
+            colors: colorsArray,
         });
+
+        // Save the product to get the product ID
         const savedProduct = await newProduct.save();
         const productId = savedProduct._id;
 
-
-        // Step 2: Upload files to local storage and Cloudinary
+        // Process uploaded files
         const uploadedFiles = req.files;
         if (uploadedFiles && uploadedFiles.length > 0) {
+            // Map files to their respective colors
             const cloudinaryResponses = [];
-
-            // Step 3: Upload files to Cloudinary
             for (const file of uploadedFiles) {
                 const filePath = file.path;
 
@@ -38,41 +51,62 @@ const addProduct = async (req, res) => {
                     continue; // Skip to the next file
                 }
 
-                const fileIndex = uploadedFiles.indexOf(file) + 1;
+                // Extract the colorName from the file field (frontend sends this as the fieldname)
+                const colorName = file.fieldname; // Example: "Red"
 
+                // Find the corresponding color object in colorsArray
+                const colorObject = colorsArray.find((c) => c.colorName === colorName);
+
+                if (!colorObject) {
+                    console.error(`Color ${colorName} not found in colors array.`);
+                    continue; // Skip if the color is not defined
+                }
+
+                // Upload file to Cloudinary
                 const result = await uploadOnCloudinaryForProducts(file.path, {
-                    folderPath: `${savedProduct.dealerId}/${productId}/${color}`,
-                    publicId: `${savedProduct.dealerId}/${productId}/file_${fileIndex}`,
+                    folderPath: `${savedProduct.dealerId}/${productId}/${colorName}`,
+                    publicId: `${savedProduct.dealerId}/${productId}/${colorName}/${Date.now()}`,
                 });
 
                 if (result) {
                     cloudinaryResponses.push({
                         originalName: file.originalname,
                         cloudinaryUrl: result.url,
+                        colorName: colorName,
                     });
+
+                    // Add the Cloudinary URL to the appropriate color's images array
+                    colorObject.images.push(result.url);
                 }
             }
 
+            // Update the product in the database with uploaded image URLs
+            await productModel.updateOne({ _id: productId }, { colors: colorsArray });
 
-            savedProduct.images.push(...cloudinaryResponses.map(resp => resp.cloudinaryUrl));
-
-            await savedProduct.save();
-
-            // Step 5: Send success response
+            // Send success response
             return res.status(200).json({
                 message: "Product created and files uploaded to Cloudinary!",
                 product: savedProduct,
                 uploadedFiles: cloudinaryResponses,
             });
         } else {
-            return res.status(200).json({success: true, message: "new product added successfully"});
+            // Handle case where no images are uploaded
+            return res.status(200).json({
+                success: true,
+                message: "New product added successfully without images",
+            });
         }
-
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({success: false, message: 'Failed to add product', error: err.message});
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to add product",
+            error: err.message,
+        });
     }
 };
+
+
 
 // Get all products
 const getAllProducts = async (req, res) => {

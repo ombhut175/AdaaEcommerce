@@ -10,7 +10,7 @@ router.get('/',getAllProducts);
 router.get('/:id',getProduct);
 router.delete('/:id',removeProduct);
 router.patch('/:id',updateProduct);
-router.post('/add',uploadForProducts.array('files',10),addProduct);
+router.post('/add',uploadForProducts.array(),addProduct);
 router.post('/filter',filterProduct);
 
 
