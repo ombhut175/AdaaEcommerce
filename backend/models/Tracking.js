@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const trackingSchema = new mongoose.Schema({
     productId:{
         type:String,
-        ref:'products',
+        ref:'Product',
         required:true
     },
     deliveryPersonId :{
         type:String,
-        ref:'users',
+        ref:'User',
         required:true
     },
     trackingStatus:{
@@ -21,7 +21,7 @@ const trackingSchema = new mongoose.Schema({
     },
     destinationAddress:{
         type:String,
-        ref:'addresses',
+        ref:'Address',
         required:true
     },
     estimatedDelivery:{
