@@ -17,6 +17,8 @@ const productRouter = require('./routes/products')
 const {validateLogin} = require("./middlewares/requiredLogin");
 const {checkForDealerAuthentication} = require("./middlewares/dealer");
 const paymentRouter =require('./routes/payment')
+const trackingRoutes = require('./routes/tracking')
+const deliveryRouter = require("./routes/delivery")
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -64,7 +66,7 @@ mongoose.connect(process.env.MONGO_URL)
 
         //verification middlewares
 
-        app.use('/api',validateLogin);
+        // app.use('/api',validateLogin);
 
         //cart middlewares
         app.use('/api/cart', cartRoutes);
@@ -87,6 +89,13 @@ mongoose.connect(process.env.MONGO_URL)
         //payment
         app.use('/api/payment',paymentRouter)
 
+        //trackingProducts
+
+        app.use('/api',trackingRoutes)
+
+        //delivery 
+
+        app.use('/api',deliveryRouter)
 
         //listen at specific port
         app.listen(PORT, (err) => {

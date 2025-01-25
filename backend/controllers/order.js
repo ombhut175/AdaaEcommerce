@@ -1,22 +1,20 @@
+// Import necessary modules
 require('dotenv').config();
 const Orders = require('../models/Orders');
 const Cart = require('../models/Cart');
-const {giveUserIdFromCookies} = require("../services/auth");
-
+const { giveUserIdFromCookies } = require("../services/auth");
+const UserBehavior = require("../models/UserBehavior")
 
 // Create a new order
 async function createOrder(req, res) {
     try {
-        // Extract userId from cookies
         const userId = giveUserIdFromCookies(req.cookies.authToken);
         if (!userId) {
             return res.status(401).json({ error: "Unauthorized: Invalid auth token." });
         }
 
-        // Extract order details from request body
         const { productId, addressId, quantity, paymentMethod, paymentStatus } = req.body;
 
-        // Create a new order instance
         const newOrder = new Orders({
             userId,
             items: [
@@ -30,35 +28,26 @@ async function createOrder(req, res) {
             ],
         });
 
-        // Save the order to the database
         const savedOrder = await newOrder.save();
-
-        // Respond with the saved order
         res.status(201).json(savedOrder);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
 
-
-//add whole cart
+// Add all products from cart to an order
 async function addAllProductsOfCart(req, res) {
     try {
-        // Extract userId from the auth token in cookies
         const userId = giveUserIdFromCookies(req.cookies.authToken);
         if (!userId) {
             return res.status(401).json({ error: "Unauthorized: Invalid auth token." });
         }
 
-        // Find the user's cart and populate product details
-        const cart = await Cart.findOne({ userId })
-            .populate('cartItems.productId'); // Populate product details for better insights
-
+        const cart = await Cart.findOne({ userId }).populate('cartItems.productId');
         if (!cart || cart.cartItems.length === 0) {
             return res.status(400).json({ error: "Cart is empty." });
         }
 
-        // Map cart items to order items
         const orderItems = cart.cartItems.map(item => ({
             productId: item.productId._id,
             price: item.productId.price,
@@ -66,32 +55,25 @@ async function addAllProductsOfCart(req, res) {
             quantity: item.quantity,
         }));
 
-        // Create a new order with the cart items
         const newOrder = new Orders({
             userId,
             items: orderItems,
-            paymentMethod: req.body.paymentMethod || "COD", // Default to COD if not provided
-            paymentStatus: req.body.paymentStatus || "pending", // Default to pending if not provided
+            paymentMethod: req.body.paymentMethod || "COD",
+            paymentStatus: req.body.paymentStatus || "pending",
         });
 
-        // Save the order to the database
         const savedOrder = await newOrder.save();
-
-        // Clear the user's cart after saving the order
         await Cart.findOneAndUpdate(
             { userId },
             { cartItems: [] },
-            { new: true } // Return the updated document (cart should be empty now)
+            { new: true }
         );
 
-        // Respond with the saved order
         res.status(201).json({ message: "Order placed successfully.", order: savedOrder });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
-
-
 
 // Get all orders
 async function getAllOrders(req, res) {
@@ -99,18 +81,18 @@ async function getAllOrders(req, res) {
         const orders = await Orders.find().populate('items.productId items.addressId');
         res.status(200).json(orders);
     } catch (error) {
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 }
 
 // Get orders by user ID
-async function  getOrdersByUserId(req, res) {
+async function getOrdersByUserId(req, res) {
     try {
         const userId = req.params.userId;
-        const orders = await Orders.findOne({userId}).populate('items.productId items.addressId');
+        const orders = await Orders.findOne({ userId }).populate('items.productId items.addressId');
         res.status(200).json(orders);
     } catch (error) {
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 }
 
@@ -120,24 +102,14 @@ async function updateOrder(req, res) {
         const userId = giveUserIdFromCookies(req.cookies.authToken);
         const { productId, ...updates } = req.body;
 
-        // Create an update object that only includes defined values
         const updateFields = {};
-
-        // Only add fields to update if they are not undefined
         if (updates.quantity !== undefined) {
             updateFields['items.$.quantity'] = updates.quantity;
         }
-
         if (updates.paymentStatus !== undefined) {
             updateFields['items.$.paymentStatus'] = updates.paymentStatus;
         }
 
-        // Add more fields as needed, checking for undefined
-        // if (updates.someOtherField !== undefined) {
-        //     updateFields['items.$.someOtherField'] = updates.someOtherField;
-        // }
-
-        // Only perform update if there are fields to update
         if (Object.keys(updateFields).length === 0) {
             return res.status(400).json({ error: 'No update fields provided' });
         }
@@ -148,9 +120,7 @@ async function updateOrder(req, res) {
                 'items.productId': productId
             },
             { $set: updateFields },
-            {
-                new: true
-            }
+            { new: true }
         ).populate('items.productId items.addressId');
 
         if (!updatedOrder) {
@@ -163,16 +133,135 @@ async function updateOrder(req, res) {
     }
 }
 
-
-
 // Filter orders by status
 async function getOrdersByStatus(req, res) {
     try {
         const status = req.params.status;
-        const orders = await Orders.find({"items.orderStatus": status}).populate('items.productId items.addressId');
+        const orders = await Orders.find({ "items.orderStatus": status }).populate('items.productId items.addressId');
         res.status(200).json(orders);
     } catch (error) {
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
+    }
+}
+
+//Request an return 
+
+async function requestReturn(req, res) {
+    try {
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
+        const { productId, reason } = req.body;
+
+        const updatedOrder = await Orders.findOneAndUpdate(
+            {
+                userId,
+                'items.productId': productId,
+            },
+            {
+                $set: {
+                    'items.$.orderStatus': 'return_requested',
+                    'items.$.returnReason': reason,
+                },
+            },
+            { new: true }
+        ).populate('items.productId items.addressId');
+
+        if (!updatedOrder) {
+            return res.status(404).json({ error: 'Order or Product not found' });
+        }
+
+        // Find the specific order item
+        console.log(updatedOrder.items[0]);
+
+        const orderItem = updatedOrder.items.find(
+            (item) => item.productId._id.toString() == productId
+        );
+        console.log(orderItem);
+
+        if (!orderItem) {
+            return res.status(404).json({ error: 'Order item not found' });
+        }
+
+        const isCOD = orderItem.paymentMethod === 'COD';
+
+        // Find or create user behavior
+        let userBehavior = await UserBehavior.findOne({ userId });
+        if (!userBehavior) {
+            userBehavior = new UserBehavior({ userId });
+        }
+
+        // Update user behavior based on payment method
+        if (isCOD) {
+            userBehavior.cod_returns_count += 1;
+        } else {
+            userBehavior.successful_prepaid_count += 1;
+        }
+
+        // Restrict COD if returns exceed successful prepaid orders
+        if (userBehavior.cod_returns_count > userBehavior.successful_prepaid_count) {
+            userBehavior.cod_restricted = true;
+            userBehavior.restriction_reason =
+                'COD returns exceed successful prepaid orders.';
+        }
+
+        userBehavior.last_updated = new Date();
+        await userBehavior.save();
+
+        res.status(200).json({
+            message: 'Return request submitted.',
+            order: updatedOrder,
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+
+// Request an exchange
+async function requestExchange(req, res) {
+    try {
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
+        const { productId, reason} = req.body;
+        exchangeProductId= productId
+        const updatedOrder = await Orders.findOneAndUpdate(
+            {
+                userId,
+                'items.productId': productId
+            },
+            {
+                $set: {
+                    'items.$.orderStatus': 'exchange_requested',
+                    'items.$.exchangeReason': reason,
+                    'items.$.exchangeProductId': exchangeProductId
+                }
+            },
+            { new: true }
+        ).populate('items.productId items.addressId');
+
+        if (!updatedOrder) {
+            return res.status(404).json({ error: 'Order or Product not found' });
+        }
+
+        const orderItem = updatedOrder.items.find(item => item.productId._id.toString() === productId);
+        const isCOD = orderItem.paymentMethod === 'COD';
+
+        const userBehavior = await UserBehavior.findOne({ userId });
+        if (isCOD) {
+            userBehavior.cod_returns_count += 1;
+        } else {
+            userBehavior.successful_prepaid_count += 1;
+        }
+
+        if (userBehavior.cod_returns_count > userBehavior.successful_prepaid_count) {
+            userBehavior.cod_restricted = true;
+            userBehavior.restriction_reason = 'COD returns exceed successful prepaid orders.';
+        }
+
+        userBehavior.last_updated = new Date();
+        await userBehavior.save();
+
+        res.status(200).json({ message: 'Exchange request submitted.', order: updatedOrder });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 }
 
@@ -182,5 +271,8 @@ module.exports = {
     getOrdersByStatus,
     updateOrder,
     getOrdersByUserId,
-    addAllProductsOfCart
-}
+    addAllProductsOfCart,
+    requestReturn,
+    requestExchange
+};
+

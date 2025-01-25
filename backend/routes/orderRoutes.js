@@ -5,7 +5,9 @@ const {
     getOrdersByUserId,
     createOrder,
     addAllProductsOfCart,
-    updateOrder
+    updateOrder,
+    requestExchange,
+    requestReturn
 } = require("../controllers/order");
 
 //declaration
@@ -17,6 +19,8 @@ router.get('/ordersByStatus', getOrdersByStatus);
 router.post('/', createOrder);
 router.post('/addAllProductsOfCart', addAllProductsOfCart);
 router.put('/updateOrder', updateOrder);
+router.post('/return', requestReturn);
+router.post('/exchange', requestExchange);
 
 
 module.exports = router;
