@@ -1,5 +1,5 @@
 const trackingModel = require("../models/Tracking")
-const productModel = require("../models/Products")
+const productModel = require("../models/Product")
 const userModel = require("../models/User")
 const addressModel = require('../models/Address')
 const trackingProducts = async(req,res)=>{

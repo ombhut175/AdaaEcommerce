@@ -50,8 +50,6 @@ const productSchema = mongoose.Schema(
             partnersOffers: String,
         },
         warrantyDetails: String,
-        addedAt: Date,
-        updatedAt: Date,
     },
     {timestamps: true}
 );

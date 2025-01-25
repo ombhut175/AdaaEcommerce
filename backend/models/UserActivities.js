@@ -4,33 +4,29 @@ const mongoose = require("mongoose");
 const userActivitySchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId, // Unique user ID (use MongoDB's ObjectId)
+        ref: 'User',
         required: true
     },
     searchedProducts: [
         {
-            productId: {type: mongoose.Schema.Types.ObjectId, ref: "products", required: true}, // Reference to the product
+            productId: {type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true}, // Reference to the product
             searchTimestamp: {type: Date, default: Date.now} // Timestamp of search
         }
     ],
     viewedProducts: [
         {
-            productId: {type: mongoose.Schema.Types.ObjectId, ref: "products", required: true}, // Reference to the product
+            productId: {type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true}, // Reference to the product
             viewTimestamp: {type: Date, default: Date.now} // Timestamp of view
         }
     ],
-    purchasedProducts: [
-        {
-            productId: {type: mongoose.Schema.Types.ObjectId, ref: "products", required: true}, // Reference to the product
-            purchaseTimestamp: {type: Date, default: Date.now}, // Timestamp of purchase
-            quantity: {type: Number, default: 1, min: 1} // Quantity purchased
-        }
-    ],
-    wishlist: [
-        {
-            productId: {type: mongoose.Schema.Types.ObjectId, ref: "products", required: true}, // Reference to the product
-            addedTimestamp: {type: Date, default: Date.now} // Timestamp of addition
-        }
-    ],
+    purchasedProducts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'PurchasedProduct',
+    }],
+    wishlist: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Wishlist',
+    },
     cartId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "carts",
@@ -38,6 +34,6 @@ const userActivitySchema = new mongoose.Schema({
 }, {timestamps: true});
 
 // Create and export the UserActivity model
-const UserActivity = mongoose.model("UserActivity", userActivitySchema);
+const UserActivity = mongoose.model("UserActivities", userActivitySchema);
 
 module.exports = UserActivity;

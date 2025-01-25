@@ -1,7 +1,8 @@
-const productModel = require('../models/Products');
+const Product = require('../models/Product');
+const UserActivities = require('../models/UserActivities');
 const {giveUserFromDb} = require("../services/common.services");
 const {uploadOnCloudinary, uploadOnCloudinaryForProducts} = require("../services/cloudinary");
-const {getUser} = require("../services/auth");
+const {getUser, giveUserIdFromCookies} = require("../services/auth");
 const fs = require("node:fs");
 
 // Add a new product along with photos
@@ -25,7 +26,7 @@ const addProduct = async (req, res) => {
         const user = getUser(req.cookies.authToken);
 
         // Create a new product document
-        const newProduct = new productModel({
+        const newProduct = new Product({
             name,
             title,
             description,
@@ -81,7 +82,7 @@ const addProduct = async (req, res) => {
             }
 
             // Update the product in the database with uploaded image URLs
-            await productModel.updateOne({ _id: productId }, { colors: colorsArray });
+            await Product.updateOne({ _id: productId }, { colors: colorsArray });
 
             // Send success response
             return res.status(200).json({
@@ -111,7 +112,7 @@ const addProduct = async (req, res) => {
 // Get all products
 const getAllProducts = async (req, res) => {
     try {
-        const products = await productModel.find();
+        const products = await Product.find();
         res.status(200).json({success: true, products: products});
     } catch (error) {
         res.status(500).json({success: false, message: 'Failed to fetch products', error: error.message});
@@ -121,7 +122,7 @@ const getAllProducts = async (req, res) => {
 // Get a single product by ID
 const getProduct = async (req, res) => {
     try {
-        const product = await productModel.findById(req.params.id);
+        const product = await Product.findById(req.params.id);
         if (!product) {
             return res.status(404).json({success: false, message: 'Product not found'});
         }
@@ -134,7 +135,7 @@ const getProduct = async (req, res) => {
 // Update a product by ID
 const updateProduct = async (req, res) => {
     try {
-        const product = await productModel.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        const product = await Product.findByIdAndUpdate(req.params.id, req.body, {new: true});
         if (!product) {
             return res.status(404).json({success: false, message: 'Product not found'});
         }
@@ -147,7 +148,7 @@ const updateProduct = async (req, res) => {
 // Remove a product by ID
 const removeProduct = async (req, res) => {
     try {
-        const product = await productModel.findByIdAndDelete(req.params.id);
+        const product = await Product.findByIdAndDelete(req.params.id);
         if (!product) {
             return res.status(404).json({success: false, message: 'Product not found'});
         }
@@ -157,7 +158,7 @@ const removeProduct = async (req, res) => {
     }
 };
 
-//filteration of products based on selection
+//filtration of products based on selection
 
 const filterProduct = async (req, res) => {
     const {categoryOfProduct, priceRange, discountRange, size, color, material} = req.body;
@@ -199,51 +200,80 @@ const filterProduct = async (req, res) => {
             filterData = {...filterData, material: {$in: material}}
         }
 
-        let productsByFilter = await productModel.find(filterData)
+        let productsByFilter = await Product.find(filterData)
         productsByFilter = productsByFilter.filter((product) => product.stock > 0)
 
         if (productsByFilter.length === 0) {
-            return res.json({success: true, msg: "Products not available"})
+            return res.json({success: true, msg: "Product not available"})
         }
 
-        return res.json({success: true, msg: "Products available", productsByFilter})
+        return res.json({success: true, msg: "Product available", productsByFilter})
 
     } catch (err) {
-        console.log(":::  filterd error  ::: ", err);
+        console.log(":::  filtered error  ::: ", err);
     }
 
 }
 
-async function handleUploadPicturesOfProduct(req, res) {
+
+async function searchProducts(req, res) {
     try {
-        const user = await giveUserFromDb(req.cookies.userId);
-        if (!user) {
-            return res.status(400).json({message: 'No user found'});
+        const searchText = req.params.searchText;
+        const searchRegex = new RegExp(searchText, 'i');  // 'i' for case-insensitive search
+
+        // Fetch products based on the search text
+
+        const products = await Product.find({
+            $or: [
+                { name: { $regex: searchRegex } },
+                { title: { $regex: searchRegex } },
+                { description: { $regex: searchRegex } },
+            ],
+        });
+
+        if (products.length === 0) {
+            return res.status(404).json({ message: "No products found." });
         }
 
-        const uploadedFiles = req.files;
+        // Check if the user is authenticated and extract userId
+        const token = req.cookies.authToken;
+        if (token) {
+            const userId = giveUserIdFromCookies(token);  // Assuming you have a method to extract user ID from the token
 
-        // Access additional form data
-        const {name, title, description, price} = req.body;
+            if (userId) {
+                let userActivities = await UserActivities.findOne({ userId });
 
-        const cloudinaryResponses = [];
-        // const user = await giveUserFromDb(req.cookies.userId);
-        //
-        // for (const file of uploadedFiles) {
-        //   const response = await uploadOnCloudinaryForProducts(file.path,{
-        //     dealerId
-        //   });
-        // }
+                const searchedProductData = products.map(product => ({
+                    productId: product._id,
+                    searchTimestamp: new Date(),
+                }));
 
+                if (!userActivities) {
+                    // If no activity document exists, create a new one
+                    userActivities = new UserActivities({
+                        userId,
+                        searchedProducts: searchedProductData,
+                    });
+                    await userActivities.save();
+                } else {
+                    // If activities document exists, update it
+                    await UserActivities.findOneAndUpdate(
+                        { userId },
+                        { $push: { searchedProducts: { $each: searchedProductData } } }, // Push multiple products
+                        { upsert: true, new: true }
+                    );
+                }
+            }
+        }
 
+        // Send the products as the response
+        return res.status(200).json(products);
     } catch (error) {
-        console.error('Error uploading file:', error);
-        res.status(500).json({error: 'An error occurred while uploading the file'});
+        console.error(error);
+        return res.status(500).json({ message: "Server error." });
     }
 }
 
-async function handleNewProduct(req, res) {
-}
 
 
 module.exports = {
@@ -252,5 +282,6 @@ module.exports = {
     removeProduct,
     updateProduct,
     addProduct,
-    filterProduct
+    filterProduct,
+    searchProducts,
 }
