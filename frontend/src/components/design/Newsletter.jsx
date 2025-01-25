@@ -4,7 +4,7 @@ import { FaUpload } from 'react-icons/fa';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
-  const [isAdmin] = useState(true); // I've set this to true for testing
+  const [isAdmin] = useState(true); // I've set this to true for testingScripts
   
   const handleSubmit = (e) => {
     e.preventDefault();

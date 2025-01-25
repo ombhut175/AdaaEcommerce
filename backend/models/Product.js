@@ -38,6 +38,7 @@ const productSchema = mongoose.Schema(
                     type: String,
                     trim: true,
                 },
+                sales: { type: Number, default: 0 },
                 createdAt: {
                     type: Date,
                     default: Date.now, // Timestamp for each review
