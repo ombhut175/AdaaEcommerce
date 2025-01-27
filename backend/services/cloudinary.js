@@ -34,29 +34,46 @@ const uploadOnCloudinary = async (localFilePath, publicId) => {
 };
 
 
-const uploadOnCloudinaryForProducts = async (localFilePath, dealerAndProductDetails) => {
+const uploadOnCloudinaryForProducts = async (localFilePath, dealerAndProductDetails = {}) => {
     try {
-        if (!localFilePath) return null;
+        if (!localFilePath) {
+            console.error('No local file path provided');
+            return null;
+        }
+
+        // Ensure we have required parameters with fallback values
+        const folderPath = dealerAndProductDetails.folderPath || 'temp_uploads';
+        const publicId = dealerAndProductDetails.publicId || `file_${Date.now()}`;
+
+        // Sanitize parameters
+        const sanitizedFolder = folderPath.replace(/#/g, '').replace(/[^a-zA-Z0-9/_\-]/g, '');
+        const sanitizedPublicId = publicId.replace(/#/g, '').replace(/[^a-zA-Z0-9_\-]/g, '');
 
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto",
-            public_id: dealerAndProductDetails.publicId,
+            public_id: sanitizedPublicId,
             overwrite: true,
-            folder: dealerAndProductDetails.folderPath,
+            folder: sanitizedFolder,
         });
 
-        // Delete file only after successful upload
-        if (response && fs.existsSync(localFilePath)) {
-            fs.unlinkSync(localFilePath);
-        }
+        // Clean up local file
+        // if (response && fs.existsSync(localFilePath)) {
+        //     fs.unlinkSync(localFilePath);
+        // }
 
         return response;
     } catch (error) {
-        console.error('Error uploading to Cloudinary:', error);
-        return null; // Do not delete the file on failure
+        console.error('Cloudinary upload error:', {
+            message: error.message,
+            details: {
+                file: localFilePath,
+                folderPath: dealerAndProductDetails?.folderPath,
+                publicId: dealerAndProductDetails?.publicId
+            }
+        });
+        return null;
     }
 };
-
 
 
 module.exports = {

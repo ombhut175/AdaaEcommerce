@@ -6,103 +6,105 @@ const {getUser, giveUserIdFromCookies} = require("../services/auth");
 const fs = require("node:fs");
 
 // Add a new product along with photos
+// Update addProduct controller
 const addProduct = async (req, res) => {
-    if (!req.body) {
-        return res.json({ success: false, msg: "Please add product details" });
-    }
     try {
-        const { name, title, description, price, colors } = req.body;
-
-        // Parse the colors array from JSON
-        const parsedColors = JSON.parse(colors);
-
-        // Initialize colors array with empty images
-        const colorsArray = parsedColors.map((color) => ({
-            colorName: color.colorName,
-            images: [], // Images will be added after upload
-        }));
-
-        // Get user information from the cookies
-        const user = getUser(req.cookies.authToken);
-
-        // Create a new product document
-        const newProduct = new Product({
+        const {
             name,
             title,
             description,
             price,
-            dealerId: user.id,
-            colors: colorsArray,
-        });
+            discount,
+            stock,
+            colorNames,
+            colorValues
+        } = req.body;
 
-        // Save the product to get the product ID
-        const savedProduct = await newProduct.save();
-        const productId = savedProduct._id;
+        // Validate color data
+        const parsedColorNames = JSON.parse(colorNames);
+        const parsedColorValues = JSON.parse(colorValues);
 
-        // Process uploaded files
-        const uploadedFiles = req.files;
-        if (uploadedFiles && uploadedFiles.length > 0) {
-            // Map files to their respective colors
-            const cloudinaryResponses = [];
-            for (const file of uploadedFiles) {
-                const filePath = file.path;
-
-                if (!fs.existsSync(filePath)) {
-                    console.error(`File not found: ${filePath}`);
-                    continue; // Skip to the next file
-                }
-
-                // Extract the colorName from the file field (frontend sends this as the fieldname)
-                const colorName = file.fieldname; // Example: "Red"
-
-                // Find the corresponding color object in colorsArray
-                const colorObject = colorsArray.find((c) => c.colorName === colorName);
-
-                if (!colorObject) {
-                    console.error(`Color ${colorName} not found in colors array.`);
-                    continue; // Skip if the color is not defined
-                }
-
-                // Upload file to Cloudinary
-                const result = await uploadOnCloudinaryForProducts(file.path, {
-                    folderPath: `${savedProduct.dealerId}/${productId}/${colorName}`,
-                    publicId: `${savedProduct.dealerId}/${productId}/${colorName}/${Date.now()}`,
-                });
-
-                if (result) {
-                    cloudinaryResponses.push({
-                        originalName: file.originalname,
-                        cloudinaryUrl: result.url,
-                        colorName: colorName,
-                    });
-
-                    // Add the Cloudinary URL to the appropriate color's images array
-                    colorObject.images.push(result.url);
-                }
-            }
-
-            // Update the product in the database with uploaded image URLs
-            await Product.updateOne({ _id: productId }, { colors: colorsArray });
-
-            // Send success response
-            return res.status(200).json({
-                message: "Product created and files uploaded to Cloudinary!",
-                product: savedProduct,
-                uploadedFiles: cloudinaryResponses,
-            });
-        } else {
-            // Handle case where no images are uploaded
-            return res.status(200).json({
-                success: true,
-                message: "New product added successfully without images",
+        if (!Array.isArray(parsedColorNames) ||
+            !Array.isArray(parsedColorValues) ||
+            parsedColorNames.length !== parsedColorValues.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid color data format"
             });
         }
+
+        const user = getUser(req.cookies.authToken);
+
+        // Create initial product structure
+        const newProduct = new Product({
+            name,
+            title,
+            description,
+            price: Number(price),
+            discountPercent: Number(discount),
+            stock: Number(stock),
+            dealerId: user.id,
+            colors: parsedColorNames.map((name, index) => ({
+                colorName: name,
+                colorValue: parsedColorValues[index],
+                images: []
+            }))
+        });
+
+        const savedProduct = await newProduct.save();
+
+        // Process files if any
+        if (req.files?.length > 0) {
+            // Group files by color name
+            const filesByColor = req.files.reduce((acc, file) => {
+                const colorName = file.fieldname;
+                acc[colorName] = acc[colorName] || [];
+                acc[colorName].push(file);
+                return acc;
+            }, {});
+
+            // Update each color with its images
+            for (const color of savedProduct.colors) {
+                const files = filesByColor[color.colorName] || [];
+                const uploadPromises = files.map(async (file) => {
+                    try {
+                        const cleanColorName = color.colorName.replace(/[^a-zA-Z]/g, "");
+                        const publicId = `${user.id}-${savedProduct._id}-${cleanColorName}-${Date.now()}`;
+
+                        const result = await uploadOnCloudinaryForProducts(file.path, {
+                            folderPath: `${user.id}/${savedProduct._id}/${cleanColorName}`,
+                            publicId: publicId
+                        });
+
+                        await fs.promises.unlink(file.path);
+                        return result?.secure_url;
+                    } catch (uploadError) {
+                        console.error("Upload failed for file:", file.originalname, uploadError);
+                        return null;
+                    }
+                });
+
+                const imageUrls = (await Promise.all(uploadPromises)).filter(url => url);
+                color.images = imageUrls;
+            }
+
+            await savedProduct.save();
+        }
+
+        res.status(201).json({
+            success: true,
+            product: savedProduct
+        });
+
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({
+        // Cleanup files
+        if (req.files) {
+            req.files.forEach(file => fs.unlinkSync(file.path));
+        }
+        res.status(500).json({
             success: false,
-            message: "Failed to add product",
-            error: err.message,
+            message: "Product creation failed",
+            error: err.message
         });
     }
 };

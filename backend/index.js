@@ -34,7 +34,7 @@ mongoose.connect(process.env.MONGO_URL)
         const app = express();
         //middlewares
         app.use(cors({
-            origin: process.env.CLIENT_URL, // Allow this specific origin
+            origin: process.env.CLIENT_URL_FOR_CORS, // Allow this specific origin
             methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
             credentials: true // If you're using cookies or authentication
         }));

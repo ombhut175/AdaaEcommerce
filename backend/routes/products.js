@@ -11,8 +11,16 @@ router.get('/:id',getProduct);
 router.get('/search/:searchText',searchProducts);
 router.delete('/:id',removeProduct);
 router.patch('/:id',updateProduct);
-router.post('/add',uploadForProducts.array(),addProduct);
+// Accept multiple files for any field
+router.post('/add', uploadForProducts.any(), addProduct);
 router.post('/filter',filterProduct);
 
+//testing
 
+// router.post('/add',(req,res)=>{
+//     console.log("entered");
+//     return res.status(201).send({
+//         message:"Product added successfully",
+//     });
+// });
 module.exports = router
