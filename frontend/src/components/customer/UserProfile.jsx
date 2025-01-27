@@ -1,15 +1,12 @@
 import { motion } from 'framer-motion';
 import { FaCamera, FaEnvelope, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import {useSelector} from "react-redux";
 
 export default function UserProfile() {
   const navigate = useNavigate();
   // Mock user data - replace with actual user data from your auth system
-  const user = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80'
-  };
+  const user = useSelector((state) => state.user);
 
   return (
     <motion.div
@@ -36,7 +33,7 @@ export default function UserProfile() {
                 className="relative w-32 h-32 mx-auto"
               >
                 <img
-                  src={user.avatar}
+                  src={user.profilePicture}
                   alt="Profile"
                   className="w-full h-full rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-lg"
                 />

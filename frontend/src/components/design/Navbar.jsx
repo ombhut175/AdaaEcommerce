@@ -1,9 +1,11 @@
-    import { motion, AnimatePresence } from 'framer-motion';
-    import { useState, useRef, useEffect } from 'react';
-    import { FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaSearch, FaHeart, FaBars, FaTimes } from 'react-icons/fa';
-    import { Link, useLocation, useNavigate } from 'react-router-dom';
-    import { useSelector, useDispatch } from 'react-redux';
-    import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js";
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaSearch, FaHeart, FaBars, FaTimes } from 'react-icons/fa';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js";
+import {fetchUser} from "../../store/features/userSlice.js";
+import axios from "axios";
 
     const searchSuggestions = [
       {
@@ -31,36 +33,38 @@
       }
     ];
 
-    export default function Navbar() {
-      const location = useLocation();
-      const navigate = useNavigate();
-      const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-      const [isSearchOpen, setIsSearchOpen] = useState(false);
-      const [searchQuery, setSearchQuery] = useState('');
-      const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
-      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-      const [showSuggestions, setShowSuggestions] = useState(false);
-      const searchInputRef = useRef(null);
-      const searchContainerRef = useRef(null);
-      const dispatch = useDispatch();
-      const darkMode = useSelector(selectDarkMode);
-      const [isAdmin] = useState(false);
+export default function Navbar() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchInputRef = useRef(null);
+  const searchContainerRef = useRef(null);
+  const dispatch = useDispatch();
+  const darkMode = useSelector(selectDarkMode);
+  const [isAdmin] = useState(false);
+  const user = useSelector(state => state.user);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-      const user = {
-        name: 'John Doe',
-        email: 'john@example.com',
-        avatar: localStorage.getItem('profilePicture')
-      };
 
       const isLoggedIn = true;
 
-      useEffect(() => {
-        const handleClickOutside = (event) => {
-          if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
-            setShowSuggestions(false);
-            setIsSearchOpen(false);
-          }
-        };
+  useEffect(() => {
+
+    dispatch(fetchUser());
+
+    console.log(user);
+
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+        setIsSearchOpen(false);
+      }
+    };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -258,38 +262,38 @@
                     {darkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
                   </motion.button>
 
-                  {isLoggedIn ? (
-                      <div className="relative">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="flex items-center space-x-2 focus:outline-none"
-                        >
-                          <motion.img
-                              src={user.avatar}
-                              alt="Profile"
-                              className="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400"
-                              whileHover={{ scale: 1.1 }}
-                          />
-                        </motion.button>
+              {isLoggedIn ? (
+                  <div className="relative">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="flex items-center space-x-2 focus:outline-none"
+                    >
+                      <motion.img
+                          src={user.profilePicture}
+                          alt="Profile"
+                          className="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400"
+                          whileHover={{ scale: 1.1 }}
+                      />
+                    </motion.button>
 
-                        <AnimatePresence>
-                          {isDropdownOpen && (
-                              <motion.div
-                                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                  className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border border-gray-200 dark:border-gray-700"
-                              >
-                                <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                                  <p className="text-sm font-bold text-gray-900 dark:text-white">
-                                    {user.name}
-                                  </p>
-                                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                                    {user.email}
-                                  </p>
-                                </div>
+                    <AnimatePresence>
+                      {isDropdownOpen && (
+                          <motion.div
+                              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                              className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border border-gray-200 dark:border-gray-700"
+                          >
+                            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                              <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                {user.name}
+                              </p>
+                              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">
+                                {user.email}
+                              </p>
+                            </div>
 
                                 <Link to="/profile">
                                   <motion.div
