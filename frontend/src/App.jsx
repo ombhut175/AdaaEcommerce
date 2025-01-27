@@ -37,10 +37,51 @@ import DeliveryList from "./components/deliveryBoy/DeliveryList.jsx";
 import DeliveryDetails from "./components/deliveryBoy/DeliveryDetails.jsx";
 import AdminPanel from "./components/admin/AdminPanel.jsx";
 import UserDetails from "./components/admin/UserDetails.jsx";
+import ProtectedRoute from './ProtectedRoute.jsx';
+import Unauthorized from './Unauthorized.jsx';
 
 function App() {
   const darkMode = useSelector(selectDarkMode);
   const [showScrollTop, setShowScrollTop] = useState(false);
+   const [isDealer, setIsDealer] = useState(null);
+   const [isDelivery, setIsDelivery] = useState(null);
+   const [isAdmin, setIsAdmin] = useState(null);
+  
+    useEffect(() => {
+      const roles = localStorage.getItem('role');
+      if (roles) {
+        const roleArray = roles.split(',');
+        const dealerRole = roleArray.some(role => role.toLowerCase() === 'dealer');
+        setIsDealer(dealerRole); 
+      } else {
+        setIsDealer(false); 
+      }
+    }, []);
+    useEffect(() => {
+      const roles = localStorage.getItem('role');
+      console.log(roles);  
+      if (roles) {
+        const roleArray = roles.split(',');
+        console.log(roleArray);  
+        const deliveryRole = roleArray.some(role => role.toLowerCase() === 'delivery');
+        setIsDelivery(deliveryRole);
+      } else {
+        setIsDelivery(false); 
+      }
+    }, []);
+    useEffect(() => {
+      const roles = localStorage.getItem('role');
+      console.log(roles);  
+      if (roles) {
+        const roleArray = roles.split(',');
+        console.log(roleArray);  
+        const adminRole = roleArray.some(role => role.toLowerCase() === 'admin');
+        setIsAdmin(adminRole);
+      } else {
+        setIsAdmin(false); 
+      }
+    }, []);
+    
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,18 +136,61 @@ function App() {
               <Route path="/search" element={<SearchResults />} />
 
               {/* Dealer Routes */}
-              <Route path="/dealer/products" element={<DealerProducts />} />
-              <Route path="/dealer/products/:id" element={<DealerProductDetail />} />
-              <Route path="/dealer/products/new" element={<DealerProductForm />} />
-              <Route path="/dealer/products/:id/edit" element={<DealerProductForm />} />
+              <Route >
+                <Route path='/unauthorized' element={<Unauthorized/>}></Route>
+                <Route
+                  path="/dealer/products"
+                  element={
+                    <ProtectedRoute role={isDealer}>
+                      <DealerProducts />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dealer/products/:id"
+                  element={
+                    <ProtectedRoute role={isDealer}>
+                      <DealerProductDetail />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dealer/products/new"
+                  element={
+                    <ProtectedRoute role={isDealer}>
+                      <DealerProductForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dealer/products/:id/edit"
+                  element={
+                    <ProtectedRoute role={isDealer}>
+                      <DealerProductForm />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+
+              <Route>
+                <Route path="/delivery" element={
+                  <ProtectedRoute role={isDelivery}>
+                      <DeliveryList />
+                    </ProtectedRoute>} 
+                    />
+                <Route path="/delivery/:id" element={
+                  <ProtectedRoute role={isDelivery}>
+                      <DeliveryDetails />
+                    </ProtectedRoute>} />
+              </Route>
 
 
-              <Route path="/delivery" element={<DeliveryList />} />
-              <Route path="/delivery/:id" element={<DeliveryDetails />} />
-
-
-              <Route path="/admin" element={<AdminPanel />} />
-              <Route path="/admin/user/:id/edit" element={<UserDetails />} />
+              <Route path="/admin" element={<ProtectedRoute role={isAdmin}>
+                      <AdminPanel />
+                    </ProtectedRoute>} />
+              <Route path="/admin/user/:id/edit" element={<ProtectedRoute role={isAdmin}>
+                      <UserDetails />
+                    </ProtectedRoute>} />
             </Routes>
             <Footer />
           </Suspense>

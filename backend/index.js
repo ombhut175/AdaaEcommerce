@@ -33,11 +33,17 @@ mongoose.connect(process.env.MONGO_URL)
         console.log(`Mongodb is connected`);
         const app = express();
         //middlewares
+        // app.use(cors({
+        //     origin: '*', // Allow this specific origin
+        //     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
+        //     credentials: true // If you're using cookies or authentication
+        // }));
         app.use(cors({
-            origin: process.env.CLIENT_URL_FOR_CORS, // Allow this specific origin
-            methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-            credentials: true // If you're using cookies or authentication
+            origin: 'http://localhost:5173', // Specify your frontend's origin
+            methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
+            credentials: true, // Allow credentials (cookies, authentication headers, etc.)
         }));
+        // app.use(cors())
 
         app.use(cookieParser());
 

@@ -102,19 +102,26 @@ const sendOtpForgotPassword = async (req, res) => {
     //generate otp & expiration
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
-
+    
     try {
 
         //userModel exists or not
         const User = await userModel.findOne({email});
-        User.otp = otp,
-            User.otpExpiresAt = otpExpiresAt
-
-        //save otp to database
-        await User.save();
+        
+        if(!User){
+            return res.json({success:false,msg:"User doesn't exists"});
+        }
 
         //send otp
         await sendOtpViaEmail(email, otp)
+
+
+        User.otp = otp,
+            User.otpExpiresAt = otpExpiresAt
+        
+        //save otp to database
+        await User.save();
+
 
         res.status(200).json({success: true, msg: "Otp send successful !"})
 
@@ -139,11 +146,11 @@ const verifyOtpForgotPassword = async (req, res) => {
 
         //check is invalid or expiration
         if (User.otp !== otp) {
-            res.json({success: false, msg: "Otp is invalid"})
+            return res.json({success: false, msg: "Otp is invalid"})
         }
 
         if (User.otpExpiresAt < Date.now()) {
-            res.json({success: false, msg: "Otp is Expires"})
+            return res.json({success: false, msg: "Otp is Expires"})
         }
 
         //sign a jwt token
@@ -154,7 +161,7 @@ const verifyOtpForgotPassword = async (req, res) => {
             sameSite: true ? 'None' : 'Lax', // Adjust SameSite attribute for cross-origin requests
             path: '/', // Ensure the cookie is accessible for all routes
         });
-        res.status(200).json({success:true,message: 'User verified successfully', token});
+        return res.status(200).json({success:true,message: 'User verified successfully', token});
 
     } catch (err) {
 

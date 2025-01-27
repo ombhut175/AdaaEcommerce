@@ -4,7 +4,7 @@ const uploadForProducts = require('../middlewares/multer.middleware');
 
 //declaration
 const router = express.Router();
-
+ 
 //routes
 router.get('/',getAllProducts);
 router.get('/:id',getProduct);

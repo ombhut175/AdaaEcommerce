@@ -36,8 +36,7 @@ const handleSubmit = (e) => {
                 
             } else {
                 console.log(data);
-                
-                setErrors('Please try again.');
+                toast(data.msg);
             }
         })
         .catch((err) => {

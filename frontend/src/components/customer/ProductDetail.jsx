@@ -1,20 +1,54 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link,useParams } from 'react-router-dom';
 import { FaHeart, FaShare } from 'react-icons/fa';
-
+import axios from 'axios'
 export default function ProductDetail() {
+    
+  const {id} = useParams()
+
+  const [productsData,setProductsData] = useState([]);
+  const [product,setProduct] = useState({});
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Blue');
   const [quantity, setQuantity] = useState(1);
+  const [colors,setColors] = useState([]);  
+  const [colorsName,setColorsName] = useState([]);  
+  const [images , setImages] = useState([]);
+  const [index,setIndex] = useState(0);
+  useEffect(()=>{
+    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/')
+    .then((res)=>{
+      setProductsData(res.data.products);
+      console.log(productsData);
 
-  const sizes = ['M', 'L', 'XL', 'XXL'];
-  const colors = ['Blue', 'Black', 'Pink'];
-  const images = [
-    'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&q=80'
-  ];
+      
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  },[])
+  useEffect(() => {
+    if (productsData.length > 0) {
+      const foundProduct = productsData.find((product) => product._id === id);
+  
+      if (foundProduct) {
+        setProduct(foundProduct);  
+        setColors(foundProduct.colors);
+  
+        const colorNames = foundProduct.colors.map(c => c.colorName);
+        setColorsName(colorNames);
+        setSelectedColor(colorNames[index]);        
+        const imagesArray = foundProduct.colors.map(c => c.images);
+        setImages(imagesArray);
+        console.log(images);
+        
+      }
+    }
+  }, [productsData, id,index]);
+  
+  const sizes = product && product.size ;
+  
 
   return (
     <motion.div
@@ -40,21 +74,21 @@ export default function ProductDetail() {
               className="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800"
             >
               <img
-                src={images[0]}
+                src={images[index]?.[0]}
                 alt="Product"
                 className="w-full h-full object-cover"
               />
             </motion.div>
             <div className="grid grid-cols-3 gap-4">
-              {images.map((image, index) => (
+              {images[index]?.map((image, i) => (
                 <motion.div
-                  key={index}
+                  key={i}
                   whileHover={{ scale: 1.05 }}
                   className="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 cursor-pointer"
                 >
                   <img
                     src={image}
-                    alt={`Product view ${index + 1}`}
+                    alt={`Product view ${i + 1}`}
                     className="w-full h-full object-cover"
                   />
                 </motion.div>
@@ -70,7 +104,7 @@ export default function ProductDetail() {
             >
               <div className="mb-4">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  Denim Jacket
+                  {product.title}
                 </h1>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center">
@@ -107,7 +141,7 @@ export default function ProductDetail() {
                   Size: {selectedSize}
                 </h3>
                 <div className="flex gap-2">
-                  {sizes.map((size) => (
+                  {sizes && sizes.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
@@ -129,16 +163,19 @@ export default function ProductDetail() {
                   Color: {selectedColor}
                 </h3>
                 <div className="flex gap-2">
-                  {colors.map((color) => (
+                  {colorsName.map((color) => (
                     <button
                       key={color}
-                      onClick={() => setSelectedColor(color)}
+                      onClick={() => {
+                        setSelectedColor(color)
+                        setIndex(colorsName.findIndex((c)=>c==color))
+                      }}
                       className={`w-8 h-8 rounded-full border-2 ${
                         selectedColor === color
                           ? 'border-black dark:border-white'
                           : 'border-transparent'
                       }`}
-                      style={{ backgroundColor: color.toLowerCase() }}
+                      style={{ backgroundColor: color }}
                     />
                   ))}
                 </div>

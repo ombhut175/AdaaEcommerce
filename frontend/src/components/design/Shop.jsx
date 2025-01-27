@@ -1,19 +1,24 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
-const products = [
-  { id: 1, name: 'Shiny Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80', colors: ['red', 'blue', 'black'] },
-  { id: 2, name: 'Long Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&q=80', colors: ['pink', 'white', 'black'] },
-  { id: 3, name: 'Full Sweater', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&q=80', colors: ['blue', 'gray', 'black'] },
-  { id: 4, name: 'White Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1518622358385-8ea7d0794bf6?auto=format&fit=crop&q=80', colors: ['white', 'cream'] },
-  { id: 5, name: 'Colorful Dress', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&q=80', colors: ['red', 'blue', 'green'] },
-  { id: 6, name: 'White Shirt', price: 95.50, rating: 4.5, reviews: 4, image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80', colors: ['white', 'black'] },
-];
+import axios from 'axios'
 
 export default function Shop() {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState('grid');
+  const [productsData,setProductsData] =useState([]);
+  useEffect(()=>{
+    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/')
+    .then((res)=>{
+      setProductsData(res.data.products);
+      console.log(res.data);
+      
+    })
+    .catch((err)=>{
+      console.log(err);
+      
+    })
+  },[])
 
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
@@ -36,21 +41,21 @@ export default function Shop() {
         </div>
 
         <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-6`}>
-          {products.map((product) => (
+          {productsData &&  productsData.map((product) => (
             <motion.div
-              key={product.id}
+              key={product._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ y: -10 }}
               className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg group cursor-pointer relative"
             >
               <div 
-                onClick={() => handleProductClick(product.id)}
+                onClick={() => handleProductClick(product._id)}
                 className="relative overflow-hidden"
               >
                 <img
-                  src={product.image}
-                  alt={product.name}
+                  src={product.colors[0].images[0]}
+                  alt={product.title}
                   className="w-full h-80 object-cover transform group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />

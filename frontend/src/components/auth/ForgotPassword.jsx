@@ -24,11 +24,16 @@ function ForgotPassword() {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
+            
+                    'Content-Type': 'application/json'
+          
           },
           body: JSON.stringify({ email, otp }),
       })
           .then((res) => res.json())
           .then((data) => {
+            console.log(data);
+            
               if (data.success) {
                   localStorage.setItem('authToken',data.token)
                   toast(data.msg);
@@ -36,8 +41,6 @@ function ForgotPassword() {
                   
               } else {
                   toast(data.msg)
-                  
-                  setErrors('Please try again.');
               }
           })
           .catch((err) => {
