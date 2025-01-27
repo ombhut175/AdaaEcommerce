@@ -4,6 +4,8 @@ import { FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaSearch, FaHeart, 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js";
+import {fetchUser} from "../../store/features/userSlice.js";
+import axios from "axios";
 
 const searchSuggestions = [
   {
@@ -45,16 +47,18 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const darkMode = useSelector(selectDarkMode);
   const [isAdmin] = useState(false);
+  const user = useSelector(state => state.user);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  const user = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80'
-  };
 
   const isLoggedIn = true;
 
   useEffect(() => {
+
+    dispatch(fetchUser());
+
+    console.log(user);
+
     const handleClickOutside = (event) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
         setShowSuggestions(false);
@@ -267,7 +271,7 @@ export default function Navbar() {
                         className="flex items-center space-x-2 focus:outline-none"
                     >
                       <motion.img
-                          src={user.avatar}
+                          src={user.profilePicture}
                           alt="Profile"
                           className="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400"
                           whileHover={{ scale: 1.1 }}
@@ -283,10 +287,10 @@ export default function Navbar() {
                               className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border border-gray-200 dark:border-gray-700"
                           >
                             <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                              <p className="text-sm font-bold text-gray-900 dark:text-white">
+                              <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
                                 {user.name}
                               </p>
-                              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">
                                 {user.email}
                               </p>
                             </div>

@@ -9,7 +9,7 @@ cloudinary.config({
     api_secret: process.env.API_SECRET
 });
 
-const uploadOnCloudinary = async (localFilePath, publicId) => {
+const uploadOnCloudinary = async (localFilePath, publicId, folderName) => {
     try {
         if (!localFilePath) return null;
 
@@ -17,6 +17,7 @@ const uploadOnCloudinary = async (localFilePath, publicId) => {
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto",
             public_id: publicId, // Ensures same public_id is used to overwrite
+            folder: folderName,
             overwrite: true // Ensures existing file with same public_id is replaced
         });
 

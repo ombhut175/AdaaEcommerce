@@ -40,7 +40,9 @@ const storage = multer.diskStorage({
     }
 });
 
-// Remove complex directory logic - let Cloudinary handle organization
+const upload = multer({storage: storage});
+
+
 const storageForProducts = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, tempDir); // Temporary directory for all files
@@ -68,7 +70,6 @@ const uploadForProducts = multer({
 
 
 
-const upload = multer({storage: storage});
 
 
 module.exports = upload;
