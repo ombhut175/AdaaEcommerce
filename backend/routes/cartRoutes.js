@@ -1,4 +1,3 @@
-const Cart = require('../models/Cart');
 const {handleGetCart, handleDeleteProductFromCart, handleUpdateProductQuantity, handleAddProductToCart} = require("../controllers/cart");
 
 const cartRoutes = require('express').Router();
