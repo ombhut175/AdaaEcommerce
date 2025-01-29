@@ -13,7 +13,13 @@ const staticImagesSchema = mongoose.Schema({
     },
     brands: {
         type: [String],
-        index: true
+        index: true,
+        default: [
+            "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&q=80",
+            "https://static.vecteezy.com/system/resources/thumbnails/020/336/375/small/nike-logo-nike-icon-free-free-vector.jpg",
+            "https://images.samsung.com/is/image/samsung/assets/us/about-us/brand/logo/mo/360_197_1.png?$720_N_PNG$",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH38JNKuQMieJz8HiQSjv_Meqh06BO-wSomA&s"
+        ],
     },
     deals: {
         type: [String],

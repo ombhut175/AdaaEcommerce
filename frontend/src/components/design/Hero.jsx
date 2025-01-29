@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import {editUser} from "../../store/features/userSlice.js";
 import {fetchStaticImages} from "../../store/features/staticImagesSlice.js";
+import {submitImage} from "../utils/changeStaticImages.js";
 
 export default function Hero() {
     const [isAdmin, setIsAdmin] = useState(false); // For demo purposes
@@ -45,36 +46,41 @@ export default function Hero() {
             };
             reader.readAsDataURL(file);
             // Pass the file directly to submitImage
-            submitImage(side, file); // <-- Change here
+            submitImage("heroSection",side,file)
+                .then(response => {
+                    if (response === 200) {
+                        dispatch(fetchStaticImages());
+                    }
+                })
         }
     };
 
 // Update submitImage to accept the file parameter
-    const submitImage = async (side, file) => { // <-- Add file parameter
-        try {
-            const formPayload = new FormData();
-            formPayload.append("image", file); // <-- Use the file directly
-            formPayload.append("section", "heroSection");
-            formPayload.append("part", side);
-
-            const response = await axios.put(
-                `${BACKEND_URL}/api/admin/uploadImages`,
-                formPayload,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                    withCredentials: true
-                }
-            );
-
-            if (response.status === 200) {
-                dispatch(fetchStaticImages());
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
+//     const submitImage = async (side, file) => { // <-- Add file parameter
+//         try {
+//             const formPayload = new FormData();
+//             formPayload.append("image", file); // <-- Use the file directly
+//             formPayload.append("section", "heroSection");
+//             formPayload.append("part", side);
+//
+//             const response = await axios.put(
+//                 `${BACKEND_URL}/api/admin/uploadImages`,
+//                 formPayload,
+//                 {
+//                     headers: {
+//                         'Content-Type': 'multipart/form-data',
+//                     },
+//                     withCredentials: true
+//                 }
+//             );
+//
+//             if (response.status === 200) {
+//                 dispatch(fetchStaticImages());
+//             }
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     };
 
     return (
         <div className="pt-16 grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
