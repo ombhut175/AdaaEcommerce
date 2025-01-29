@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { FaUpload } from 'react-icons/fa';
+import {useDispatch, useSelector} from "react-redux";
 
 export default function Brands() {
-  const [isAdmin] = useState(true); // For demo purposes
+  const [isAdmin,setIsAdmin] = useState(false); // For demo purposes
   const [brands, setBrands] = useState([
     { name: 'CHANEL', logo: 'https://upload.wikimedia.org/wikipedia/commons/6/69/Chanel_logo.svg' },
     { name: 'LOUIS VUITTON', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/76/Louis_Vuitton_logo.svg' },
@@ -12,6 +13,15 @@ export default function Brands() {
     { name: 'DENIM', logo: 'https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&q=80' },
   ]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(user);
+    if (user && user.role.includes('admin')) {
+      setIsAdmin(true);
+    }
+  },[]);
 
   const handleLogoChange = (index, e) => {
     const file = e.target.files[0];

@@ -14,10 +14,8 @@ async function changeImages(req, res) {
         const localFilePath = req.file.path; // Path to the uploaded file in ./public/temp
         const {section} = req.body;
 
-        const response = await uploadOnCloudinary(localFilePath, `staticPictures/${user._id}/section`,);
+        const response = await uploadOnCloudinary(localFilePath, `staticPictures/${user._id}/section`,`staticPictures/${user._id}/section`);
         if (response) {
-            user.profilePicture = response.url;
-            await user.save();
             res.status(200).json({
                 message: 'File uploaded successfully to Cloudinary',
                 url: response.url

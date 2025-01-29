@@ -58,8 +58,10 @@ export default function Navbar() {
         dispatch(fetchUser())
             .then((result) => {
                 if (result.meta.requestStatus === 'fulfilled') {
-                    console.log(user);
                     setIsLoggedIn(true);
+                    console.log("user verified");
+                    console.log(user);
+                    console.log(user.role.includes('admin'));
                     if(user.role.includes('admin')) {
                         setIsAdmin(true);
                     }
@@ -337,6 +339,7 @@ export default function Navbar() {
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+                                    onClick={e=>navigate('/signIn')}
                                 >
                                     Sign In
                                 </motion.button>
@@ -344,6 +347,7 @@ export default function Navbar() {
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md"
+                                    onClick={e=>navigate('/signUp')}
                                 >
                                     Sign Up
                                 </motion.button>
