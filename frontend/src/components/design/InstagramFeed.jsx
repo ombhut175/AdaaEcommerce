@@ -23,7 +23,7 @@ export default function InstagramFeed() {
     if (user && user.role.includes('admin')) {
       setIsAdmin(true);
     }
-  },[]);
+  },[user]);
 
   const handleImageChange = (index, e) => {
     const file = e.target.files[0];

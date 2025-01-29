@@ -108,20 +108,21 @@ async function handleGiveUserInfo(req, res) {
         // console.log("from handleGiveUserInfo");
         // console.log(req.cookies.authToken);
         const user = await giveUserFromDb(req.cookies.authToken);
-        console.log(user);
+        // console.log(user);
         if (!user) {
             return res.status(400).json({message: 'No user found'});
         }
-        console.log(user);
-        return res.status(200).send({
-            _id: user._id,
+        const giveInfo = {
+            id: user._id,
             name: user.name,
             email: user.email,
             profilePicture: user.profilePicture,
             role: user.role,
             devices: user.devices,
             verified: user.verified,
-        });
+        };
+        // console.log(giveInfo);
+        return res.status(200).json(giveInfo);
     }catch(err) {
         console.log(err);
         return res.status(400).json({error: err.message});
