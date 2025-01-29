@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaUpload } from 'react-icons/fa';
 import {useDispatch, useSelector} from "react-redux";
+import {submitImage} from "../utils/changeStaticImages.js";
+import {fetchStaticImages} from "../../store/features/staticImagesSlice.js";
 
 export default function DealsSection() {
   const [timeLeft, setTimeLeft] = useState({
@@ -10,15 +12,16 @@ export default function DealsSection() {
     minutes: 5,
     seconds: 30
   });
-  const [images, setImages] = useState([
-    'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80'
-  ]);
+  // const [images, setImages] = useState([
+  //   'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80',
+  //   'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80',
+  //   'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80'
+  // ]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  const [isAdmin,setIsAdmin] = useState(false); // For demo purposes
+  const [isAdmin,setIsAdmin] = useState(false);
   const user = useSelector((state) => state.user);
+  const images = useSelector((state) => state.staticImages.deals);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -54,13 +57,12 @@ export default function DealsSection() {
   const handleImageChange = (index, e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newImages = [...images];
-        newImages[index] = reader.result;
-        setImages(newImages);
-      };
-      reader.readAsDataURL(file);
+      submitImage("deals",index,file)
+          .then((res) => {
+            if (res === 200) {
+                dispatch(fetchStaticImages());
+            }
+          })
     }
   };
 

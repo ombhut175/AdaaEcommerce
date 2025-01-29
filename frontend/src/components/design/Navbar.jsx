@@ -54,7 +54,6 @@ export default function Navbar() {
     const [isLoggedIn,setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-
         dispatch(fetchUser())
             .then((result) => {
                 if (result.meta.requestStatus === 'fulfilled') {
@@ -70,8 +69,6 @@ export default function Navbar() {
             .catch((error) => {
                 console.log('An unexpected error occurred:', error);
             });
-
-        console.log(user);
 
         const handleClickOutside = (event) => {
             if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {

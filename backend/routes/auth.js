@@ -1,7 +1,7 @@
 const express = require('express');
 const {forLogin,sendOtpToSignup,verifyOtpToSignup,sendOtpForgotPassword,verifyOtpForgotPassword,setNewPassword} = require('../controllers/auth')
 
-//delclaration 
+//declaration
 const router = express.Router();
 
 //routes 

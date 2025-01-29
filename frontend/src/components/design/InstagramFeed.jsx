@@ -2,20 +2,23 @@ import { motion } from 'framer-motion';
 import {useEffect, useState} from 'react';
 import { FaUpload } from 'react-icons/fa';
 import {useDispatch, useSelector} from "react-redux";
+import {submitImage} from "../utils/changeStaticImages.js";
+import {fetchStaticImages} from "../../store/features/staticImagesSlice.js";
 
 export default function InstagramFeed() {
-  const [images, setImages] = useState([
-    'https://images.unsplash.com/photo-1520975661595-6453be3f7070',
-    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f',
-    'https://images.unsplash.com/photo-1529139574466-a303027c1d8b',
-    'https://images.unsplash.com/photo-1539109136881-3be0616acf4b',
-    'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446',
-    'https://images.unsplash.com/photo-1434389677669-e08b4cac3105',
-    'https://images.unsplash.com/photo-1469334031218-e382a71b716b'
-  ]);
+  // const [images, setImages] = useState([
+  //   'https://images.unsplash.com/photo-1520975661595-6453be3f7070',
+  //   'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f',
+  //   'https://images.unsplash.com/photo-1529139574466-a303027c1d8b',
+  //   'https://images.unsplash.com/photo-1539109136881-3be0616acf4b',
+  //   'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446',
+  //   'https://images.unsplash.com/photo-1434389677669-e08b4cac3105',
+  //   'https://images.unsplash.com/photo-1469334031218-e382a71b716b'
+  // ]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [isAdmin,setIsAdmin] = useState(false);
   const user = useSelector((state) => state.user);
+  const images = useSelector((state) => state.staticImages.instagram);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,18 +26,17 @@ export default function InstagramFeed() {
     if (user && user.role.includes('admin')) {
       setIsAdmin(true);
     }
-  },[]);
+  },[user]);
 
   const handleImageChange = (index, e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newImages = [...images];
-        newImages[index] = reader.result;
-        setImages(newImages);
-      };
-      reader.readAsDataURL(file);
+      submitImage("instagram", index, file)
+          .then((res) => {
+            if (res === 200) {
+              dispatch(fetchStaticImages());
+            }
+          })
     }
   };
 

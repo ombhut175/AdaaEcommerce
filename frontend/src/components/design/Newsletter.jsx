@@ -15,7 +15,7 @@ export default function Newsletter() {
     if (user && user.role.includes('admin')) {
       setIsAdmin(true);
     }
-  },[]);
+  },[user]);
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Subscribing email:', email);

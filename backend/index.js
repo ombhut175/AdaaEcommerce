@@ -19,6 +19,8 @@ const {checkForDealerAuthentication} = require("./middlewares/dealer");
 const paymentRouter =require('./routes/payment')
 const trackingRoutes = require('./routes/tracking')
 const deliveryRouter = require("./routes/delivery")
+const adminRouter = require("./routes/adminRoutes");
+const {giveStaticImages} = require("./controllers/admin");
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -64,6 +66,7 @@ mongoose.connect(process.env.MONGO_URL)
 
         //static files
         app.use('/api/static', express.static(path.join(__dirname, 'public/staticPictures')));
+        app.get('/api/getStaticImages',giveStaticImages);
         //routes
 
         //auth middlewares
@@ -84,6 +87,9 @@ mongoose.connect(process.env.MONGO_URL)
 
         //products middleware
         app.use('/api/products', productRouter);
+
+        //admin routes
+        app.use('/api/admin' ,adminRouter);
 
 
         //checking
