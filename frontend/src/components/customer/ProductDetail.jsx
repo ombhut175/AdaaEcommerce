@@ -1,53 +1,89 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Link,useParams } from 'react-router-dom';
+import { Link,Navigate,useNavigate,useParams } from 'react-router-dom';
 import { FaHeart, FaShare } from 'react-icons/fa';
 import axios from 'axios'
 export default function ProductDetail() {
-    
-  const {id} = useParams()
+  
 
-  const [productsData,setProductsData] = useState([]);
+  //product _id 
+  const {id} = useParams()
+  const [productId,setProductId] = useState(id)
+  const [productIdSet,setproductIdSet] = useState([])
+  const [avgReview,setAvgReview ] = useState(0);
+  const [totalReviews,setTotalReviews ] = useState(0);
   const [product,setProduct] = useState({});
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Blue');
   const [quantity, setQuantity] = useState(1);
+  const [sizes,setSizes] = useState([])
   const [colors,setColors] = useState([]);  
   const [colorsName,setColorsName] = useState([]);  
   const [images , setImages] = useState([]);
   const [index,setIndex] = useState(0);
-  useEffect(()=>{
-    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/')
-    .then((res)=>{
-      setProductsData(res.data.products);
-      console.log(productsData);
+  const navigate = useNavigate()
 
-      
+  useEffect(()=>{
+    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + productId)
+    .then((res)=>{
+      setProduct(res.data.product);
     })
     .catch((err)=>{
-      console.log(err);
+      console.log(err );
     })
-  },[])
+  },[productId])
+
+  // useEffect(() => {
+  //   if (productId) {
+      
+  //     navigate(`/product/${productId}`);
+  //   }
+  // }, [productId, navigate]);
+
+
+  //calculate the stars of review
+  const setReviewStars = ()=>{
+    let sum=0,avg=0;
+    product.reviews.map((review)=>{
+      sum += Number(review.rating)
+      
+    })
+    
+    avg = sum/product.reviews.length
+    setAvgReview(avg)
+    
+  }
+
+
   useEffect(() => {
-    if (productsData.length > 0) {
-      const foundProduct = productsData.find((product) => product._id === id);
-  
-      if (foundProduct) {
-        setProduct(foundProduct);  
-        setColors(foundProduct.colors);
-  
-        const colorNames = foundProduct.colors.map(c => c.colorName);
+    if (product?.colors) { 
+       
+        setColors(product.colors);
+        
+        const colorNames = product.colors.map(c => c.colorName)
+        const imagesArray = product.colors.map(c => c.images); 
+        const productsIds = product.colors.map(c => c._id); 
+
+
         setColorsName(colorNames);
-        setSelectedColor(colorNames[index]);        
-        const imagesArray = foundProduct.colors.map(c => c.images);
         setImages(imagesArray);
-        console.log(images);
+        setproductIdSet(productsIds)
+        
+        setTotalReviews(product.reviews.length)
+        //call the function
+        setReviewStars()
+
+        // if (colorNames.length > 0) {
+        //   let selected = colorNames[productIdSet.findIndex((id)=>id===productId)]
+          setSelectedColor( colorNames[0]); 
+          setSelectedSize(product.size[0])
+        // }
+        setSizes(product.size)
         
       }
-    }
-  }, [productsData, id,index]);
-  
-  const sizes = product && product.size ;
+}, [ index,productId,product]);
+
+    
   
 
   return (
@@ -108,9 +144,24 @@ export default function ProductDetail() {
                 </h1>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center">
-                    <span className="text-yellow-400">★★★★</span>
-                    <span className="text-gray-400">☆</span>
-                    <span className="ml-1 text-gray-600 dark:text-gray-400">(3)</span>
+                  {[1, 1, 1, 1, 1].map((_, index) => {
+                    if (index < Math.floor(avgReview)) {
+                      return <i class="fa-solid fa-star text-yellow-400"></i>; // Full star
+                    } else if (index === Math.floor(avgReview) && (avgReview % 1 !== 0)) {
+                      return (
+                        <span key={index} className="text-yellow-400">
+                          <i class="fa-regular fa-star-half-stroke"></i>
+                        </span>
+                      ); // Half star
+                    } else {
+                      return <i class="fa-regular fa-star"></i>; // Empty star
+                    }
+                  })}
+
+
+                    {/* <span className="text-yellow-400">★</span>
+                    <span className="text-gray-400">☆</span> */}
+                    <span className="ml-1 text-gray-600 dark:text-gray-400">({totalReviews})</span>
                   </div>
                   <span className="text-gray-600 dark:text-gray-400">
                     24 people are viewing this right now
@@ -119,10 +170,10 @@ export default function ProductDetail() {
               </div>
 
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">$39.00</span>
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">${product.price}</span>
                 <span className="text-xl text-gray-500 line-through">$59.00</span>
                 <span className="px-2 py-1 bg-red-100 text-red-600 rounded-md text-sm">
-                  SAVE 35%
+                  SAVE {product.discountPercent}%
                 </span>
               </div>
 
@@ -130,9 +181,12 @@ export default function ProductDetail() {
                 <p className="text-red-600 dark:text-red-400">
                   Hurry up! Sale ends in: 00:05:59:47
                 </p>
+                {
+                product.stock < 10 ?
                 <p className="text-gray-600 dark:text-gray-400 mt-2">
-                  Only 9 item(s) left in stock!
-                </p>
+                  Only {product.stock} item(s) left in stock!
+                </p>:<></>
+                }
               </div>
 
               {/* Size Selection */}
@@ -167,12 +221,20 @@ export default function ProductDetail() {
                     <button
                       key={color}
                       onClick={() => {
-                        setSelectedColor(color)
-                        setIndex(colorsName.findIndex((c)=>c==color))
+                        // setSelectedColor(color)
+                        // setIndex(colorsName.findIndex((c)=>c==color))
+                        setProductId(productIdSet[colors.findIndex((c)=>c.colorName==color)]);                        
+
+
+
+
+
+
+
                       }}
                       className={`w-8 h-8 rounded-full border-2 ${
                         selectedColor === color
-                          ? 'border-black dark:border-white'
+                          ? 'border-slate-200 border-4 dark:border-white'
                           : 'border-transparent'
                       }`}
                       style={{ backgroundColor: color }}
@@ -209,6 +271,10 @@ export default function ProductDetail() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="flex-1 bg-black dark:bg-white text-white dark:text-black py-3 rounded-full font-medium hover:bg-gray-900 dark:hover:bg-gray-100"
+                  onClick={()=>{
+                    console.log("add", product);
+                    
+                  }}
                 >
                   Add to cart
                 </motion.button>

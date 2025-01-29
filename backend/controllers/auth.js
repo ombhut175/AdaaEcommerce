@@ -170,16 +170,13 @@ const verifyOtpForgotPassword = async (req, res) => {
 const setNewPassword = async (req, res) => {
     const {email, newPassword} = req.body;
 
-    //check is empty or not
     if (!email) {
         res.status(400).json({success: false, msg: "All fields are required Email !"});
     }
 
     try {
-        //find userModel
         const User = await userModel.findOne({email});
 
-        //check is invalid or expiration
         User.password = await bcrypt.hash(newPassword, 5);
         await User.save();
 
@@ -210,7 +207,7 @@ const forLogin = async (req, res) => {
             setUserCookies(res, token);
 
             return res.json({
-                success: true, msg: "Login Successful", token, profilePicture: data.profilePicture
+                success: true, msg: "Login Successful", token
             })
         } else {
             res.json({success: false, msg: "Password Incorrect"})

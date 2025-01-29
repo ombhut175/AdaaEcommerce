@@ -4,9 +4,9 @@ import { FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaSearch, FaHeart, 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js";
-import {fetchUser} from "../../store/features/userSlice.js";
+import {fetchUser, logOutUser} from "../../store/features/userSlice.js";
 import axios from "axios";
-
+import Cookies from 'js-cookie'
 const searchSuggestions = [
     {
         type: 'recent',
@@ -60,7 +60,7 @@ export default function Navbar() {
                 if (result.meta.requestStatus === 'fulfilled') {
                     setIsLoggedIn(true);
                     console.log("user verified");
-                    console.log(user);
+                    console.log("yesh : " , result);
                     console.log(user.role.includes('admin'));
                     if(user.role.includes('admin')) {
                         setIsAdmin(true);
@@ -323,8 +323,8 @@ export default function Navbar() {
                                                 whileHover={{ x: 4 }}
                                                 className="w-full flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                                                 onClick={() => {
-                                                    // Handle logout
-                                                    console.log('Logging out...');
+                                                    dispatch(logOutUser())
+                                                    navigate('/signin')
                                                 }}
                                             >
                                                 <FaSignOutAlt />

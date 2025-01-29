@@ -11,7 +11,7 @@ export default function Shop() {
     axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/')
     .then((res)=>{
       setProductsData(res.data.products);
-      console.log(res.data);
+      // console.log(res.data);
       
     })
     .catch((err)=>{
