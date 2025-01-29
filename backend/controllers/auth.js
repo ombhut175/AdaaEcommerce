@@ -80,7 +80,10 @@ const verifyOtpToSignup = async (req, res) => {
         const token = setUser(newUser)
         setUserCookies(res, token);
 
-        return res.status(200).json({success: true, msg: "User verified successfully", token});
+        return res.status(200).json({
+            success: true,
+            message: 'User verified successfully'
+        });
 
     } catch (err) {
         console.error("Error in verifyOtpToSignup:", err);
