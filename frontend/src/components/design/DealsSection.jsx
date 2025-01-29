@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaUpload } from 'react-icons/fa';
+import {useDispatch, useSelector} from "react-redux";
 
 export default function DealsSection() {
-  const [isAdmin] = useState(true); // For demo purposes
   const [timeLeft, setTimeLeft] = useState({
     days: 2,
     hours: 5,
@@ -16,6 +16,17 @@ export default function DealsSection() {
     'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80'
   ]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  const [isAdmin,setIsAdmin] = useState(false); // For demo purposes
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(user);
+    if (user && user.role.includes('admin')) {
+      setIsAdmin(true);
+    }
+  },[]);
 
   useEffect(() => {
     const timer = setInterval(() => {

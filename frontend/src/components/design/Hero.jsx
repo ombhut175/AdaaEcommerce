@@ -1,15 +1,24 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { FaUpload } from 'react-icons/fa';
+import {useDispatch, useSelector} from "react-redux";
 
 export default function Hero() {
-  const [isAdmin] = useState(false); // For demo purposes
+  const [isAdmin,setIsAdmin] = useState(false); // For demo purposes
   const [images, setImages] = useState({
     left: "https://images.unsplash.com/photo-1520975661595-6453be3f7070?auto=format&fit=crop&q=80",
     right: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80"
   });
   const [hoveredImage, setHoveredImage] = useState(null);
+  const user = useSelector((state) => state.user);
+
+  useEffect(() => {
+    console.log(user);
+    if (user && user.role.includes('admin')) {
+      setIsAdmin(true);
+    }
+  },[]);
 
   const handleImageChange = (side, e) => {
     const file = e.target.files[0];

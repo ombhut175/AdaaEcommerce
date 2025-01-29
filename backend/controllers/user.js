@@ -105,8 +105,8 @@ async function setProfilePictureToDefault(req, res) {
 
 async function handleGiveUserInfo(req, res) {
     try {
-        console.log("from handleGiveUserInfo");
-        console.log(req.cookies.authToken);
+        // console.log("from handleGiveUserInfo");
+        // console.log(req.cookies.authToken);
         const user = await giveUserFromDb(req.cookies.authToken);
         console.log(user);
         if (!user) {

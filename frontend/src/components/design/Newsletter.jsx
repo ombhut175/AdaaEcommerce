@@ -1,11 +1,21 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { FaUpload } from 'react-icons/fa';
+import {useDispatch, useSelector} from "react-redux";
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
-  const [isAdmin] = useState(true); // I've set this to true for testingScripts
-  
+
+  const [isAdmin,setIsAdmin] = useState(false);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(user);
+    if (user && user.role.includes('admin')) {
+      setIsAdmin(true);
+    }
+  },[]);
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Subscribing email:', email);

@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { FaUpload } from 'react-icons/fa';
+import {useDispatch, useSelector} from "react-redux";
 
 export default function InstagramFeed() {
-  const [isAdmin] = useState(false); // For demo purposes
   const [images, setImages] = useState([
     'https://images.unsplash.com/photo-1520975661595-6453be3f7070',
     'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f',
@@ -14,6 +14,16 @@ export default function InstagramFeed() {
     'https://images.unsplash.com/photo-1469334031218-e382a71b716b'
   ]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [isAdmin,setIsAdmin] = useState(false);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(user);
+    if (user && user.role.includes('admin')) {
+      setIsAdmin(true);
+    }
+  },[]);
 
   const handleImageChange = (index, e) => {
     const file = e.target.files[0];
