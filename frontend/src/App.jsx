@@ -135,42 +135,49 @@ function App() {
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/search" element={<SearchResults />} />
 
+                {/* Dealer Routes */}
+                <Route path="/dealer/products" element={<DealerProducts />} />
+                <Route path="/dealer/products/:id" element={<DealerProductDetail />} />
+                <Route path="/dealer/products/new" element={<DealerProductForm />} />
+                <Route path="/dealer/products/:id/edit" element={<DealerProductForm />} />
+
+
               {/* Dealer Routes */}
-              <Route >
-                <Route path='/unauthorized' element={<Unauthorized/>}></Route>
-                <Route
-                  path="/dealer/products"
-                  element={
-                    <ProtectedRoute role={isDealer}>
-                      <DealerProducts />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/dealer/products/:id"
-                  element={
-                    <ProtectedRoute role={isDealer}>
-                      <DealerProductDetail />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/dealer/products/new"
-                  element={
-                    <ProtectedRoute role={isDealer}>
-                      <DealerProductForm />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/dealer/products/:id/edit"
-                  element={
-                    <ProtectedRoute role={isDealer}>
-                      <DealerProductForm />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
+              {/*<Route >*/}
+              {/*  <Route path='/unauthorized' element={<Unauthorized/>}></Route>*/}
+              {/*  <Route*/}
+              {/*    path="/dealer/products"*/}
+              {/*    element={*/}
+              {/*      <ProtectedRoute role={isDealer}>*/}
+              {/*        <DealerProducts />*/}
+              {/*      </ProtectedRoute>*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*  <Route*/}
+              {/*    path="/dealer/products/:id"*/}
+              {/*    element={*/}
+              {/*      <ProtectedRoute role={isDealer}>*/}
+              {/*        <DealerProductDetail />*/}
+              {/*      </ProtectedRoute>*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*  <Route*/}
+              {/*    path="/dealer/products/new"*/}
+              {/*    element={*/}
+              {/*      <ProtectedRoute role={isDealer}>*/}
+              {/*        <DealerProductForm />*/}
+              {/*      </ProtectedRoute>*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*  <Route*/}
+              {/*    path="/dealer/products/:id/edit"*/}
+              {/*    element={*/}
+              {/*      <ProtectedRoute role={isDealer}>*/}
+              {/*        <DealerProductForm />*/}
+              {/*      </ProtectedRoute>*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*</Route>*/}
 
               <Route>
                 <Route path="/delivery" element={
