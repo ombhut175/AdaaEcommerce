@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ role, children }) => {
- 
+export default function ProtectedRoute({ role, children }){
   if (role === null) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // Or a spinner
   }
 
   if (!role) {
@@ -13,5 +12,4 @@ const ProtectedRoute = ({ role, children }) => {
 
   return children;
 };
-
-export default ProtectedRoute;
+;
