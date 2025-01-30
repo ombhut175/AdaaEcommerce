@@ -116,6 +116,13 @@ export default function DealerProductEditingPage() {
 
         const formDataToSend = new FormData();
 
+        // Inside handleSubmit function
+        const existingImagesByColor = formData.colors.map(color => ({
+            colorName: color.colorName,
+            existingUrls: color.images.filter(img => !img.file).map(img => img.url)
+        }));
+        formDataToSend.append('existingImagesByColor', JSON.stringify(existingImagesByColor));
+
         // Basic fields
         formDataToSend.append('name', formData.name);
         formDataToSend.append('title', formData.title);
@@ -123,6 +130,7 @@ export default function DealerProductEditingPage() {
         formDataToSend.append('price', formData.price);
         formDataToSend.append('discount', formData.discountPercent);
         formDataToSend.append('stock', formData.stock);
+
         if (id) formDataToSend.append('productId', id);
 
         // Color data
@@ -141,8 +149,8 @@ export default function DealerProductEditingPage() {
         });
 
         try {
-            const response = await axios.post(
-                `${BACKEND_URL}/api/products`,
+            const response = await axios.put(
+                `${BACKEND_URL}/api/dealer/updateProduct`,
                 formDataToSend,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' },
@@ -338,20 +346,37 @@ export default function DealerProductEditingPage() {
                                             : image.url;
 
                                         return (
-                                            <motion.div
+                                            <motion.label
                                                 key={imageIndex}
                                                 initial={{ opacity: 0, scale: 0.8 }}
                                                 animate={{ opacity: 1, scale: 1 }}
-                                                className="relative aspect-square group"
+                                                className="relative aspect-square group cursor-pointer"
                                             >
                                                 <img
                                                     src={imageUrl}
                                                     alt={`${color.colorName} view ${imageIndex + 1}`}
                                                     className="w-full h-full object-cover rounded-lg"
                                                 />
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files[0];
+                                                        if (file) {
+                                                            const newColors = [...formData.colors];
+                                                            newColors[colorIndex].images[imageIndex] = {
+                                                                url: URL.createObjectURL(file),
+                                                                file: file
+                                                            };
+                                                            setFormData({ ...formData, colors: newColors });
+                                                        }
+                                                    }}
+                                                />
                                                 <button
                                                     type="button"
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
                                                         const newColors = [...formData.colors];
                                                         newColors[colorIndex].images.splice(imageIndex, 1);
                                                         setFormData({ ...formData, colors: newColors });
@@ -360,7 +385,7 @@ export default function DealerProductEditingPage() {
                                                 >
                                                     <FaTimes className="w-3 h-3" />
                                                 </button>
-                                            </motion.div>
+                                            </motion.label>
                                         );
                                     })}
                                     <motion.label
