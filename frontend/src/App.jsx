@@ -46,41 +46,41 @@ function App() {
    const [isDealer, setIsDealer] = useState(null);
    const [isDelivery, setIsDelivery] = useState(null);
    const [isAdmin, setIsAdmin] = useState(null);
-  
-    useEffect(() => {
-      const roles = localStorage.getItem('role');
-      if (roles) {
-        const roleArray = roles.split(',');
-        const dealerRole = roleArray.some(role => role.toLowerCase() === 'dealer');
-        setIsDealer(dealerRole); 
-      } else {
-        setIsDealer(false); 
-      }
-    }, []);
-    useEffect(() => {
-      const roles = localStorage.getItem('role');
-      console.log(roles);  
-      if (roles) {
-        const roleArray = roles.split(',');
-        console.log(roleArray);  
-        const deliveryRole = roleArray.some(role => role.toLowerCase() === 'delivery');
-        setIsDelivery(deliveryRole);
-      } else {
-        setIsDelivery(false); 
-      }
-    }, []);
-    useEffect(() => {
-      const roles = localStorage.getItem('role');
-      console.log(roles);  
-      if (roles) {
-        const roleArray = roles.split(',');
-        console.log(roleArray);  
-        const adminRole = roleArray.some(role => role.toLowerCase() === 'admin');
-        setIsAdmin(adminRole);
-      } else {
-        setIsAdmin(false); 
-      }
-    }, []);
+   //
+   //  useEffect(() => {
+   //    const roles = localStorage.getItem('role');
+   //    if (roles) {
+   //      const roleArray = roles.split(',');
+   //      const dealerRole = roleArray.some(role => role.toLowerCase() === 'dealer');
+   //      setIsDealer(dealerRole);
+   //    } else {
+   //      setIsDealer(false);
+   //    }
+   //  }, []);
+   //  useEffect(() => {
+   //    const roles = localStorage.getItem('role');
+   //    console.log(roles);
+   //    if (roles) {
+   //      const roleArray = roles.split(',');
+   //      console.log(roleArray);
+   //      const deliveryRole = roleArray.some(role => role.toLowerCase() === 'delivery');
+   //      setIsDelivery(deliveryRole);
+   //    } else {
+   //      setIsDelivery(false);
+   //    }
+   //  }, []);
+   //  useEffect(() => {
+   //    const roles = localStorage.getItem('role');
+   //    console.log(roles);
+   //    if (roles) {
+   //      const roleArray = roles.split(',');
+   //      console.log(roleArray);
+   //      const adminRole = roleArray.some(role => role.toLowerCase() === 'admin');
+   //      setIsAdmin(adminRole);
+   //    } else {
+   //      setIsAdmin(false);
+   //    }
+   //  }, []);
     
 
   useEffect(() => {
@@ -134,49 +134,53 @@ function App() {
               <Route path="/new-arrivals" element={<NewArrivalsPage />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/search" element={<SearchResults />} />
+                <Route path={'/dealer'} element={DealerProducts} />
+                <Route path={'/dealer/products/:id'}
+                       element={DealerProductDetail} />
+                <Route path={'/dealer/products/new'} element={DealerProductForm} />
 
               {/* Dealer Routes */}
-              <Route >
-                <Route path='/unauthorized' element={<Unauthorized/>}></Route>
-                <Route
-                  path="/dealer/products"
-                  element={
-                    <ProtectedRoute role={isDealer}>
-                      <DealerProducts />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/dealer/products/:id"
-                  element={
-                    <ProtectedRoute role={isDealer}>
-                      <DealerProductDetail />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/dealer/products/new"
-                  element={
-                    <ProtectedRoute role={isDealer}>
-                      <DealerProductForm />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/dealer/products/:id/edit"
-                  element={
-                    <ProtectedRoute role={isDealer}>
-                      <DealerProductForm />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
+              {/*<Route >*/}
+              {/*  <Route path='/unauthorized' element={<Unauthorized/>}></Route>*/}
+              {/*  <Route*/}
+              {/*    path="/dealer/products"*/}
+              {/*    element={*/}
+              {/*      <ProtectedRoute role={isDealer}>*/}
+              {/*        <DealerProducts />*/}
+              {/*      </ProtectedRoute>*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*  <Route*/}
+              {/*    path="/dealer/products/:id"*/}
+              {/*    element={*/}
+              {/*      <ProtectedRoute role={isDealer}>*/}
+              {/*        <DealerProductDetail />*/}
+              {/*      </ProtectedRoute>*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*  <Route*/}
+              {/*    path="/dealer/products/new"*/}
+              {/*    element={*/}
+              {/*      <ProtectedRoute role={isDealer}>*/}
+              {/*        <DealerProductForm />*/}
+              {/*      </ProtectedRoute>*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*  <Route*/}
+              {/*    path="/dealer/products/:id/edit"*/}
+              {/*    element={*/}
+              {/*      <ProtectedRoute role={isDealer}>*/}
+              {/*        <DealerProductForm />*/}
+              {/*      </ProtectedRoute>*/}
+              {/*    }*/}
+              {/*  />*/}
+              {/*</Route>*/}
 
               <Route>
                 <Route path="/delivery" element={
                   <ProtectedRoute role={isDelivery}>
                       <DeliveryList />
-                    </ProtectedRoute>} 
+                    </ProtectedRoute>}
                     />
                 <Route path="/delivery/:id" element={
                   <ProtectedRoute role={isDelivery}>
