@@ -6,7 +6,7 @@ const {ObjectId} = require("mongoose").Types;
 // gives whole cart of that user
 async function handleGetCart(req, res) {
     try {
-        const userId = giveUserIdFromCookies(req.cookies.userId);
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
         const cartItems = await Cart.find({ userId: new ObjectId(userId) }).populate('productId');
         if (!cartItems.length) return res.status(404).json({ message: "Cart is empty" });
 
@@ -35,7 +35,7 @@ async function handleGetCart(req, res) {
 async function handleDeleteProductFromCart(req, res) {
     try {
         const { productId } = req.params;
-        const userId = giveUserIdFromCookies(req.cookies.token);
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
 
         const deletedCartItem = await Cart.findOneAndDelete({
             userId: new ObjectId(userId),
@@ -56,7 +56,7 @@ async function handleDeleteProductFromCart(req, res) {
 async function handleUpdateProductQuantity(req, res) {
     try {
         const { productId, quantity } = req.params;
-        const userId = giveUserIdFromCookies(req.cookies.token);
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
 
         const updatedCartItem = await Cart.findOneAndUpdate(
             { userId: new ObjectId(userId), productId: new ObjectId(productId) },
