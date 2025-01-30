@@ -139,6 +139,13 @@ function App() {
                        element={DealerProductDetail} />
                 <Route path={'/dealer/products/new'} element={DealerProductForm} />
 
+                {/* Dealer Routes */}
+                <Route path="/dealer/products" element={<DealerProducts />} />
+                <Route path="/dealer/products/:id" element={<DealerProductDetail />} />
+                <Route path="/dealer/products/new" element={<DealerProductForm />} />
+                <Route path="/dealer/products/:id/edit" element={<DealerProductForm />} />
+
+
               {/* Dealer Routes */}
               {/*<Route >*/}
               {/*  <Route path='/unauthorized' element={<Unauthorized/>}></Route>*/}
