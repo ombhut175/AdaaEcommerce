@@ -39,6 +39,10 @@ import AdminPanel from "./components/admin/AdminPanel.jsx";
 import UserDetails from "./components/admin/UserDetails.jsx";
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Unauthorized from './Unauthorized.jsx';
+import DealerProductEditingPage from "./components/dealer/DealerProductEditForm.jsx";
+
+
+
 
 function App() {
   const darkMode = useSelector(selectDarkMode);
@@ -139,7 +143,7 @@ function App() {
                 <Route path="/dealer/products" element={<DealerProducts />} />
                 <Route path="/dealer/products/:id" element={<DealerProductDetail />} />
                 <Route path="/dealer/products/new" element={<DealerProductForm />} />
-                <Route path="/dealer/products/:id/edit" element={<DealerProductForm />} />
+                <Route path="/dealer/products/:id/edit" element={<DealerProductEditingPage />} />
 
 
               {/* Dealer Routes */}

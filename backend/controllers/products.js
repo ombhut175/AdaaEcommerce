@@ -7,8 +7,18 @@ const {ObjectId} = require('mongoose').Types;
 const fs = require("node:fs");
 
 // Add a new product along with photos
-// Update addProduct controller
+const cloudinary = require('cloudinary').v2;
+
+// Helper to extract public ID from Cloudinary URL
+function getPublicIdFromUrl(url) {
+    const regex = /\/upload\/(?:v\d+\/)?(.+?)\.\w{3,4}$/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
+
 const addProduct = async (req, res) => {
+    let oldImageUrls = [];
+
     try {
         const {
             name,
@@ -18,7 +28,8 @@ const addProduct = async (req, res) => {
             discount,
             stock,
             colorNames,
-            colorValues
+            colorValues,
+            productId,
         } = req.body;
 
         // Validate color data
@@ -35,22 +46,41 @@ const addProduct = async (req, res) => {
         }
 
         const user = getUser(req.cookies.authToken);
+        let newProduct = await Product.findById(productId);
 
-        // Create initial product structure
-        const newProduct = new Product({
-            name,
-            title,
-            description,
-            price: Number(price),
-            discountPercent: Number(discount),
-            stock: Number(stock),
-            dealerId:new ObjectId(user.id),
-            colors: parsedColorNames.map((name, index) => ({
+        if (newProduct) {
+            // Collect old images before reset
+            oldImageUrls = newProduct.colors.flatMap(color => color.images);
+
+            // Update existing product (keep _id and dealerId)
+            newProduct.name = name;
+            newProduct.title = title;
+            newProduct.description = description;
+            newProduct.price = Number(price);
+            newProduct.discountPercent = Number(discount);
+            newProduct.stock = Number(stock);
+            newProduct.colors = parsedColorNames.map((name, index) => ({
                 colorName: name,
                 colorValue: parsedColorValues[index],
-                images: []
-            }))
-        });
+                images: [] // Reset images array
+            }));
+        } else {
+            // Create new product
+            newProduct = new Product({
+                name,
+                title,
+                description,
+                price: Number(price),
+                discountPercent: Number(discount),
+                stock: Number(stock),
+                dealerId: new ObjectId(user.id),
+                colors: parsedColorNames.map((name, index) => ({
+                    colorName: name,
+                    colorValue: parsedColorValues[index],
+                    images: []
+                }))
+            });
+        }
 
         const savedProduct = await newProduct.save();
 
@@ -92,23 +122,40 @@ const addProduct = async (req, res) => {
             await savedProduct.save();
         }
 
+        // Delete old images after successful update
+        if (oldImageUrls.length > 0) {
+            await Promise.all(
+                oldImageUrls.map(async (url) => {
+                    const publicId = getPublicIdFromUrl(url);
+                    if (publicId) {
+                        try {
+                            await cloudinary.uploader.destroy(publicId);
+                        } catch (deleteError) {
+                            console.error("Failed to delete image:", publicId, deleteError);
+                        }
+                    }
+                })
+            );
+        }
+
         res.status(201).json({
             success: true,
             product: savedProduct
         });
 
     } catch (err) {
-        // Cleanup files
+        // Cleanup new files
         if (req.files) {
             req.files.forEach(file => fs.unlinkSync(file.path));
         }
         res.status(500).json({
             success: false,
-            message: "Product creation failed",
+            message: "Product operation failed",
             error: err.message
         });
     }
 };
+
 
 
 
