@@ -21,7 +21,7 @@ export default function ProductDetail() {
   const [index,setIndex] = useState(0);
   const [indexImageChange,setIndexImageChange] = useState(0);
   const navigate = useNavigate()
-
+  
   useEffect(()=>{
     axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + id)
     .then((res)=>{
@@ -71,7 +71,13 @@ export default function ProductDetail() {
     }
   }, [product,selectedColor]);
   
-
+  const handleAddCart = ()=>{
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/"+id)
+    .then((res)=>{
+      console.log(res);
+      
+    })  
+  }
     
   
 
@@ -262,11 +268,7 @@ export default function ProductDetail() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="flex-1 bg-black dark:bg-white text-white dark:text-black py-3 rounded-full font-medium hover:bg-gray-900 dark:hover:bg-gray-100"
-                  onClick={()=>{
-                    console.log("product", product);
-                    console.log("selected", selectedColor);
-                    console.log("quantity", quantity);
-                  }}
+                  onClick={handleAddCart}
                 >
                   Add to cart
                 </motion.button>

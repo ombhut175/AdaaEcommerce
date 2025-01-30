@@ -9,18 +9,28 @@ const addressSchemaForValidation = z.object({
 })
 
 async function address(req, res) {
-    const { flat, area, pincode, state } = req.body;
-    const response = addressSchemaForValidation.safeParse({ flat, area, pincode, state });
+    console.log(req.body);
+    
+    const { 
+        firstName,
+        lastName,
+        addressLine,
+        postalCode, 
+        state, 
+        country,
+        city,
+        userId } = req.body;
+
     try {
-        if (!response.success) {
-            res.json(response);
-        }
 
         const data = await addressModel.create({
-            flat,
-            area,
-            pincode,
-            state
+            fullName:firstName + ' ' + lastName,
+            address:addressLine,
+            pincode:postalCode,
+            state,
+            country,
+            city,
+            userId:userId
         })
         if (!data) {
             res.status(500).json({ success: false, msg: "Insertion error in address" });

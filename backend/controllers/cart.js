@@ -4,7 +4,7 @@ const {ObjectId} = require("mongoose").Types;
 
 
 // gives whole cart of that user
-async function handleGetCart(req, res) {
+async function handleGetCart(req, res) { 
     try {
         const userId = giveUserIdFromCookies(req.cookies.userId);
         const cart = await Cart.findOne({userId: new ObjectId(userId)});
