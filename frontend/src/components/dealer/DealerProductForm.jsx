@@ -39,13 +39,6 @@ export default function DealerProductForm() {
 
     const navigate = useNavigate();
 
-    //testing purposes
-    // useEffect(()=>{
-    //    axios.post(`${BACKEND_URL}/api/products/add`,{},{withCredentials: true})
-    //        .then(res => {
-    //            console.log(res.data);
-    //        }) ;
-    // },[])
 
 
 

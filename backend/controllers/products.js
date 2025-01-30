@@ -3,6 +3,7 @@ const UserActivities = require('../models/UserActivities');
 const {giveUserFromDb} = require("../services/common.services");
 const {uploadOnCloudinary, uploadOnCloudinaryForProducts} = require("../services/cloudinary");
 const {getUser, giveUserIdFromCookies} = require("../services/auth");
+const {ObjectId} = require('mongoose').Types;
 const fs = require("node:fs");
 
 // Add a new product along with photos
@@ -43,7 +44,7 @@ const addProduct = async (req, res) => {
             price: Number(price),
             discountPercent: Number(discount),
             stock: Number(stock),
-            dealerId: user.id,
+            dealerId:new ObjectId(user.id),
             colors: parsedColorNames.map((name, index) => ({
                 colorName: name,
                 colorValue: parsedColorValues[index],
@@ -128,7 +129,7 @@ const getProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({success: false, message: 'Product not found'});
         }
-        res.status(200).json({success: true, product: product});
+        res.status(200).json(product);
     } catch (error) {
         res.status(500).json({success: false, message: 'Failed to fetch product', error: error.message});
     }

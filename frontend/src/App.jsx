@@ -134,10 +134,6 @@ function App() {
               <Route path="/new-arrivals" element={<NewArrivalsPage />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/search" element={<SearchResults />} />
-                <Route path={'/dealer'} element={DealerProducts} />
-                <Route path={'/dealer/products/:id'}
-                       element={DealerProductDetail} />
-                <Route path={'/dealer/products/new'} element={DealerProductForm} />
 
                 {/* Dealer Routes */}
                 <Route path="/dealer/products" element={<DealerProducts />} />
