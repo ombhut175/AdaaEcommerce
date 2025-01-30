@@ -1,25 +1,25 @@
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { FaUpload, FaTimes } from 'react-icons/fa';
+import {motion} from 'framer-motion';
+import {useEffect, useState} from 'react';
+import {Link, useNavigate, useParams} from 'react-router-dom';
+import {FaUpload, FaTimes} from 'react-icons/fa';
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 
 const inputVariants = {
-    focus: { scale: 1.02, transition: { type: "spring", stiffness: 300 } },
-    tap: { scale: 0.98 }
+    focus: {scale: 1.02, transition: {type: "spring", stiffness: 300}},
+    tap: {scale: 0.98}
 };
 
 const defaultColors = [
-    { name: "Red", value: "#FF0000" },
-    { name: "Green", value: "#00FF00" },
-    { name: "Blue", value: "#0000FF" },
-    { name: "Yellow", value: "#FFFF00" },
-    { name: "Black", value: "#000000" }
+    {name: "Red", value: "#FF0000"},
+    {name: "Green", value: "#00FF00"},
+    {name: "Blue", value: "#0000FF"},
+    {name: "Yellow", value: "#FFFF00"},
+    {name: "Black", value: "#000000"}
 ];
 
 export default function DealerProductEditingPage() {
-    const { id } = useParams();
+    const {id} = useParams();
     const navigate = useNavigate();
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -35,7 +35,7 @@ export default function DealerProductEditingPage() {
         warrantyDetails: ''
     });
 
-    const [selectedColor, setSelectedColor] = useState({ name: '', value: '' });
+    const [selectedColor, setSelectedColor] = useState({name: '', value: ''});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export default function DealerProductEditingPage() {
                         ...product,
                         colors: product.colors.map(color => ({
                             ...color,
-                            images: color.images.map(img => ({ url: img, file: null }))
+                            images: color.images.map(img => ({url: img, file: null}))
                         }))
                     });
                 }
@@ -80,7 +80,7 @@ export default function DealerProductEditingPage() {
                 images: []
             }]
         }));
-        setSelectedColor({ name: '', value: '' });
+        setSelectedColor({name: '', value: ''});
     };
 
     const handleRemoveColor = (colorIndex) => {
@@ -93,7 +93,7 @@ export default function DealerProductEditingPage() {
     const handleFeatureChange = (index, value) => {
         const newFeatures = [...formData.features];
         newFeatures[index] = value;
-        setFormData(prev => ({ ...prev, features: newFeatures }));
+        setFormData(prev => ({...prev, features: newFeatures}));
     };
 
     const handleAddFeature = () => {
@@ -153,7 +153,7 @@ export default function DealerProductEditingPage() {
                 `${BACKEND_URL}/api/dealer/updateProduct`,
                 formDataToSend,
                 {
-                    headers: { 'Content-Type': 'multipart/form-data' },
+                    headers: {'Content-Type': 'multipart/form-data'},
                     withCredentials: true,
                 }
             );
@@ -172,8 +172,8 @@ export default function DealerProductEditingPage() {
 
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
             className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900"
         >
             <div className="max-w-3xl mx-auto">
@@ -202,7 +202,7 @@ export default function DealerProductEditingPage() {
                             <input
                                 type="text"
                                 value={formData.name}
-                                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                                onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
                                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                                 required
                             />
@@ -215,7 +215,7 @@ export default function DealerProductEditingPage() {
                             <input
                                 type="text"
                                 value={formData.title}
-                                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                                onChange={(e) => setFormData(prev => ({...prev, title: e.target.value}))}
                                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                                 required
                             />
@@ -229,7 +229,7 @@ export default function DealerProductEditingPage() {
                         </label>
                         <textarea
                             value={formData.description}
-                            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                            onChange={(e) => setFormData(prev => ({...prev, description: e.target.value}))}
                             rows={4}
                             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             required
@@ -245,7 +245,7 @@ export default function DealerProductEditingPage() {
                             <input
                                 type="number"
                                 value={formData.price}
-                                onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
+                                onChange={(e) => setFormData(prev => ({...prev, price: e.target.value}))}
                                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                                 required
                             />
@@ -258,7 +258,7 @@ export default function DealerProductEditingPage() {
                             <input
                                 type="number"
                                 value={formData.discountPercent}
-                                onChange={(e) => setFormData(prev => ({ ...prev, discountPercent: e.target.value }))}
+                                onChange={(e) => setFormData(prev => ({...prev, discountPercent: e.target.value}))}
                                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             />
                         </motion.div>
@@ -270,7 +270,7 @@ export default function DealerProductEditingPage() {
                             <input
                                 type="number"
                                 value={formData.stock}
-                                onChange={(e) => setFormData(prev => ({ ...prev, stock: e.target.value }))}
+                                onChange={(e) => setFormData(prev => ({...prev, stock: e.target.value}))}
                                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                                 required
                             />
@@ -288,7 +288,7 @@ export default function DealerProductEditingPage() {
                                     value={selectedColor.name}
                                     onChange={(e) => {
                                         const color = defaultColors.find(c => c.name === e.target.value);
-                                        setSelectedColor(color || { name: '', value: '' });
+                                        setSelectedColor(color || {name: '', value: ''});
                                     }}
                                     className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                                 >
@@ -302,8 +302,8 @@ export default function DealerProductEditingPage() {
                             </motion.div>
                             <motion.button
                                 type="button"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
                                 onClick={handleAddColor}
                                 className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                             >
@@ -314,15 +314,15 @@ export default function DealerProductEditingPage() {
                         {formData.colors.map((color, colorIndex) => (
                             <motion.div
                                 key={colorIndex}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                initial={{opacity: 0, y: 20}}
+                                animate={{opacity: 1, y: 0}}
                                 className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
                             >
                                 <div className="flex justify-between items-center mb-4">
                                     <div className="flex items-center gap-2">
                                         <div
                                             className="w-6 h-6 rounded-full border"
-                                            style={{ backgroundColor: color.colorValue }}
+                                            style={{backgroundColor: color.colorValue}}
                                         />
                                         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                                             {color.colorName}
@@ -330,26 +330,23 @@ export default function DealerProductEditingPage() {
                                     </div>
                                     <motion.button
                                         type="button"
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.9 }}
+                                        whileHover={{scale: 1.1}}
+                                        whileTap={{scale: 0.9}}
                                         onClick={() => handleRemoveColor(colorIndex)}
                                         className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full"
                                     >
-                                        <FaTimes />
+                                        <FaTimes/>
                                     </motion.button>
                                 </div>
 
                                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                                     {color.images.map((image, imageIndex) => {
-                                        const imageUrl = image.file
-                                            ? URL.createObjectURL(image.file)
-                                            : image.url;
-
+                                        const imageUrl = image.file ? URL.createObjectURL(image.file) : image.url;
                                         return (
                                             <motion.label
                                                 key={imageIndex}
-                                                initial={{ opacity: 0, scale: 0.8 }}
-                                                animate={{ opacity: 1, scale: 1 }}
+                                                initial={{opacity: 0, scale: 0.8}}
+                                                animate={{opacity: 1, scale: 1}}
                                                 className="relative aspect-square group cursor-pointer"
                                             >
                                                 <img
@@ -364,12 +361,21 @@ export default function DealerProductEditingPage() {
                                                     onChange={(e) => {
                                                         const file = e.target.files[0];
                                                         if (file) {
-                                                            const newColors = [...formData.colors];
-                                                            newColors[colorIndex].images[imageIndex] = {
-                                                                url: URL.createObjectURL(file),
-                                                                file: file
-                                                            };
-                                                            setFormData({ ...formData, colors: newColors });
+                                                            setFormData(prev => {
+                                                                const newColors = [...prev.colors];
+                                                                const updatedImage = {
+                                                                    url: URL.createObjectURL(file),
+                                                                    file: file
+                                                                };
+                                                                const updatedImages = [...newColors[colorIndex].images];
+                                                                updatedImages[imageIndex] = updatedImage;
+                                                                const updatedColor = {
+                                                                    ...newColors[colorIndex],
+                                                                    images: updatedImages
+                                                                };
+                                                                newColors[colorIndex] = updatedColor;
+                                                                return {...prev, colors: newColors};
+                                                            });
                                                         }
                                                     }}
                                                 />
@@ -377,26 +383,34 @@ export default function DealerProductEditingPage() {
                                                     type="button"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        const newColors = [...formData.colors];
-                                                        newColors[colorIndex].images.splice(imageIndex, 1);
-                                                        setFormData({ ...formData, colors: newColors });
+                                                        setFormData(prev => {
+                                                            const newColors = [...prev.colors];
+                                                            const updatedImages = [...newColors[colorIndex].images];
+                                                            updatedImages.splice(imageIndex, 1);
+                                                            const updatedColor = {
+                                                                ...newColors[colorIndex],
+                                                                images: updatedImages
+                                                            };
+                                                            newColors[colorIndex] = updatedColor;
+                                                            return {...prev, colors: newColors};
+                                                        });
                                                     }}
                                                     className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
-                                                    <FaTimes className="w-3 h-3" />
+                                                    <FaTimes className="w-3 h-3"/>
                                                 </button>
                                             </motion.label>
                                         );
                                     })}
                                     <motion.label
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
+                                        whileHover={{scale: 1.05}}
+                                        whileTap={{scale: 0.95}}
                                         className="aspect-square border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400"
                                     >
-                                        <FaUpload className="text-gray-400 mb-2" size={24} />
+                                        <FaUpload className="text-gray-400 mb-2" size={24}/>
                                         <span className="text-sm text-gray-500 dark:text-gray-400">
-                                            Add Images
-                                        </span>
+        Add Images
+    </span>
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -407,12 +421,15 @@ export default function DealerProductEditingPage() {
                                                     url: URL.createObjectURL(file),
                                                     file
                                                 }));
-                                                const newColors = [...formData.colors];
-                                                newColors[colorIndex].images = [
-                                                    ...newColors[colorIndex].images,
-                                                    ...files
-                                                ];
-                                                setFormData({ ...formData, colors: newColors });
+                                                setFormData(prev => {
+                                                    const newColors = [...prev.colors];
+                                                    const updatedColor = {
+                                                        ...newColors[colorIndex],
+                                                        images: [...newColors[colorIndex].images, ...files]
+                                                    };
+                                                    newColors[colorIndex] = updatedColor;
+                                                    return {...prev, colors: newColors};
+                                                });
                                             }}
                                         />
                                     </motion.label>
@@ -429,8 +446,8 @@ export default function DealerProductEditingPage() {
                             </label>
                             <motion.button
                                 type="button"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
                                 onClick={handleAddFeature}
                                 className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                             >
@@ -448,12 +465,12 @@ export default function DealerProductEditingPage() {
                                 />
                                 <motion.button
                                     type="button"
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
+                                    whileHover={{scale: 1.1}}
+                                    whileTap={{scale: 0.9}}
                                     onClick={() => handleRemoveFeature(index)}
                                     className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full"
                                 >
-                                    <FaTimes />
+                                    <FaTimes/>
                                 </motion.button>
                             </div>
                         ))}
@@ -466,7 +483,7 @@ export default function DealerProductEditingPage() {
                         </label>
                         <textarea
                             value={formData.warrantyDetails}
-                            onChange={(e) => setFormData(prev => ({ ...prev, warrantyDetails: e.target.value }))}
+                            onChange={(e) => setFormData(prev => ({...prev, warrantyDetails: e.target.value}))}
                             rows={3}
                             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                         />
@@ -477,8 +494,8 @@ export default function DealerProductEditingPage() {
                         <Link to="/dealer/products">
                             <motion.button
                                 type="button"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
                                 className="px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800"
                             >
                                 Cancel
@@ -486,8 +503,8 @@ export default function DealerProductEditingPage() {
                         </Link>
                         <motion.button
                             type="submit"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{scale: 1.05}}
+                            whileTap={{scale: 0.95}}
                             className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
                             disabled={isSubmitting}
                         >
