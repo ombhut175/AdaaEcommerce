@@ -47,6 +47,7 @@ export default function Navbar() {
     const dispatch = useDispatch();
     const darkMode = useSelector(selectDarkMode);
     const [isAdmin,setIsAdmin] = useState(false);
+    const [isDealer,setIsDealer] = useState(false);
     const user = useSelector(state => state.user);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -63,6 +64,9 @@ export default function Navbar() {
                     console.log(user.role.includes('admin'));
                     if(user.role.includes('admin')) {
                         setIsAdmin(true);
+                    }
+                    if (user.role.includes('dealer')) {
+                        setIsDealer(true);
                     }
                 }
             })
@@ -106,11 +110,10 @@ export default function Navbar() {
         { name: 'Deals', path: '/deals' },
         { name: 'Shop', path: '/shop' },
         { name: 'New Arrivals', path: '/new-arrivals' },
-        { name: 'Dealer View' , path : '/dealer/products'},
-        { name: 'Add Product' , path : '/dealer/products/new'},
-        { name: 'Dealer' , path : '/dealer/products'},
-
+        // { name: 'Dealer', path: '/dealer/products' }
+        ...(isDealer ? [{ name: 'Dealer', path: '/dealer/products' }] : [])
     ];
+
 
     return (
         <nav className="fixed w-full bg-white dark:bg-gray-900 shadow-md z-50">
@@ -127,7 +130,7 @@ export default function Navbar() {
 
                         <Link to="/" className="flex-shrink-0">
                             <motion.h1
-                                className="text-2xl font-bold text-black dark:text-white hover-transition"
+                                className="text-2xl font-bold text-black dark:text-white hover-transition me-12"
                                 whileHover={{ scale: 1.05 }}
                             >
                                 ADAA

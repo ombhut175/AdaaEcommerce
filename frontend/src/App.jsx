@@ -39,6 +39,10 @@ import AdminPanel from "./components/admin/AdminPanel.jsx";
 import UserDetails from "./components/admin/UserDetails.jsx";
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Unauthorized from './Unauthorized.jsx';
+import DealerProductEditingPage from "./components/dealer/DealerProductEditForm.jsx";
+
+
+
 
 function App() {
   const darkMode = useSelector(selectDarkMode);
@@ -46,41 +50,41 @@ function App() {
    const [isDealer, setIsDealer] = useState(null);
    const [isDelivery, setIsDelivery] = useState(null);
    const [isAdmin, setIsAdmin] = useState(null);
-  
-    useEffect(() => {
-      const roles = localStorage.getItem('role');
-      if (roles) {
-        const roleArray = roles.split(',');
-        const dealerRole = roleArray.some(role => role.toLowerCase() === 'dealer');
-        setIsDealer(dealerRole); 
-      } else {
-        setIsDealer(false); 
-      }
-    }, []);
-    useEffect(() => {
-      const roles = localStorage.getItem('role');
-      console.log(roles);  
-      if (roles) {
-        const roleArray = roles.split(',');
-        console.log(roleArray);  
-        const deliveryRole = roleArray.some(role => role.toLowerCase() === 'delivery');
-        setIsDelivery(deliveryRole);
-      } else {
-        setIsDelivery(false); 
-      }
-    }, []);
-    useEffect(() => {
-      const roles = localStorage.getItem('role');
-      console.log(roles);  
-      if (roles) {
-        const roleArray = roles.split(',');
-        console.log(roleArray);  
-        const adminRole = roleArray.some(role => role.toLowerCase() === 'admin');
-        setIsAdmin(adminRole);
-      } else {
-        setIsAdmin(false); 
-      }
-    }, []);
+   //
+   //  useEffect(() => {
+   //    const roles = localStorage.getItem('role');
+   //    if (roles) {
+   //      const roleArray = roles.split(',');
+   //      const dealerRole = roleArray.some(role => role.toLowerCase() === 'dealer');
+   //      setIsDealer(dealerRole);
+   //    } else {
+   //      setIsDealer(false);
+   //    }
+   //  }, []);
+   //  useEffect(() => {
+   //    const roles = localStorage.getItem('role');
+   //    console.log(roles);
+   //    if (roles) {
+   //      const roleArray = roles.split(',');
+   //      console.log(roleArray);
+   //      const deliveryRole = roleArray.some(role => role.toLowerCase() === 'delivery');
+   //      setIsDelivery(deliveryRole);
+   //    } else {
+   //      setIsDelivery(false);
+   //    }
+   //  }, []);
+   //  useEffect(() => {
+   //    const roles = localStorage.getItem('role');
+   //    console.log(roles);
+   //    if (roles) {
+   //      const roleArray = roles.split(',');
+   //      console.log(roleArray);
+   //      const adminRole = roleArray.some(role => role.toLowerCase() === 'admin');
+   //      setIsAdmin(adminRole);
+   //    } else {
+   //      setIsAdmin(false);
+   //    }
+   //  }, []);
     
 
   useEffect(() => {
@@ -139,7 +143,7 @@ function App() {
                 <Route path="/dealer/products" element={<DealerProducts />} />
                 <Route path="/dealer/products/:id" element={<DealerProductDetail />} />
                 <Route path="/dealer/products/new" element={<DealerProductForm />} />
-                <Route path="/dealer/products/:id/edit" element={<DealerProductForm />} />
+                <Route path="/dealer/products/:id/edit" element={<DealerProductEditingPage />} />
 
 
               {/* Dealer Routes */}
@@ -183,7 +187,7 @@ function App() {
                 <Route path="/delivery" element={
                   <ProtectedRoute role={isDelivery}>
                       <DeliveryList />
-                    </ProtectedRoute>} 
+                    </ProtectedRoute>}
                     />
                 <Route path="/delivery/:id" element={
                   <ProtectedRoute role={isDelivery}>
