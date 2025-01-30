@@ -7,114 +7,115 @@ const {ObjectId} = require("mongoose").Types;
 async function handleGetCart(req, res) {
     try {
         const userId = giveUserIdFromCookies(req.cookies.userId);
-        const cart = await Cart.findOne({userId: new ObjectId(userId)});
-        if (!cart) return res.status(404).json({message: "Cart not found"});
+        const cartItems = await Cart.find({ userId: new ObjectId(userId) }).populate('productId');
+        if (!cartItems.length) return res.status(404).json({ message: "Cart is empty" });
 
-        const totalAmount = await getTotalAmountFromCart(userId);
+        const totalAmount = cartItems.reduce((total, item) => {
+            const product = item.productId;
+            const price = product.price || 0;
+            const quantity = item.quantity || 1;
+            const discount = product.discountPercent || 0;
+            return total + (quantity * (price - (price * discount / 100)));
+        }, 0);
 
         return res.status(200).json({
-            products: cart.cartItems,
+            products: cartItems.map(item => ({
+                productId: item.productId,
+                quantity: item.quantity
+            })),
             totalAmount,
         });
     } catch (error) {
-        return res.status(500).json({message: error.message});
+        return res.status(500).json({ message: error.message });
     }
 }
 
-//created new cart
-async function handleCreateNewCart(userId) {
-    try {
-        await Cart.create({userId,});
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 //delete a product from cart
 async function handleDeleteProductFromCart(req, res) {
     try {
-        const {productId} = req.params;
+        const { productId } = req.params;
         const userId = giveUserIdFromCookies(req.cookies.token);
-        const updatedCart = await Cart.findOneAndUpdate({userId: new ObjectId(userId),}, {
-            $pull: {cartItems: {productId}},
-            $set: {
-                updatedAt: Date.now(),
-            },
-            new: true,
+
+        const deletedCartItem = await Cart.findOneAndDelete({
+            userId: new ObjectId(userId),
+            productId: new ObjectId(productId),
         });
-        if (!updatedCart) return res.status(404).json({message: "Cart not found"});
-        return res.status(200).json({message: "Product removed from cart", cart: updatedCart});
+
+        if (!deletedCartItem) {
+            return res.status(404).json({ message: "Product not found in cart" });
+        }
+
+        return res.status(200).json({ message: "Product removed from cart" });
     } catch (error) {
-        return res.status(500).json({message: error.message});
+        return res.status(500).json({ message: error.message });
     }
 }
 
 //update product quantity from cart
 async function handleUpdateProductQuantity(req, res) {
     try {
-        const {productId, quantity} = req.params;
+        const { productId, quantity } = req.params;
         const userId = giveUserIdFromCookies(req.cookies.token);
 
-        const updatedCart = await Cart.findOneAndUpdate(
-            {userId: new ObjectId(userId), "cartItems.productId": productId}, // Match userId and productId
+        const updatedCartItem = await Cart.findOneAndUpdate(
+            { userId: new ObjectId(userId), productId: new ObjectId(productId) },
             {
                 $set: {
-                    "cartItems.$.quantity": quantity, // Update the quantity of the matched product
-                    updatedAt: Date.now(), // Update the updatedAt field
-                },
+                    quantity: quantity,
+                    updatedAt: Date.now(),
+                }
             },
-            {new: true} // Return the updated document
+            { new: true }
         );
 
-        if (!updatedCart) {
-            return res.status(404).json({message: "Cart or product not found"});
+        if (!updatedCartItem) {
+            return res.status(404).json({ message: "Product not found in cart" });
         }
 
-        return res.status(200).json({message: "Product quantity updated", cart: updatedCart});
+        return res.status(200).json({ message: "Product quantity updated", cart: updatedCartItem });
     } catch (error) {
-        return res.status(500).json({message: error.message});
+        return res.status(500).json({ message: error.message });
     }
 }
 
 //adds any product to cart
 async function handleAddProductToCart(req, res) {
     try {
-        const {productId} = req.params;
-        const userId = giveUserIdFromCookies(req.cookies.token);
+        const { productId } = req.params;
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
 
-        // Ensure the productId and userId are valid ObjectId instances
-        const updatedCart = await Cart.findOneAndUpdate(
-            {userId: new ObjectId(userId)}, // Match the user's cart
-            {
-                $push: {
-                    cartItems: {
-                        productId: new ObjectId(productId),
-                        quantity: 1
-                    }
-                },
-                $set: {updatedAt: Date.now()}, // Update the timestamp
-            },
-            {new: true} // Return the updated document
-        );
+        const existingCartItem = await Cart.findOne({
+            userId: new ObjectId(userId),
+            productId: new ObjectId(productId),
+        });
 
-        if (!updatedCart) {
-            return res.status(404).json({message: "Cart not found"});
+        if (existingCartItem) {
+            existingCartItem.quantity += 1;
+            existingCartItem.updatedAt = Date.now();
+            await existingCartItem.save();
+            return res.status(200).json({ message: "Product quantity updated", cart: existingCartItem });
+        } else {
+            const newCartItem = await Cart.create({
+                userId: new ObjectId(userId),
+                productId: new ObjectId(productId),
+                quantity: 1,
+            });
+            return res.status(200).json({ message: "Product added to cart", cart: newCartItem });
         }
-
-        return res.status(200).json({message: "Product added to cart", cart: updatedCart});
     } catch (error) {
-        console.error(error); // Log error details
-        return res.status(500).json({message: error.message});
+        console.error(error);
+        return res.status(500).json({ message: error.message });
     }
 }
 
+//get total amount from cart
 async function getTotalAmountFromCart(userId) {
     try {
-        const cart = await Cart.findOne({userId: new ObjectId(userId)})
-            .populate('cartItems.productId');
+        const cartItems = await Cart.find({ userId: new ObjectId(userId) }).populate('productId');
 
         let totalAmount = 0;
-        cart.cartItems.forEach(item => {
+        cartItems.forEach(item => {
             const product = item.productId;
             const price = product.price || 0;
             const quantity = item.quantity || 1;
@@ -127,13 +128,13 @@ async function getTotalAmountFromCart(userId) {
         return totalAmount;
     } catch (err) {
         console.error(err);
+        return 0;
     }
 }
 
 
 module.exports = {
     handleGetCart,
-    handleCreateNewCart,
     handleDeleteProductFromCart,
     handleUpdateProductQuantity,
     handleAddProductToCart,
