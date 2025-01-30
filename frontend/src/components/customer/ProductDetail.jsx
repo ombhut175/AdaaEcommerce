@@ -8,8 +8,6 @@ export default function ProductDetail() {
 
   //product _id 
   const {id} = useParams()
-  const [productId,setProductId] = useState(id)
-  const [productIdSet,setproductIdSet] = useState([])
   const [avgReview,setAvgReview ] = useState(0);
   const [totalReviews,setTotalReviews ] = useState(0);
   const [product,setProduct] = useState({});
@@ -21,25 +19,18 @@ export default function ProductDetail() {
   const [colorsName,setColorsName] = useState([]);  
   const [images , setImages] = useState([]);
   const [index,setIndex] = useState(0);
+  const [indexImageChange,setIndexImageChange] = useState(0);
   const navigate = useNavigate()
 
   useEffect(()=>{
-    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + productId)
+    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + id)
     .then((res)=>{
       setProduct(res.data.product);
     })
     .catch((err)=>{
       console.log(err );
     })
-  },[productId])
-
-  // useEffect(() => {
-  //   if (productId) {
-      
-  //     navigate(`/product/${productId}`);
-  //   }
-  // }, [productId, navigate]);
-
+  },[])
 
   //calculate the stars of review
   const setReviewStars = ()=>{
@@ -56,32 +47,30 @@ export default function ProductDetail() {
 
 
   useEffect(() => {
-    if (product?.colors) { 
-       
-        setColors(product.colors);
-        
-        const colorNames = product.colors.map(c => c.colorName)
-        const imagesArray = product.colors.map(c => c.images); 
-        const productsIds = product.colors.map(c => c._id); 
-
-
-        setColorsName(colorNames);
-        setImages(imagesArray);
-        setproductIdSet(productsIds)
-        
-        setTotalReviews(product.reviews.length)
-        //call the function
-        setReviewStars()
-
-        // if (colorNames.length > 0) {
-        //   let selected = colorNames[productIdSet.findIndex((id)=>id===productId)]
-          setSelectedColor( colorNames[0]); 
-          setSelectedSize(product.size[0])
-        // }
-        setSizes(product.size)
-        
+    if (product?.colors) {
+      setColors(product.colors);
+      const colorNames = product.colors.map(c => c.colorName);
+      setColorsName(colorNames);
+      
+      // Set default selected color
+      const defaultColor = colorNames[index] || product.colors[0].colorName;
+      setSelectedColor(defaultColor);
+      
+      // Find images for selected color
+      const selectedColorData = product.colors.find(c => c.colorName === defaultColor);
+      setImages(selectedColorData ? selectedColorData.images : []);
+  
+      setTotalReviews(product.reviews.length);
+      setReviewStars();
+      
+      // Set default selected size
+      if (product.size && product.size.length > 0) {
+        setSelectedSize(product.size[0]);
+        setSizes(product.size);
       }
-}, [ index,productId,product]);
+    }
+  }, [product,selectedColor]);
+  
 
     
   
@@ -98,7 +87,7 @@ export default function ProductDetail() {
           <span className="mx-2">/</span>
           <Link to="/shop" className="hover:text-primary-500 dark:hover:text-primary-400">Shop</Link>
           <span className="mx-2">/</span>
-          <span>Denim Jacket</span>
+          <span>{product.title}</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -110,23 +99,26 @@ export default function ProductDetail() {
               className="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800"
             >
               <img
-                src={images[index]?.[0]}
+                src={images.length > 0 ? images[indexImageChange] : 'default-image.jpg'}
                 alt="Product"
                 className="w-full h-full object-cover"
               />
             </motion.div>
             <div className="grid grid-cols-3 gap-4">
-              {images[index]?.map((image, i) => (
+              {images && images.map((image, i) => (
                 <motion.div
                   key={i}
                   whileHover={{ scale: 1.05 }}
                   className="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 cursor-pointer"
                 >
+                  
                   <img
                     src={image}
                     alt={`Product view ${i + 1}`}
                     className="w-full h-full object-cover"
+                    onClick={()=>{setIndexImageChange(i)}}
                   />
+                  
                 </motion.div>
               ))}
             </div>
@@ -221,9 +213,8 @@ export default function ProductDetail() {
                     <button
                       key={color}
                       onClick={() => {
-                        // setSelectedColor(color)
-                        // setIndex(colorsName.findIndex((c)=>c==color))
-                        setProductId(productIdSet[colors.findIndex((c)=>c.colorName==color)]);                        
+                        setSelectedColor(color)
+                        setIndex(colorsName.findIndex((c)=>c==color))
 
 
 
@@ -272,8 +263,9 @@ export default function ProductDetail() {
                   whileTap={{ scale: 0.98 }}
                   className="flex-1 bg-black dark:bg-white text-white dark:text-black py-3 rounded-full font-medium hover:bg-gray-900 dark:hover:bg-gray-100"
                   onClick={()=>{
-                    console.log("add", product);
-                    
+                    console.log("product", product);
+                    console.log("selected", selectedColor);
+                    console.log("quantity", quantity);
                   }}
                 >
                   Add to cart

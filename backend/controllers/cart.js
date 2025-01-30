@@ -24,7 +24,7 @@ async function handleGetCart(req, res) {
 //created new cart
 async function handleCreateNewCart(userId) {
     try {
-        await Cart.create({userId,});
+        await Cart.create({userId:new ObjectId(userId),});
     } catch (error) {
         console.log(error);
     }
@@ -79,34 +79,52 @@ async function handleUpdateProductQuantity(req, res) {
 //adds any product to cart
 async function handleAddProductToCart(req, res) {
     try {
-        const {productId} = req.params;
+        const { productId } = req.params;
         const userId = giveUserIdFromCookies(req.cookies.token);
 
-        // Ensure the productId and userId are valid ObjectId instances
-        const updatedCart = await Cart.findOneAndUpdate(
-            {userId: new ObjectId(userId)}, // Match the user's cart
+        console.log("UserId:", userId); // Debug: Log the userId
+
+        // First, check if the cart already exists for the user
+        let updatedCart = await Cart.findOne({ userId: new ObjectId(userId) });
+        console.log("Existing Cart:", updatedCart); // Debug: Log existing cart
+
+        if (!updatedCart) {
+            // If no cart exists, create a new cart for the user
+            console.log("Creating a new cart..."); // Debug: Log cart creation
+            updatedCart = await Cart.create({ userId: new ObjectId(userId), cartItems: [] });
+
+            console.log("New Cart Created:", updatedCart); // Debug: Log new cart creation
+        }
+
+        // Now, push the new product to the cartItems
+        updatedCart = await Cart.findOneAndUpdate(
+            { userId: new ObjectId(userId) }, // Match the user's cart
             {
                 $push: {
                     cartItems: {
                         productId: new ObjectId(productId),
-                        quantity: 1
-                    }
+                        quantity: 1,
+                    },
                 },
-                $set: {updatedAt: Date.now()}, // Update the timestamp
+                $set: { updatedAt: Date.now() }, // Update the timestamp
             },
-            {new: true} // Return the updated document
+            { new: true } // Return the updated document
         );
 
+        console.log("Updated Cart:", updatedCart); // Debug: Log the updated cart after push
+
         if (!updatedCart) {
-            return res.status(404).json({message: "Cart not found"});
+            return res.status(404).json({ message: "Cart update failed" });
         }
 
-        return res.status(200).json({message: "Product added to cart", cart: updatedCart});
+        return res.status(200).json({ message: "Product added to cart", cart: updatedCart });
     } catch (error) {
-        console.error(error); // Log error details
-        return res.status(500).json({message: error.message});
+        console.error("Error:", error); // Log error details
+        return res.status(500).json({ message: error.message });
     }
 }
+
+
 
 async function getTotalAmountFromCart(userId) {
     try {

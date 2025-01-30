@@ -105,7 +105,11 @@ export default function Navbar() {
     const submenuItems = [
         { name: 'Deals', path: '/deals' },
         { name: 'Shop', path: '/shop' },
-        { name: 'New Arrivals', path: '/new-arrivals' }
+        { name: 'New Arrivals', path: '/new-arrivals' },
+        { name: 'Dealer View' , path : '/dealer/products'},
+        { name: 'Add Product' , path : '/dealer/products/new'},
+        { name: 'Dealer' , path : '/dealer/products'},
+
     ];
 
     return (
