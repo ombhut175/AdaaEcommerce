@@ -1,9 +1,8 @@
 const Cart = require("../models/Cart");
-const {giveUserIdFromCookies} = require("../services/auth");
-const {ObjectId} = require("mongoose").Types;
+const { giveUserIdFromCookies } = require("../services/auth");
+const { ObjectId } = require("mongoose").Types;
 
-
-// gives whole cart of that user
+// Get the whole cart of the user
 async function handleGetCart(req, res) {
     try {
         const userId = giveUserIdFromCookies(req.cookies.authToken);
@@ -21,7 +20,8 @@ async function handleGetCart(req, res) {
         return res.status(200).json({
             products: cartItems.map(item => ({
                 productId: item.productId,
-                quantity: item.quantity
+                quantity: item.quantity,
+                selectedColor: item.selectedColor
             })),
             totalAmount,
         });
@@ -30,8 +30,7 @@ async function handleGetCart(req, res) {
     }
 }
 
-
-//delete a product from cart
+// Delete a product from the cart
 async function handleDeleteProductFromCart(req, res) {
     try {
         const { productId } = req.params;
@@ -52,10 +51,11 @@ async function handleDeleteProductFromCart(req, res) {
     }
 }
 
-//update product quantity from cart
+// Update product quantity and selected color in cart
 async function handleUpdateProductQuantity(req, res) {
     try {
-        const { productId, quantity } = req.params;
+        const { productId } = req.params;
+        const { quantity, selectedColor } = req.body;
         const userId = giveUserIdFromCookies(req.cookies.authToken);
 
         const updatedCartItem = await Cart.findOneAndUpdate(
@@ -63,6 +63,7 @@ async function handleUpdateProductQuantity(req, res) {
             {
                 $set: {
                     quantity: quantity,
+                    selectedColor: selectedColor,
                     updatedAt: Date.now(),
                 }
             },
@@ -73,16 +74,17 @@ async function handleUpdateProductQuantity(req, res) {
             return res.status(404).json({ message: "Product not found in cart" });
         }
 
-        return res.status(200).json({ message: "Product quantity updated", cart: updatedCartItem });
+        return res.status(200).json({ message: "Product details updated", cart: updatedCartItem });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 }
 
-//adds any product to cart
+// Add a product to cart with selected color
 async function handleAddProductToCart(req, res) {
     try {
         const { productId } = req.params;
+        const { selectedColor } = req.body;
         const userId = giveUserIdFromCookies(req.cookies.authToken);
 
         const existingCartItem = await Cart.findOne({
@@ -92,6 +94,7 @@ async function handleAddProductToCart(req, res) {
 
         if (existingCartItem) {
             existingCartItem.quantity += 1;
+            existingCartItem.selectedColor = selectedColor;
             existingCartItem.updatedAt = Date.now();
             await existingCartItem.save();
             return res.status(200).json({ message: "Product quantity updated", cart: existingCartItem });
@@ -100,6 +103,7 @@ async function handleAddProductToCart(req, res) {
                 userId: new ObjectId(userId),
                 productId: new ObjectId(productId),
                 quantity: 1,
+                selectedColor: selectedColor,
             });
             return res.status(200).json({ message: "Product added to cart", cart: newCartItem });
         }
@@ -109,7 +113,7 @@ async function handleAddProductToCart(req, res) {
     }
 }
 
-//get total amount from cart
+// Get total amount from cart
 async function getTotalAmountFromCart(userId) {
     try {
         const cartItems = await Cart.find({ userId: new ObjectId(userId) }).populate('productId');
@@ -132,11 +136,10 @@ async function getTotalAmountFromCart(userId) {
     }
 }
 
-
 module.exports = {
     handleGetCart,
     handleDeleteProductFromCart,
     handleUpdateProductQuantity,
     handleAddProductToCart,
     getTotalAmountFromCart
-}
+};
