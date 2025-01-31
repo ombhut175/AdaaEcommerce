@@ -5,6 +5,8 @@ import {GoogleButton} from "./GoogleButton.jsx";
 import { jwtDecode } from 'jwt-decode'
 import {useDispatch} from "react-redux";
 import {fetchUser, logInUser} from "../../store/features/userSlice.js";
+import {LoadingBar} from "../loadingBar/LoadingBar.jsx";
+import axios from "axios";
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -18,6 +20,8 @@ function SignIn() {
     const dispatch = useDispatch();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [isHidePass,setIsHidePass] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(false);
+
   const validate = (name, value) => {
       let error = '';
       if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
@@ -85,10 +89,14 @@ const validateForm = ()=>{
   }
   const handleSubmit = (e) => {
       e.preventDefault();
+
+      setIsDisabled(true);
       if (validateForm()) {
           console.log('Form Submitted:', formData);
 
           setLoading(true);
+
+
           fetch( BACKEND_URL + "/api/login",
               {
                   headers: {
@@ -114,6 +122,7 @@ const validateForm = ()=>{
                   }
               })
               .catch(function(res){ console.log(res) })
+              .finally(()=>setIsDisabled(false));
       }
   };
 
@@ -123,6 +132,7 @@ const validateForm = ()=>{
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
+        <LoadingBar isLoading={isDisabled} />
       <div className="flex-1 hidden lg:block">
         <img
           src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1200&fit=crop"
@@ -133,7 +143,7 @@ const validateForm = ()=>{
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8 animate-fadeIn">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Sign In To FASCO</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Sign In To ADAA</h2>
           </div>
 
           <div className="flex gap-4 mb-6">
@@ -188,14 +198,20 @@ const validateForm = ()=>{
 
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-black text-white p-3 rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Sign In
-            </button>
+              <button
+                  type="submit"
+                  className={`w-full p-3 rounded-lg transition-all duration-200 transform ${
+                      isDisabled
+                          ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                          : "bg-black text-white hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98]"
+                  }`}
+                  disabled={isDisabled}
+              >
+                  Sign In
+              </button>
 
-            <div className="flex items-center justify-between text-sm">
+
+              <div className="flex items-center justify-between text-sm">
               <Link
                 to="/signup"
                 className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200"
@@ -212,7 +228,7 @@ const validateForm = ()=>{
           </form>
 
           <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-            By continuing, you agree to FASCO's{' '}
+            By continuing, you agree to ADAA's{' '}
             <Link to="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
               Terms & Conditions
             </Link>

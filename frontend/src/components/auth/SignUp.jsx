@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import {GoogleButton} from "./GoogleButton.jsx";
+import {LoadingBar} from "../loadingBar/LoadingBar.jsx";
 
 function SignUp() {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [otpSend, setOtpSend] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const [isHidePass, setIsHidePass] = useState(true);
   const navigate = useNavigate();
@@ -49,14 +51,12 @@ function SignUp() {
     } if (!formData.password) {
       setErrors(prev => ({ ...prev, password: "Please enter Password" }));
     }
-    if(errors.length===undefined){
-      return true
-    }else{
-      return false
-    }
+    return errors.length === undefined;
   }
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    setIsDisabled(true);
 
     if (validateForm()) {
       
@@ -93,11 +93,13 @@ function SignUp() {
 
         })
         .catch(function (err) { console.log(err) })
+          .finally(()=>setIsDisabled(false));
     }
   };
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
+      <LoadingBar isLoading={isDisabled} />
       <div className="flex-1 hidden lg:block">
         <img
           src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=800&h=1200&fit=crop"
@@ -175,11 +177,17 @@ function SignUp() {
             </div>
 
             <button
-              type="submit"
-              className="w-full bg-black text-white p-4 rounded-lg hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95"
+                type="submit"
+                className={`w-full p-4 rounded-lg transition-all duration-300 transform ${
+                    isDisabled
+                        ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                        : "bg-black text-white hover:bg-gray-800 hover:scale-105 hover:shadow-lg active:scale-95"
+                }`}
+                disabled={isDisabled}
             >
               Create Account
             </button>
+
 
             <p className="text-center text-sm animate-fadeIn dark:text-white" style={{ animationDelay: '0.5s' }}>
               Already have an account?{' '}

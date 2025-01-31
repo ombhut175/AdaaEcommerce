@@ -1,16 +1,20 @@
 import { useState,useEffect } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
+import {LoadingBar} from "../loadingBar/LoadingBar.jsx";
 function ResetPassword() {
   const [formData, setFormData] = useState({
     newPassword: '',
     confirmPassword: ''
   })
   const [errors, setErrors] = useState('');
+  const [isDisabled, setIsDisabled] = useState(false);
     const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+      setIsDisabled(true);
     if (!formData.newPassword || !formData.confirmPassword) {
       setErrors('Both fields are required.');
       return;
@@ -44,11 +48,13 @@ function ResetPassword() {
       .catch((err) => {
           console.log(err);
           setErrors('Failed to set new password. Please try again.');
-      });
+      })
+      .finally(() => setIsDisabled(false));
   }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
+        <LoadingBar isLoading={isDisabled} />
       <div className="flex-1 hidden lg:block">
         <img
           src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1200&fit=crop"
@@ -80,16 +86,22 @@ function ResetPassword() {
               />
             </div>
             {errors && <span className='text-red-700'>{errors}</span>}
-            <button
-              type="submit"
-              className="w-full bg-black text-white p-3 rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Submit
-            </button>
+              <button
+                  type="submit"
+                  className={`w-full p-3 rounded-lg transition-all duration-200 transform ${
+                      isDisabled
+                          ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                          : "bg-black text-white hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98]"
+                  }`}
+                  disabled={isDisabled}
+              >
+                  Submit
+              </button>
+
           </form>
 
           <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-            By continuing, you agree to FASCO's{' '}
+            By continuing, you agree to ADAA's{' '}
             <Link to="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
               Terms & Conditions
             </Link>
