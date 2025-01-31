@@ -440,7 +440,50 @@ async function searchProducts(req, res) {
 }
 
 async function getDealsOfTheMonth(req, res) {
+    try {
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
 
+        const endOfMonth = new Date();
+        endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+        endOfMonth.setDate(0);
+        endOfMonth.setHours(23, 59, 59, 999);
+
+        const deals = await Product.find({
+            discountPercent: { $gt: 0 },
+            createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+        })
+            .sort({ discountPercent: -1 }) // Sort by highest discount
+            .limit(4); // Limit to top 10 deals
+
+        res.status(200).json({ success: true, deals });
+    } catch (error) {
+        console.error('Error fetching deals of the month:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+}
+
+async function getNewArrivals(req, res) {
+    console.log("from getNewArrivals");
+    try {
+        // Fetch products created within the last 30 days and sorted by newest first
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const newArrivals = await Product.find({
+            createdAt: { $gte: thirtyDaysAgo },
+            productType: 'new',
+            stock: { $gt: 0 } // Ensure products are in stock
+        })
+            .sort({ createdAt: -1 }) // Sort by newest first
+            .limit(10); // Limit to 10 new arrivals
+
+        res.status(200).json({ success: true, newArrivals });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error', error });
+    }
 }
 
 
@@ -453,4 +496,6 @@ module.exports = {
     addProduct,
     filterProduct,
     searchProducts,
+    getDealsOfTheMonth,
+    getNewArrivals
 }

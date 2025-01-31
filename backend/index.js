@@ -80,6 +80,11 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api/google', googleRoutes);
         app.use('/api', authRouter)
         app.use('/api/',addressRouter)
+
+        // app.get('/api/products',(req,res)=>{
+        //     console.log("entered");
+        //     return res.status(200).json({message:"Entered"});
+        // })
         //verification middlewares
 
         // app.use('/api',validateLogin);
