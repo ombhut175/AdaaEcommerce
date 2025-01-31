@@ -21,7 +21,7 @@ export const userSlice = createSlice({
         name: '',
         profilePicture: '',
         userType: 'normal',
-        isLoggedIn:true,
+        isLoggedIn:false,
         role: []
     },
     reducers: {
