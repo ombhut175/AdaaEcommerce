@@ -3,9 +3,11 @@ const UserActivities = require('../models/UserActivities');
 const {giveUserFromDb} = require("../services/common.services");
 const {uploadOnCloudinary, uploadOnCloudinaryForProducts} = require("../services/cloudinary");
 const {getUser, giveUserIdFromCookies} = require("../services/auth");
+const {ObjectId} = require('mongoose').Types;
 const fs = require("node:fs");
 
-// Add a new product along with photos
+
+
 // Update addProduct controller
 const addProduct = async (req, res) => {
     try {
@@ -111,6 +113,7 @@ const addProduct = async (req, res) => {
 
 
 
+
 // Get all products
 const getAllProducts = async (req, res) => {
     try {
@@ -123,12 +126,13 @@ const getAllProducts = async (req, res) => {
 
 // Get a single product by ID
 const getProduct = async (req, res) => {
+    
     try {
         const product = await Product.findById(req.params.id);
         if (!product) {
             return res.status(404).json({success: false, message: 'Product not found'});
         }
-        res.status(200).json({success: true, product: product});
+        res.status(200).json(product);
     } catch (error) {
         res.status(500).json({success: false, message: 'Failed to fetch product', error: error.message});
     }
@@ -136,14 +140,171 @@ const getProduct = async (req, res) => {
 
 // Update a product by ID
 const updateProduct = async (req, res) => {
+    console.log("from updateProduct");
+    console.log("Raw req.body:", req.body);
+    console.log("Raw req.body.colorNames:", req.body.colorNames);
+    console.log("Raw req.body.colorValues:", req.body.colorValues);
+    console.log("Raw req.body.existingImagesByColor:", req.body.existingImagesByColor);
+
+    const oldImageUrls = [];
+
     try {
-        const product = await Product.findByIdAndUpdate(req.params.id, req.body, {new: true});
-        if (!product) {
-            return res.status(404).json({success: false, message: 'Product not found'});
+        const {
+            name,
+            title,
+            description,
+            price,
+            discount,
+            stock,
+            colorNames,
+            colorValues,
+            productId,
+            existingImagesByColor: existingImagesStr
+        } = req.body;
+
+        // Validate required fields
+        if (!productId) {
+            return res.status(400).json({
+                success: false,
+                message: "Product ID is required for updates"
+            });
         }
-        res.status(200).json({success: true, message: 'Product updated successfully', product});
-    } catch (error) {
-        res.status(500).json({success: false, message: 'Failed to update product', error: error.message});
+
+        // Parse incoming data
+        const parsedColorNames = JSON.parse(colorNames);
+        const parsedColorValues = JSON.parse(colorValues);
+        const existingImagesByColor = JSON.parse(existingImagesStr);
+
+        // Get existing product
+        const existingProduct = await Product.findById(productId);
+        if (!existingProduct) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+
+        // Track images to delete
+        const colorsToProcess = new Set(parsedColorNames);
+
+        // Process existing colors
+        existingProduct.colors.forEach(color => {
+            if (!colorsToProcess.has(color.colorName)) {
+                // Color removed - mark all images for deletion
+                oldImageUrls.push(...color.images);
+            }
+        });
+
+        // Process updated colors
+        const updatedColors = await Promise.all(parsedColorNames.map(async (colorName, index) => {
+            const existingColor = existingProduct.colors.find(c => c.colorName === colorName);
+            const existingImages = existingImagesByColor.find(c => c.colorName === colorName)?.existingUrls || [];
+
+            // Filter images to keep
+            const imagesToKeep = existingColor ?
+                existingColor.images.filter(img => existingImages.includes(img)) :
+                [];
+
+            // Mark removed images for deletion
+            if (existingColor) {
+                const imagesToDelete = existingColor.images.filter(img => !existingImages.includes(img));
+                oldImageUrls.push(...imagesToDelete);
+            }
+
+            // Process new uploads
+            const newFiles = req.files?.filter(f => f.fieldname === colorName) || [];
+            const newUrls = await uploadColorImages(req, newFiles, existingProduct._id, colorName);
+
+
+            return {
+                colorName,
+                colorValue: parsedColorValues[index],
+                images: [...imagesToKeep, ...newUrls]
+            };
+        }));
+
+        // Update product fields
+        existingProduct.name = name;
+        existingProduct.title = title;
+        existingProduct.description = description;
+        existingProduct.price = Number(price);
+        existingProduct.discountPercent = Number(discount);
+        existingProduct.stock = Number(stock);
+        existingProduct.colors = updatedColors;
+
+        // Save updated product
+        const updatedProduct = await existingProduct.save();
+
+        // Cleanup old images after successful update
+        await deleteCloudinaryImages(oldImageUrls);
+
+        res.status(200).json({
+            success: true,
+            product: updatedProduct
+        });
+
+    } catch (err) {
+        // Cleanup uploaded files on error
+        if (req.files) {
+            req.files.forEach(file => {
+                if (fs.existsSync(file.path)) {
+                    fs.unlinkSync(file.path);
+                } else {
+                    console.warn(`Warning: File not found for deletion: ${file.path}`);
+                }
+            });
+        }
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: "Product update failed",
+            error: err.message
+        });
+    }
+};
+
+// Helper function for image uploads
+const uploadColorImages = async (req, files, productId, colorName) => {
+    const user = getUser(req.cookies.authToken); // Now req is defined properly
+    const uploadPromises = files.map(async (file) => {
+        try {
+            const cleanColorName = colorName.replace(/[^a-zA-Z]/g, "");
+            const publicId = `${user.id}-${productId}-${cleanColorName}-${Date.now()}`;
+
+            const result = await uploadOnCloudinaryForProducts(file.path, {
+                folderPath: `${user.id}/${productId}/${cleanColorName}`,
+                publicId
+            });
+
+            await fs.promises.unlink(file.path);
+            return result?.secure_url;
+        } catch (error) {
+            console.error("Upload failed:", error);
+            return null;
+        }
+    });
+
+    return (await Promise.all(uploadPromises)).filter(url => url);
+};
+
+
+// Helper function for image deletion
+const deleteCloudinaryImages = async (urls) => {
+    try {
+        await Promise.all(
+            urls.map(async (url) => {
+                const publicId = getPublicIdFromUrl(url);
+                if (publicId) {
+                    try {
+                        await cloudinary.uploader.destroy(publicId);
+                    } catch (error) {
+                        console.error("Delete failed:", publicId, error);
+                    }
+                }
+            })
+        );
+    }catch (e) {
+        console.log(e)
     }
 };
 

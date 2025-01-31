@@ -4,9 +4,9 @@ import { FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaSearch, FaHeart, 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js";
-import {fetchUser, logOutUser} from "../../store/features/userSlice.js";
+import {fetchUser} from "../../store/features/userSlice.js";
 import axios from "axios";
-import Cookies from 'js-cookie'
+
 const searchSuggestions = [
     {
         type: 'recent',
@@ -47,6 +47,7 @@ export default function Navbar() {
     const dispatch = useDispatch();
     const darkMode = useSelector(selectDarkMode);
     const [isAdmin,setIsAdmin] = useState(false);
+    const [isDealer,setIsDealer] = useState(false);
     const user = useSelector(state => state.user);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -59,10 +60,13 @@ export default function Navbar() {
                 if (result.meta.requestStatus === 'fulfilled') {
                     setIsLoggedIn(true);
                     console.log("user verified");
-                    console.log("yesh : " , result);
+                    console.log(user);
                     console.log(user.role.includes('admin'));
                     if(user.role.includes('admin')) {
                         setIsAdmin(true);
+                    }
+                    if (user.role.includes('dealer')) {
+                        setIsDealer(true);
                     }
                 }
             })
@@ -106,11 +110,10 @@ export default function Navbar() {
         { name: 'Deals', path: '/deals' },
         { name: 'Shop', path: '/shop' },
         { name: 'New Arrivals', path: '/new-arrivals' },
-        { name: 'Dealer View' , path : '/dealer/products'},
-        { name: 'Add Product' , path : '/dealer/products/new'},
-        { name: 'Dealer' , path : '/dealer/products'},
-
+        // { name: 'Dealer', path: '/dealer/products' }
+        ...(isDealer ? [{ name: 'Dealer', path: '/dealer/products' }] : [])
     ];
+
 
     return (
         <nav className="fixed w-full bg-white dark:bg-gray-900 shadow-md z-50">
@@ -127,7 +130,7 @@ export default function Navbar() {
 
                         <Link to="/" className="flex-shrink-0">
                             <motion.h1
-                                className="text-2xl font-bold text-black dark:text-white hover-transition"
+                                className="text-2xl font-bold text-black dark:text-white hover-transition me-12"
                                 whileHover={{ scale: 1.05 }}
                             >
                                 ADAA
@@ -265,7 +268,7 @@ export default function Navbar() {
                                 whileTap={{ scale: 0.95 }}
                                 className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                             >
-                                <FaHeart size={20} />
+                                <i class="fa-regular fa-heart text-2xl" ></i>
                             </motion.div>
                         </Link>
 
@@ -324,8 +327,8 @@ export default function Navbar() {
                                                 whileHover={{ x: 4 }}
                                                 className="w-full flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                                                 onClick={() => {
-                                                    dispatch(logOutUser())
-                                                    navigate('/signin')
+                                                    // Handle logout
+                                                    console.log('Logging out...');
                                                 }}
                                             >
                                                 <FaSignOutAlt />

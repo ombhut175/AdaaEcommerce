@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Link,Navigate,useNavigate,useParams } from 'react-router-dom';
 import { FaHeart, FaShare } from 'react-icons/fa';
+import { useSelector } from 'react-redux'
 import axios from 'axios'
 export default function ProductDetail() {
   
@@ -21,16 +22,19 @@ export default function ProductDetail() {
   const [index,setIndex] = useState(0);
   const [indexImageChange,setIndexImageChange] = useState(0);
   const navigate = useNavigate()
-  
+  const user = useSelector(state => state.user)
   useEffect(()=>{
     axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + id)
     .then((res)=>{
-      setProduct(res.data.product);
+      
+      setProduct(res.data);
+      
+      
     })
     .catch((err)=>{
       console.log(err );
     })
-  },[])
+  },[id])
 
   //calculate the stars of review
   const setReviewStars = ()=>{
@@ -72,7 +76,7 @@ export default function ProductDetail() {
   }, [product,selectedColor]);
   
   const handleAddCart = ()=>{
-    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/"+id)
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/"+id,{selectedColor})
     .then((res)=>{
       console.log(res);
       
@@ -93,7 +97,7 @@ export default function ProductDetail() {
           <span className="mx-2">/</span>
           <Link to="/shop" className="hover:text-primary-500 dark:hover:text-primary-400">Shop</Link>
           <span className="mx-2">/</span>
-          <span>{product.title}</span>
+          <span>{product?.title}</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -138,7 +142,7 @@ export default function ProductDetail() {
             >
               <div className="mb-4">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  {product.title}
+                  {product?.title}
                 </h1>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center">
@@ -168,10 +172,10 @@ export default function ProductDetail() {
               </div>
 
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">${product.price}</span>
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">${product?.price}</span>
                 <span className="text-xl text-gray-500 line-through">$59.00</span>
                 <span className="px-2 py-1 bg-red-100 text-red-600 rounded-md text-sm">
-                  SAVE {product.discountPercent}%
+                  SAVE {product?.discountPercent}%
                 </span>
               </div>
 
@@ -180,9 +184,9 @@ export default function ProductDetail() {
                   Hurry up! Sale ends in: 00:05:59:47
                 </p>
                 {
-                product.stock < 10 ?
+                product?.stock < 10 ?
                 <p className="text-gray-600 dark:text-gray-400 mt-2">
-                  Only {product.stock} item(s) left in stock!
+                  Only {product?.stock} item(s) left in stock!
                 </p>:<></>
                 }
               </div>
@@ -276,6 +280,24 @@ export default function ProductDetail() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700"
+                  onClick={
+
+                    
+                    ()=>{
+                        console.log(user.id);
+                        console.log(id);
+                        console.log(selectedColor);
+                        console.log(selectedSize);
+                        
+                        axios.post(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id , {color:selectedColor,size:selectedSize,productId : id})
+                        .then((res)=>{
+                          console.log(res.data);
+                          
+                        })
+                    
+                      }
+                  }
+                
                 >
                   <FaHeart className="text-gray-600 dark:text-gray-400" />
                 </motion.button>

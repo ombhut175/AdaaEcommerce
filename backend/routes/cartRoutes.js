@@ -4,7 +4,7 @@ const cartRoutes = require('express').Router();
 
 cartRoutes.get('/', handleGetCart);
 cartRoutes.delete('/:productId', handleDeleteProductFromCart);
-cartRoutes.put('/changeProductQuantity/:productId/:quantity', handleUpdateProductQuantity);
+cartRoutes.put('/changeProductQuantity/:productId', handleUpdateProductQuantity);
 cartRoutes.post('/addProduct/:productId', handleAddProductToCart);
 
 module.exports = cartRoutes;

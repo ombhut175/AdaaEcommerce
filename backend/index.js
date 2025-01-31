@@ -21,7 +21,11 @@ const trackingRoutes = require('./routes/tracking')
 const deliveryRouter = require("./routes/delivery")
 const adminRouter = require("./routes/adminRoutes");
 const {giveStaticImages} = require("./controllers/admin");
-const addressRouter = require("./routes/address")
+const dealerRouter = require("./routes/dealerRoutes");
+const addressRouter = require('./routes/address');
+const wishListRouter = require('./routes/wishlist')
+
+
 //configuration--------------------------------------------------
 dotenv.config()
 const PORT = process.env.PORT;
@@ -79,11 +83,15 @@ mongoose.connect(process.env.MONGO_URL)
 
         //cart middlewares
         app.use('/api/cart', cartRoutes);
-
+        app.use('/api/wishlist',wishListRouter)
         //user middleware
 
         app.use('/api/user', userRoutes);
         app.use('/api/orders' ,orderRoutes);
+
+        //dealer middlewares
+        app.use('/api/dealer',dealerRouter);
+
 
         //products middleware
         app.use('/api/products', productRouter);

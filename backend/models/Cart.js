@@ -6,21 +6,18 @@ const cartSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
-    cartItems: [{
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
-        },
-        quantity: {
-            type: Number,
-            required: true,
-            default: 1
-        },
-        selectedColor:{
-            type:String,
-            required:true
-        }
-    }],
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+    },
+    quantity: {
+        type: Number,
+        required: true,
+        default: 1
+    },
+    selectedColor: {
+        type: String,
+    },
     createdAt: {
         type: Date,
         default: Date.now

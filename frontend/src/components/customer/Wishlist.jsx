@@ -1,7 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaTrash, FaShoppingCart, FaChevronLeft } from 'react-icons/fa';
-
+import { useSelector } from 'react-redux';
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 // Mock wishlist data - replace with actual data from your state management
 const initialWishlist = [
   {
@@ -26,14 +28,25 @@ export default function Wishlist() {
   const [wishlist, setWishlist] = useState(initialWishlist);
   const [swipingId, setSwipingId] = useState(null);
   const [swipeProgress, setSwipeProgress] = useState(0);
-
+  const user = useSelector(state => state.user)
+  const navigate = useNavigate();
+  useEffect(()=>{
+    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id)
+    .then((res)=>{
+      console.log(res.data);
+      setWishlist(res.data)
+    })
+  },[user])
+  
+  
+  
   const removeFromWishlist = (id) => {
     setWishlist(wishlist.filter(item => item.id !== id));
   };
 
   const addToCart = (item) => {
-    console.log('Adding to cart:', item);
-    // Implement your add to cart logic here
+    navigate('/product/'+ item.product?._id)
+    
   };
 
   const handleDragEnd = (e, info, item) => {
@@ -111,7 +124,7 @@ export default function Wishlist() {
                   <div className="flex items-center p-4">
                     <div className="relative w-24 h-24 rounded-lg overflow-hidden">
                       <img
-                        src={item.image}
+                        src={item.product?.images[0]}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />
@@ -129,7 +142,7 @@ export default function Wishlist() {
                         {item.color} • Size {item.size}
                       </p>
                       <p className="text-lg font-bold text-gray-900 dark:text-white mt-2">
-                        ${item.price}
+                        ${item.product?.price}
                       </p>
                     </div>
                     <div className="flex gap-2">
