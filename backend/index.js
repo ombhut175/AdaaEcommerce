@@ -23,7 +23,9 @@ const adminRouter = require("./routes/adminRoutes");
 const {giveStaticImages} = require("./controllers/admin");
 const dealerRouter = require("./routes/dealerRoutes");
 const addressRouter = require('./routes/address');
-const wishListRouter = require('./routes/wishlist')
+const wishListRouter = require('./routes/wishlist');
+const { createServer } = require('node:http');
+const { initSocket } = require("./services/socket");
 
 
 //configuration--------------------------------------------------
@@ -38,12 +40,13 @@ mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log(`Mongodb is connected`);
         const app = express();
+
+        const server = createServer(app);
+
+        // Initialize Socket.IO
+        initSocket(server);
+
         //middlewares
-        // app.use(cors({
-        //     origin: '*', // Allow this specific origin
-        //     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-        //     credentials: true // If you're using cookies or authentication
-        // }));
         app.use(cors({
             origin: 'http://localhost:5173', // Specify your frontend's origin
             methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
