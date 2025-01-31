@@ -1,32 +1,89 @@
 const Cart = require("../models/Cart");
+const Product = require("../models/Product");
 const { giveUserIdFromCookies } = require("../services/auth");
-const { ObjectId } = require("mongoose").Types;
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 // Get the whole cart of the user
 async function handleGetCart(req, res) {
     try {
-        const userId = giveUserIdFromCookies(req.cookies.authToken);
-        const cartItems = await Cart.find({ userId: new ObjectId(userId) }).populate('productId');
-        if (!cartItems.length) return res.status(404).json({ message: "Cart is empty" });
+        // 1. Get user ID from cookies
+        const authToken = req.cookies.authToken;
+        if (!authToken) {
+            return res.status(401).json({ message: "Authentication required" });
+        }
 
-        const totalAmount = cartItems.reduce((total, item) => {
+        const userId = giveUserIdFromCookies(authToken);
+
+        // 2. Validate user ID format
+        console.log(ObjectId.isValid(userId));
+        if (!ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid user ID format" });
+        }
+
+        // 3. Fetch cart items with population and lean conversion
+        const cartItems = await Cart.find({ userId })
+            .populate({
+                path: 'productId',
+                model: 'Product',
+                select: 'name price discountPercent colors images stock', // Only necessary fields
+            })
+            .lean();
+        console.log(cartItems);
+
+        // 4. Filter out invalid products and format response
+        const validItems = cartItems.filter(item => item.productId).map(item => {
             const product = item.productId;
-            const price = product.price || 0;
-            const quantity = item.quantity || 1;
-            const discount = product.discountPercent || 0;
+
+            return {
+                product: {
+                    _id: product._id,
+                    name: product.name,
+                    price: product.price,
+                    discountPercent: product.discountPercent || 0,
+                    availableColors: product.colors,
+                    images: product.images,
+                    stock: product.stock
+                },
+                quantity: item.quantity,
+                selectedColor: item.selectedColor,
+                itemAddedAt: item.createdAt
+            };
+        });
+
+        if (validItems.length === 0) {
+            return res.status(404).json({ message: "No valid products in cart" });
+        }
+
+        // 5. Calculate total amount with discounts
+        const totalAmount = validItems.reduce((total, item) => {
+            const price = item.product.price;
+            const discount = item.product.discountPercent;
+            const quantity = item.quantity;
+
             return total + (quantity * (price - (price * discount / 100)));
         }, 0);
 
-        return res.status(200).json({
-            products: cartItems.map(item => ({
-                productId: item.productId,
-                quantity: item.quantity,
-                selectedColor: item.selectedColor
-            })),
-            totalAmount,
+        // 6. Send response
+        res.status(200).json({
+            count: validItems.length,
+            items: validItems,
+            totalAmount: parseFloat(totalAmount.toFixed(2)),
+            currency: "INR" // Adjust based on your currency
         });
+
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.error("Cart Error:", error);
+
+        // Handle specific MongoDB errors
+        if (error instanceof mongoose.Error.CastError) {
+            return res.status(400).json({ message: "Invalid data format" });
+        }
+
+        res.status(500).json({
+            message: error.message || "Failed to retrieve cart items",
+            errorCode: "CART_FETCH_ERROR"
+        });
     }
 }
 
@@ -135,6 +192,7 @@ async function getTotalAmountFromCart(userId) {
         return 0;
     }
 }
+
 
 module.exports = {
     handleGetCart,
