@@ -7,7 +7,7 @@ const UserActivities = require('../models/UserActivities');
 
 
 // Replace with your MongoDB URI
-const mongoURI = 'mongodb+srv://codersarea12:Srno5rhICfGQQhKl@cluster0.u9zuf.mongodb.net/adaa-ecommerce';
+const mongoURI = ';
 
 
 // mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true }).then(()=>{
