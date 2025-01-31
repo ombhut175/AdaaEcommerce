@@ -21,13 +21,18 @@ export const userSlice = createSlice({
         name: '',
         profilePicture: '',
         userType: 'normal',
+        isLoggedIn:true,
         role: []
     },
     reducers: {
         addUser: (state, action) => {
             Object.assign(state, action.payload);
         },
+        logInUser: (state) => {
+            state.isLoggedIn = true;
+        },
         logOutUser: (state) => {
+            state.isLoggedIn = false;
             Object.keys(state).forEach(key => delete state[key]);
         },
         setProfilePicture: (state, action) => {
@@ -49,6 +54,6 @@ export const userSlice = createSlice({
 });
 
 
-export const {addUser, logOutUser, setProfilePicture, changeName, editUser} = userSlice.actions;
+export const {addUser, logOutUser, setProfilePicture, changeName, editUser,logInUser} = userSlice.actions;
 
 export default userSlice.reducer;

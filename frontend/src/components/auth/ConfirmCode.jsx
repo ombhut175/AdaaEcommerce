@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import {fetchUser, logInUser} from "../../store/features/userSlice.js";
+import {useDispatch} from "react-redux";
 
 function ConfirmCode() {
   const [otp, setOtp] = useState('')
   const [errors, setErrors] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Function to verify the OTP entered by the user
@@ -32,6 +35,8 @@ const handleSubmit = (e) => {
             if (data.success) {
                 localStorage.setItem('authToken',data.token)
                 toast(data.msg);
+                dispatch(fetchUser());
+                dispatch(logInUser());
                 navigate('/home'); // Redirect to home page after successful OTP verification
                 
             } else {

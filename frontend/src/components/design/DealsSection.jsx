@@ -26,7 +26,7 @@ export default function DealsSection() {
 
   useEffect(() => {
     console.log(user);
-    if (user && user.role.includes('admin')) {
+    if (user && user.role?.includes('admin')) {
       setIsAdmin(true);
     }
   },[]);
