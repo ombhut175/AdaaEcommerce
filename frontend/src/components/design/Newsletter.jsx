@@ -12,7 +12,7 @@ export default function Newsletter() {
 
   useEffect(() => {
     console.log(user);
-    if (user && user.role.includes('admin')) {
+    if (user && user.role?.includes('admin')) {
       setIsAdmin(true);
     }
   },[user]);

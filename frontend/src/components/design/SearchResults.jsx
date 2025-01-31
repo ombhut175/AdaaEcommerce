@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useSearchParams, Link } from 'react-router-dom';
 import { FaShoppingCart, FaHeart } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 // Mock search results - replace with actual search logic
 const mockProducts = [
@@ -19,11 +21,24 @@ const mockProducts = [
     category: 'Jackets'
   }
 ];
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
 export default function SearchResults() {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get('q');
+  const [mockProducts,setMockProducts] = useState([])
+  const query = searchParams.get('q')
+  
+  
+  useEffect(()=>{
 
+    axios.get(BACKEND_URL + '/api/products/search/' + searchParams)
+    .then((res)=>{
+
+        setMockProducts(res.data.products)
+        console.log(mockProducts);
+         
+    })
+
+  },[])
   // Mock filtering - replace with actual search logic
   const filteredProducts = mockProducts.filter(product =>
     product.name.toLowerCase().includes(query?.toLowerCase() || '')

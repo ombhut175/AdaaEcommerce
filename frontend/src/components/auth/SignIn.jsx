@@ -3,6 +3,7 @@ import { Link,useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
 import {GoogleButton} from "./GoogleButton.jsx";
 import { jwtDecode } from 'jwt-decode'
+import { useDispatch } from 'react-redux';
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -100,9 +101,6 @@ const validateForm = ()=>{
                 console.log(res);
                 
                   if(res.success){
-                      localStorage.setItem('role',jwtDecode(res.token).role)
-                      localStorage.setItem('authToken',res.token);
-                      localStorage.setItem('profilePicture',res.profilePicture);
                       setLoading(false);
                       toast(res.msg);
                           navigate('/')
