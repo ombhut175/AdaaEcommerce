@@ -4,7 +4,7 @@ import {FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaSearch, FaHeart, F
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js";
-import {fetchUser, logInUser, logOutUser} from "../../store/features/userSlice.js";
+import {changeRole, fetchUser, logInUser, logOutUser} from "../../store/features/userSlice.js";
 import axios from "axios";
 import {toast} from 'react-toastify';
 
@@ -156,8 +156,13 @@ export default function Navbar() {
         {name: 'Deals', path: '/deals'},
         {name: 'Shop', path: '/shop'},
         {name: 'New Arrivals', path: '/new-arrivals'},
-        ...(user.role?.includes('dealer') ? [{name: 'Dealer', path: '/dealer/products'}] : [])
+        {name: 'Dealer', path: '/dealer/products'}
+        // ...(user.role?.includes('dealer') ? [{name: 'Dealer', path: '/dealer/products'}] : [])
     ];
+
+    const giveAdmin = async () => {
+        dispatch(changeRole('admin'));
+    }
 
     // Close user dropdown when clicking outside
     useEffect(() => {
@@ -267,6 +272,17 @@ export default function Navbar() {
                                                     </motion.div>
                                                 </Link>
                                             ))}
+                                            <motion.div
+                                                whileHover={{
+                                                    x: 4,
+                                                    backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(243, 244, 246)'
+                                                }}
+                                                className="px-4 py-2
+                                                 cursor-pointer text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+                                                onClick={giveAdmin}
+                                            >
+                                                Admin
+                                            </motion.div>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>

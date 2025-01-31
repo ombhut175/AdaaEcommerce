@@ -32,6 +32,11 @@ export default function DealsSection() {
   },[user]);
 
   useEffect(() => {
+
+  }, []);
+
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         const newSeconds = prev.seconds - 1;
@@ -53,6 +58,7 @@ export default function DealsSection() {
 
     return () => clearInterval(timer);
   }, []);
+
 
   const handleImageChange = (index, e) => {
     const file = e.target.files[0];

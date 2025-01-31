@@ -44,6 +44,11 @@ export const userSlice = createSlice({
         editUser: (state, action) => {
             state.name = action.payload.name;
             state.profilePicture = action.payload.profilePicture;
+        },
+        changeRole: (state, action) => {
+            if (!state.role.includes(action.payload)) {
+                state.role.push(action.payload);
+            }
         }
     },
     extraReducers: (builder) => {
@@ -54,6 +59,6 @@ export const userSlice = createSlice({
 });
 
 
-export const {addUser, logOutUser, setProfilePicture, changeName, editUser,logInUser} = userSlice.actions;
+export const {addUser, logOutUser, setProfilePicture, changeName, editUser,logInUser,changeRole} = userSlice.actions;
 
 export default userSlice.reducer;
