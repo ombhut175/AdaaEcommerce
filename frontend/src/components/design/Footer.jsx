@@ -33,7 +33,7 @@ export default function Footer() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 md:mb-0"
           >
-            <h2 className="text-2xl font-bold text-black dark:text-white">FASCO</h2>
+            <h2 className="text-2xl font-bold text-black dark:text-white">ADAA</h2>
           </motion.div>
 
           <motion.div
@@ -54,7 +54,7 @@ export default function Footer() {
         </div>
 
         <div className="text-center text-gray-600 dark:text-gray-400 mt-8">
-          <p>Copyright © 2023 Fasco. All Rights Reserved.</p>
+          <p>Copyright © 2025 ADAA. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

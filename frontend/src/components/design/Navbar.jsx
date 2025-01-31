@@ -51,6 +51,9 @@ export default function Navbar() {
     const [isDealer, setIsDealer] = useState(false);
     const user = useSelector(state => state.user);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const userDropdownRef = useRef(null);
+    const submenuRef = useRef(null);
+    const mobileSubmenuRef = useRef(null);
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const userRef = useRef(null);
@@ -132,7 +135,6 @@ export default function Navbar() {
             setIsSearchOpen(false);
             setShowSuggestions(false);
 
-            
 
             navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
             setSearchQuery('');
@@ -156,6 +158,44 @@ export default function Navbar() {
         {name: 'New Arrivals', path: '/new-arrivals'},
         ...(user.role?.includes('dealer') ? [{name: 'Dealer', path: '/dealer/products'}] : [])
     ];
+
+    // Close user dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+// Close browse submenu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (submenuRef.current && !submenuRef.current.contains(event.target)) {
+                setIsSubmenuOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Click outside handler for mobile submenu
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                mobileSubmenuRef.current &&
+                !mobileSubmenuRef.current.contains(event.target) &&
+                !event.target.closest('[aria-label="Mobile menu toggle"]')
+            ) {
+                setIsSubmenuOpen(false);
+                setIsMobileMenuOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
 
     return (
@@ -208,6 +248,7 @@ export default function Navbar() {
                                             animate={{opacity: 1, y: 0}}
                                             exit={{opacity: 0, y: -10}}
                                             className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2"
+                                            ref={submenuRef}
                                         >
                                             {submenuItems.map((item) => (
                                                 <Link
@@ -352,6 +393,7 @@ export default function Navbar() {
                                             animate={{opacity: 1, y: 0, scale: 1}}
                                             exit={{opacity: 0, y: -10, scale: 0.95}}
                                             className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border border-gray-200 dark:border-gray-700"
+                                            ref={userDropdownRef}
                                         >
                                             <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
                                                 <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
@@ -426,6 +468,7 @@ export default function Navbar() {
                         animate={{opacity: 1, height: 'auto'}}
                         exit={{opacity: 0, height: 0}}
                         className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
+                        ref={mobileSubmenuRef}
                     >
                         <div className="px-4 py-2 space-y-4">
                             <Link to="/" className="block py-2 text-gray-700 dark:text-gray-300">
@@ -441,7 +484,7 @@ export default function Navbar() {
                                         className={`transition-transform duration-300 ${isSubmenuOpen ? 'rotate-180' : ''}`}/>
                                 </button>
                                 {isSubmenuOpen && (
-                                    <div className="pl-4 space-y-2">
+                                    <div className="pl-4 space-y-2" ref={submenuRef}>
                                         {submenuItems.map((item) => (
                                             <Link
                                                 key={item.path}
