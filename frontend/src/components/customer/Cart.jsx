@@ -1,8 +1,9 @@
 // Previous imports remain the same...
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
+import axios from 'axios';
 
 const cartItems = [
   {
@@ -18,6 +19,14 @@ const cartItems = [
 export default function Cart() {
   // Previous state and functions remain the same...
   const [items, setItems] = useState(cartItems);
+
+  useEffect(()=>{
+    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/cart' ,{withCredentials:true})
+    .then((res)=>{
+      console.log(resl.data);
+    })
+  },[])
+
 
   const updateQuantity = (id, change) => {
     setItems(prevItems =>

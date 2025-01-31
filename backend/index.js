@@ -22,6 +22,9 @@ const deliveryRouter = require("./routes/delivery")
 const adminRouter = require("./routes/adminRoutes");
 const {giveStaticImages} = require("./controllers/admin");
 const dealerRouter = require("./routes/dealerRoutes");
+const addressRouter = require('./routes/address');
+const wishListRouter = require('./routes/wishlist')
+
 
 //configuration--------------------------------------------------
 dotenv.config()
@@ -73,14 +76,14 @@ mongoose.connect(process.env.MONGO_URL)
         //auth middlewares
         app.use('/api/google', googleRoutes);
         app.use('/api', authRouter)
-
+        app.use('/api/',addressRouter)
         //verification middlewares
 
         // app.use('/api',validateLogin);
 
         //cart middlewares
         app.use('/api/cart', cartRoutes);
-
+        app.use('/api/wishlist',wishListRouter)
         //user middleware
 
         app.use('/api/user', userRoutes);
@@ -104,7 +107,7 @@ mongoose.connect(process.env.MONGO_URL)
         });
 
         //payment
-        app.use('/api/payment',paymentRouter)
+        app.use('/api',paymentRouter)
 
         //trackingProducts
 

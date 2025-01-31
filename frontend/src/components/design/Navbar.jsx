@@ -268,7 +268,7 @@ export default function Navbar() {
                                 whileTap={{ scale: 0.95 }}
                                 className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                             >
-                                <FaHeart size={20} />
+                                <i class="fa-regular fa-heart text-2xl" ></i>
                             </motion.div>
                         </Link>
 
