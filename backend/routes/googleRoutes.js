@@ -43,7 +43,7 @@ googleRoutes.get('/callback', passport.authenticate('google', {
     const {user} = req;
     const token = setUser(user);
     setUserCookies(res ,token);
-    return res.redirect(`${process.env.CLIENT_URL}home`);
+    return res.redirect(`${process.env.CLIENT_URL}`);
 });
 
 googleRoutes.get('/logout',(req,res,next)=>{
