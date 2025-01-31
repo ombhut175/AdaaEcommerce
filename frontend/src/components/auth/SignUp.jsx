@@ -49,7 +49,7 @@ function SignUp() {
     } if (!formData.password) {
       setErrors(prev => ({ ...prev, password: "Please enter Password" }));
     }
-    if(errors.length==undefined){
+    if(errors.length===undefined){
       return true
     }else{
       return false

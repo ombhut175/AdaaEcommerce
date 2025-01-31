@@ -3,6 +3,8 @@ import { Link,useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
 import {GoogleButton} from "./GoogleButton.jsx";
 import { jwtDecode } from 'jwt-decode'
+import {useDispatch} from "react-redux";
+import {fetchUser, logInUser} from "../../store/features/userSlice.js";
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ function SignIn() {
   const [errors, setErrors] = useState({});
   const [loading,setLoading] = useState(false);
   const navigate = useNavigate()
+    const dispatch = useDispatch();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [isHidePass,setIsHidePass] = useState(true);
   const validate = (name, value) => {
@@ -27,7 +30,7 @@ function SignIn() {
       }
       setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
     };
-  
+
 
   const handleChange = (e) => {
       const { name, value } = e.target;
@@ -36,7 +39,7 @@ function SignIn() {
   };
 const validateForm = ()=>{
   console.log(formData);
-  
+
   if(!formData.email && !formData.password){
     setErrors(prev => ({...prev ,"password":"Please enter Password"}))
     setErrors(prev => ({...prev ,"email":"Please enter Email"}))
@@ -68,7 +71,7 @@ const validateForm = ()=>{
       if (data.success) {
           toast(data.msg);
           navigate('/forgot-password'); // Redirect to home page after successful OTP verification
-          
+
       } else {
           console.log(data);
           toast(data.msg)
@@ -84,7 +87,7 @@ const validateForm = ()=>{
       e.preventDefault();
       if (validateForm()) {
           console.log('Form Submitted:', formData);
-          
+
           setLoading(true);
           fetch( BACKEND_URL + "/api/login",
               {
@@ -98,18 +101,20 @@ const validateForm = ()=>{
               .then((res)=> res.json())
               .then((res)=>{
                 console.log(res);
-                
+
                   if(res.success){
                       localStorage.setItem('role',jwtDecode(res.token).role)
                       localStorage.setItem('authToken',res.token);
                       localStorage.setItem('profilePicture',res.profilePicture);
                       setLoading(false);
                       toast(res.msg);
+                      dispatch(fetchUser());
+                      dispatch(logInUser());
                           navigate('/')
-                      
+
                   }else{
                     toast(res.msg)
-                  } 
+                  }
               })
               .catch(function(res){ console.log(res) })
       }
@@ -161,7 +166,7 @@ const validateForm = ()=>{
               </div>
               <div className="relative">
   <input
-    type={isHidePass ? "password" : "text"} 
+    type={isHidePass ? "password" : "text"}
     placeholder="Password"
     name="password"
     className="relative w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
@@ -173,13 +178,13 @@ const validateForm = ()=>{
     className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 p-1"
     onClick={(e) => {
       e.preventDefault();
-      setIsHidePass(!isHidePass); 
+      setIsHidePass(!isHidePass);
     }}
   >
     {isHidePass ? (
-      <i className="fa-regular fa-eye"></i> 
+      <i className="fa-regular fa-eye"></i>
     ) : (
-      <i className="fa-regular fa-eye-slash"></i> 
+      <i className="fa-regular fa-eye-slash"></i>
     )}
   </button>
 </div>

@@ -1,35 +1,35 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useRef, useEffect } from 'react';
-import { FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaSearch, FaHeart, FaBars, FaTimes } from 'react-icons/fa';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import {motion, AnimatePresence} from 'framer-motion';
+import {useState, useRef, useEffect} from 'react';
+import {FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaSearch, FaHeart, FaBars, FaTimes} from 'react-icons/fa';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux';
 import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js";
-import {fetchUser, logOutUser} from "../../store/features/userSlice.js";
+import {fetchUser, logInUser, logOutUser} from "../../store/features/userSlice.js";
 import axios from "axios";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
 const searchSuggestions = [
     {
         type: 'recent',
         items: [
-            { id: 1, text: 'Summer dresses' },
-            { id: 2, text: 'Denim jackets' }
+            {id: 1, text: 'Summer dresses'},
+            {id: 2, text: 'Denim jackets'}
         ]
     },
     {
         type: 'trending',
         items: [
-            { id: 3, text: 'Winter collection 2024' },
-            { id: 4, text: 'Party wear' },
-            { id: 5, text: 'Casual outfits' }
+            {id: 3, text: 'Winter collection 2024'},
+            {id: 4, text: 'Party wear'},
+            {id: 5, text: 'Casual outfits'}
         ]
     },
     {
         type: 'popular',
         items: [
-            { id: 6, text: 'Designer bags' },
-            { id: 7, text: 'Sneakers' },
-            { id: 8, text: 'Accessories' }
+            {id: 6, text: 'Designer bags'},
+            {id: 7, text: 'Sneakers'},
+            {id: 8, text: 'Accessories'}
         ]
     }
 ];
@@ -47,33 +47,71 @@ export default function Navbar() {
     const searchContainerRef = useRef(null);
     const dispatch = useDispatch();
     const darkMode = useSelector(selectDarkMode);
-    const [isAdmin,setIsAdmin] = useState(false);
-    const [isDealer,setIsDealer] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isDealer, setIsDealer] = useState(false);
     const user = useSelector(state => state.user);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-
-    const [isLoggedIn,setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const userRef = useRef(null);
 
     useEffect(() => {
-        dispatch(fetchUser())
-            .then((result) => {
-                if (result.meta.requestStatus === 'fulfilled') {
-                    setIsLoggedIn(true);
-                    console.log("user verified");
-                    console.log(user);
-                    console.log(user.role.includes('admin'));
-                    if(user.role.includes('admin')) {
-                        setIsAdmin(true);
+        if (!userRef.current && user) {
+            dispatch(fetchUser())
+                .then((result) => {
+                    if (result.meta.requestStatus === 'fulfilled') {
+                        setIsLoggedIn(true);
+                        console.log("user verified");
+                        console.log(user);
+                        console.log(user.role.includes('admin'));
+                        dispatch(logInUser());
+                        if (user.role.includes('admin')) {
+                            setIsAdmin(true);
+                        }
+                        if (user.role.includes('dealer')) {
+                            setIsDealer(true);
+                        }
                     }
-                    if (user.role.includes('dealer')) {
-                        setIsDealer(true);
-                    }
+                })
+                .catch((error) => {
+                    console.log('An unexpected error occurred:', error);
+                });
+
+            const handleClickOutside = (event) => {
+                if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+                    setShowSuggestions(false);
+                    setIsSearchOpen(false);
                 }
-            })
-            .catch((error) => {
-                console.log('An unexpected error occurred:', error);
-            });
+            };
+
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [dispatch]);
+
+    useEffect(() => {
+        // Only run if user data is fetched and state hasn't been processed yet
+        if (user) {
+            if (user.isLoggedIn !== isLoggedIn) {
+                setIsLoggedIn(user.isLoggedIn);
+                console.log("user verified");
+                console.log(user);
+            }
+
+            if (user.isLoggedIn && user.role?.includes('admin') && !isAdmin) {
+                setIsAdmin(true);
+            } else if (!user.role?.includes('admin') && isAdmin) {
+                setIsAdmin(false);
+            }
+
+            if (user.isLoggedIn && user.role?.includes('dealer') && !isDealer) {
+                setIsDealer(true);
+            } else if (!user.role?.includes('dealer') && isDealer) {
+                setIsDealer(false);
+            }
+        } else {
+            dispatch(fetchUser());
+        }
 
         const handleClickOutside = (event) => {
             if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
@@ -84,7 +122,8 @@ export default function Navbar() {
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [dispatch, user, isLoggedIn, isAdmin, isDealer]); // Add state variables to ensure they trigger the effect when their values change
+
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -108,11 +147,11 @@ export default function Navbar() {
     };
 
     const submenuItems = [
-        { name: 'Deals', path: '/deals' },
-        { name: 'Shop', path: '/shop' },
-        { name: 'New Arrivals', path: '/new-arrivals' },
+        {name: 'Deals', path: '/deals'},
+        {name: 'Shop', path: '/shop'},
+        {name: 'New Arrivals', path: '/new-arrivals'},
         // { name: 'Dealer', path: '/dealer/products' }
-        ...(isDealer ? [{ name: 'Dealer', path: '/dealer/products' }] : [])
+        ...(isDealer ? [{name: 'Dealer', path: '/dealer/products'}] : [])
     ];
 
 
@@ -122,17 +161,17 @@ export default function Navbar() {
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-4">
                         <motion.button
-                            whileTap={{ scale: 0.95 }}
+                            whileTap={{scale: 0.95}}
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             className="md:hidden text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                         >
-                            {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+                            {isMobileMenuOpen ? <FaTimes size={24}/> : <FaBars size={24}/>}
                         </motion.button>
 
                         <Link to="/" className="flex-shrink-0">
                             <motion.h1
                                 className="text-2xl font-bold text-black dark:text-white hover-transition me-12"
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{scale: 1.05}}
                             >
                                 ADAA
                             </motion.h1>
@@ -141,7 +180,7 @@ export default function Navbar() {
                         <div className="hidden md:flex items-center gap-6">
                             <Link to="/">
                                 <motion.span
-                                    whileHover={{ scale: 1.1 }}
+                                    whileHover={{scale: 1.1}}
                                     className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                                 >
                                     Home
@@ -150,20 +189,21 @@ export default function Navbar() {
 
                             <div className="relative">
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                     onClick={() => setIsSubmenuOpen(!isSubmenuOpen)}
                                     className="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                                 >
                                     Browse
-                                    <FaChevronDown className={`transition-transform duration-300 ${isSubmenuOpen ? 'rotate-180' : ''}`} />
+                                    <FaChevronDown
+                                        className={`transition-transform duration-300 ${isSubmenuOpen ? 'rotate-180' : ''}`}/>
                                 </motion.button>
 
                                 <AnimatePresence>
                                     {isSubmenuOpen && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: -10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
+                                            initial={{opacity: 0, y: -10}}
+                                            animate={{opacity: 1, y: 0}}
+                                            exit={{opacity: 0, y: -10}}
                                             className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2"
                                         >
                                             {submenuItems.map((item) => (
@@ -173,7 +213,10 @@ export default function Navbar() {
                                                     onClick={() => setIsSubmenuOpen(false)}
                                                 >
                                                     <motion.div
-                                                        whileHover={{ x: 4, backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(243, 244, 246)' }}
+                                                        whileHover={{
+                                                            x: 4,
+                                                            backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(243, 244, 246)'
+                                                        }}
                                                         className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                                                     >
                                                         {item.name}
@@ -191,24 +234,24 @@ export default function Navbar() {
                         <div ref={searchContainerRef} className="relative">
                             <motion.div
                                 initial={false}
-                                animate={{ width: isSearchOpen ? "240px" : "40px" }}
-                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                animate={{width: isSearchOpen ? "240px" : "40px"}}
+                                transition={{duration: 0.3, ease: "easeInOut"}}
                                 className="relative"
                             >
                                 {!isSearchOpen ? (
                                     <motion.button
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.9 }}
+                                        whileHover={{scale: 1.1}}
+                                        whileTap={{scale: 0.9}}
                                         onClick={() => setIsSearchOpen(true)}
                                         className="p-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
                                     >
-                                        <FaSearch size={20} />
+                                        <FaSearch size={20}/>
                                     </motion.button>
                                 ) : (
                                     <motion.form
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
+                                        initial={{opacity: 0}}
+                                        animate={{opacity: 1}}
+                                        exit={{opacity: 0}}
                                         onSubmit={handleSearchSubmit}
                                         className="relative"
                                     >
@@ -232,25 +275,27 @@ export default function Navbar() {
                                 <AnimatePresence>
                                     {showSuggestions && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: -10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
+                                            initial={{opacity: 0, y: -10}}
+                                            animate={{opacity: 1, y: 0}}
+                                            exit={{opacity: 0, y: -10}}
                                             className="absolute top-full right-0 mt-2 w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 z-50"
                                         >
                                             {searchSuggestions.map((section, index) => (
-                                                <div key={section.type} className={index > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-2 mt-2' : ''}>
-                                                    <div className="px-4 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
+                                                <div key={section.type}
+                                                     className={index > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-2 mt-2' : ''}>
+                                                    <div
+                                                        className="px-4 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
                                                         {section.type}
                                                     </div>
                                                     {section.items.map((suggestion) => (
                                                         <motion.div
                                                             key={suggestion.id}
-                                                            whileHover={{ backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(243, 244, 246)' }}
+                                                            whileHover={{backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(243, 244, 246)'}}
                                                             className="px-4 py-2 cursor-pointer text-gray-700 dark:text-gray-300"
                                                             onClick={() => handleSuggestionClick(suggestion)}
                                                         >
                                                             <div className="flex items-center gap-2">
-                                                                <FaSearch size={12} className="text-gray-400" />
+                                                                <FaSearch size={12} className="text-gray-400"/>
                                                                 {suggestion.text}
                                                             </div>
                                                         </motion.div>
@@ -265,27 +310,27 @@ export default function Navbar() {
 
                         <Link to="/wishlist">
                             <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.1}}
+                                whileTap={{scale: 0.95}}
                                 className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                             >
-                                <i class="fa-regular fa-heart text-2xl" ></i>
+                                <i className="fa-regular fa-heart text-2xl"></i>
                             </motion.div>
                         </Link>
 
                         <motion.button
-                            whileHover={{ scale: 1.1 }}
+                            whileHover={{scale: 1.1}}
                             onClick={() => dispatch(toggleDarkMode())}
                             className="text-xl"
                         >
-                            {darkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
+                            {darkMode ? <FaSun className="text-yellow-400"/> : <FaMoon className="text-gray-700"/>}
                         </motion.button>
 
-                        {isLoggedIn ? (
+                        {user.isLoggedIn ? (
                             <div className="relative">
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    whileHover={{scale: 1.05}}
+                                    whileTap={{scale: 0.95}}
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                     className="flex items-center space-x-2 focus:outline-none"
                                 >
@@ -293,16 +338,16 @@ export default function Navbar() {
                                         src={user.profilePicture}
                                         alt="Profile"
                                         className="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400"
-                                        whileHover={{ scale: 1.1 }}
+                                        whileHover={{scale: 1.1}}
                                     />
                                 </motion.button>
 
                                 <AnimatePresence>
                                     {isDropdownOpen && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                            initial={{opacity: 0, y: -10, scale: 0.95}}
+                                            animate={{opacity: 1, y: 0, scale: 1}}
+                                            exit={{opacity: 0, y: -10, scale: 0.95}}
                                             className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border border-gray-200 dark:border-gray-700"
                                         >
                                             <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
@@ -316,32 +361,32 @@ export default function Navbar() {
 
                                             <Link to="/profile">
                                                 <motion.div
-                                                    whileHover={{ x: 4 }}
+                                                    whileHover={{x: 4}}
                                                     className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                                 >
-                                                    <FaUser className="text-gray-500 dark:text-gray-400" />
+                                                    <FaUser className="text-gray-500 dark:text-gray-400"/>
                                                     <span>Your Profile</span>
                                                 </motion.div>
                                             </Link>
 
                                             <motion.button
-                                                whileHover={{ x: 4 }}
+                                                whileHover={{x: 4}}
                                                 className="w-full flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                                                 onClick={() => {
                                                     axios.delete(BACKEND_URL + '/clearCookie')
-                                                    .then((res)=>{
-                                                        console.log(res);
-                                                        if(res.data?.success){
-                                                            dispatch(logOutUser())
-                                                            navigate('/signin')
-                                                        }else{
-                                                            toast("Failed Log Out")
-                                                        }
-                                                        
-                                                    })
+                                                        .then((res) => {
+                                                            console.log(res);
+                                                            if (res.data?.success) {
+                                                                dispatch(logOutUser())
+                                                                navigate('/signin')
+                                                            } else {
+                                                                toast("Failed Log Out")
+                                                            }
+
+                                                        })
                                                 }}
                                             >
-                                                <FaSignOutAlt />
+                                                <FaSignOutAlt/>
                                                 <span>Logout</span>
                                             </motion.button>
                                         </motion.div>
@@ -351,17 +396,17 @@ export default function Navbar() {
                         ) : (
                             <>
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                     className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-                                    onClick={e=>navigate('/signIn')}
+                                    onClick={e => navigate('/signIn')}
                                 >
                                     Sign In
                                 </motion.button>
 
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                     className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md"
-                                    onClick={e=>navigate('/signUp')}
+                                    onClick={e => navigate('/signUp')}
                                 >
                                     Sign Up
                                 </motion.button>
@@ -374,9 +419,9 @@ export default function Navbar() {
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
+                        initial={{opacity: 0, height: 0}}
+                        animate={{opacity: 1, height: 'auto'}}
+                        exit={{opacity: 0, height: 0}}
                         className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
                     >
                         <div className="px-4 py-2 space-y-4">
@@ -389,7 +434,8 @@ export default function Navbar() {
                                     className="flex items-center justify-between w-full py-2 text-gray-700 dark:text-gray-300"
                                 >
                                     <span>Browse</span>
-                                    <FaChevronDown className={`transition-transform duration-300 ${isSubmenuOpen ? 'rotate-180' : ''}`} />
+                                    <FaChevronDown
+                                        className={`transition-transform duration-300 ${isSubmenuOpen ? 'rotate-180' : ''}`}/>
                                 </button>
                                 {isSubmenuOpen && (
                                     <div className="pl-4 space-y-2">
