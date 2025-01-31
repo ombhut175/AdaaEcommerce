@@ -138,7 +138,7 @@ export default function Checkout() {
     .then((res)=>{
       console.log(res);
     })
-
+    
     try {
       setAmount(localStorage.getItem('totalCart'))
       const { data: { order } } = await axios.post(BACKEND_URL + '/api/payment', {
