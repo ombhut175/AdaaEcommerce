@@ -131,6 +131,9 @@ export default function Navbar() {
         if (searchQuery.trim()) {
             setIsSearchOpen(false);
             setShowSuggestions(false);
+
+            
+
             navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
             setSearchQuery('');
         }

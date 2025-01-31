@@ -103,9 +103,6 @@ const validateForm = ()=>{
                 console.log(res);
 
                   if(res.success){
-                      localStorage.setItem('role',jwtDecode(res.token).role)
-                      localStorage.setItem('authToken',res.token);
-                      localStorage.setItem('profilePicture',res.profilePicture);
                       setLoading(false);
                       toast(res.msg);
                       dispatch(fetchUser());
