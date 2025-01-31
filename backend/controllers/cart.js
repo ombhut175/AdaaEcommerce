@@ -6,8 +6,8 @@ const { ObjectId } = mongoose.Types;
 
 // Get the whole cart of the user
 async function handleGetCart(req, res) {
+    console.log("from handleGetCart");
     try {
-        // 1. Get user ID from cookies
         const authToken = req.cookies.authToken;
         if (!authToken) {
             return res.status(401).json({ message: "Authentication required" });
@@ -15,26 +15,23 @@ async function handleGetCart(req, res) {
 
         const userId = giveUserIdFromCookies(authToken);
 
-        // 2. Validate user ID format
-        console.log(ObjectId.isValid(userId));
         if (!ObjectId.isValid(userId)) {
             return res.status(400).json({ message: "Invalid user ID format" });
         }
 
-        // 3. Fetch cart items with population and lean conversion
-        const cartItems = await Cart.find({ userId })
+        // Convert userId to ObjectId in the query
+        const cartItems = await Cart.find({ userId: new ObjectId(userId) })
             .populate({
                 path: 'productId',
                 model: 'Product',
-                select: 'name price discountPercent colors images stock', // Only necessary fields
+                select: 'name price discountPercent colors images stock',
             })
             .lean();
+
         console.log(cartItems);
 
-        // 4. Filter out invalid products and format response
         const validItems = cartItems.filter(item => item.productId).map(item => {
             const product = item.productId;
-
             return {
                 product: {
                     _id: product._id,
@@ -55,35 +52,68 @@ async function handleGetCart(req, res) {
             return res.status(404).json({ message: "No valid products in cart" });
         }
 
-        // 5. Calculate total amount with discounts
         const totalAmount = validItems.reduce((total, item) => {
             const price = item.product.price;
             const discount = item.product.discountPercent;
             const quantity = item.quantity;
-
             return total + (quantity * (price - (price * discount / 100)));
         }, 0);
 
-        // 6. Send response
         res.status(200).json({
             count: validItems.length,
             items: validItems,
             totalAmount: parseFloat(totalAmount.toFixed(2)),
-            currency: "INR" // Adjust based on your currency
+            currency: "INR"
         });
 
     } catch (error) {
         console.error("Cart Error:", error);
-
-        // Handle specific MongoDB errors
         if (error instanceof mongoose.Error.CastError) {
             return res.status(400).json({ message: "Invalid data format" });
         }
-
         res.status(500).json({
             message: error.message || "Failed to retrieve cart items",
             errorCode: "CART_FETCH_ERROR"
         });
+    }
+}
+
+// Add a product to cart with selected color
+async function handleAddProductToCart(req, res) {
+    console.log("from handleAddProductToCart");
+    try {
+        const { productId } = req.params;
+        const { selectedColor } = req.body;
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
+
+        // Validate userId and productId are valid ObjectIds
+        if (!ObjectId.isValid(userId) || !ObjectId.isValid(productId)) {
+            return res.status(400).json({ message: "Invalid ID format" });
+        }
+
+        const existingCartItem = await Cart.findOne({
+            userId: new ObjectId(userId),
+            productId: new ObjectId(productId),
+        });
+
+        if (existingCartItem) {
+            existingCartItem.quantity += 1;
+            existingCartItem.selectedColor = selectedColor;
+            existingCartItem.updatedAt = Date.now();
+            await existingCartItem.save();
+            return res.status(200).json({ message: "Product quantity updated", cart: existingCartItem });
+        } else {
+            const newCartItem = await Cart.create({
+                userId: new ObjectId(userId),
+                productId: new ObjectId(productId),
+                quantity: 1,
+                selectedColor: selectedColor,
+            });
+            return res.status(200).json({ message: "Product added to cart", cart: newCartItem });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: error.message });
     }
 }
 
@@ -137,38 +167,7 @@ async function handleUpdateProductQuantity(req, res) {
     }
 }
 
-// Add a product to cart with selected color
-async function handleAddProductToCart(req, res) {
-    try {
-        const { productId } = req.params;
-        const { selectedColor } = req.body;
-        const userId = giveUserIdFromCookies(req.cookies.authToken);
 
-        const existingCartItem = await Cart.findOne({
-            userId: new ObjectId(userId),
-            productId: new ObjectId(productId),
-        });
-
-        if (existingCartItem) {
-            existingCartItem.quantity += 1;
-            existingCartItem.selectedColor = selectedColor;
-            existingCartItem.updatedAt = Date.now();
-            await existingCartItem.save();
-            return res.status(200).json({ message: "Product quantity updated", cart: existingCartItem });
-        } else {
-            const newCartItem = await Cart.create({
-                userId: new ObjectId(userId),
-                productId: new ObjectId(productId),
-                quantity: 1,
-                selectedColor: selectedColor,
-            });
-            return res.status(200).json({ message: "Product added to cart", cart: newCartItem });
-        }
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: error.message });
-    }
-}
 
 // Get total amount from cart
 async function getTotalAmountFromCart(userId) {
