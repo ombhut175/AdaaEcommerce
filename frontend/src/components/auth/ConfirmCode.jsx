@@ -114,7 +114,7 @@ function ConfirmCode() {
 
                     <p className="text-center text-sm text-gray-600 dark:text-teal-300 animate-fadeIn"
                        style={{animationDelay: '0.6s'}}>
-                        By continuing, you agree to FASCO's{' '}
+                        By continuing, you agree to ADAA's{' '}
                         <Link to="/terms"
                               className="text-gray-900 dark:text-orange-400 hover:text-gray-700 dark:hover:text-orange-300 transition-all duration-300">
                             Terms & Conditions

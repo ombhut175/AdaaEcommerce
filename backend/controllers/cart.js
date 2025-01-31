@@ -80,7 +80,6 @@ async function handleGetCart(req, res) {
 
 // Add a product to cart with selected color
 async function handleAddProductToCart(req, res) {
-    console.log("from handleAddProductToCart");
     try {
         const { productId } = req.params;
         const { selectedColor } = req.body;
@@ -122,18 +121,17 @@ async function handleDeleteProductFromCart(req, res) {
     try {
         const { productId } = req.params;
         const userId = giveUserIdFromCookies(req.cookies.authToken);
-
         const deletedCartItem = await Cart.findOneAndDelete({
             userId: new ObjectId(userId),
             productId: new ObjectId(productId),
         });
-
         if (!deletedCartItem) {
             return res.status(404).json({ message: "Product not found in cart" });
         }
 
         return res.status(200).json({ message: "Product removed from cart" });
     } catch (error) {
+        console.log(error.message);
         return res.status(500).json({ message: error.message });
     }
 }

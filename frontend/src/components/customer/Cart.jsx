@@ -6,13 +6,13 @@ import axios from 'axios';
 
 export default function Cart() {
   const [items, setItems] = useState([]);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
-    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/cart', { withCredentials: true })
+    axios.get(BACKEND_URL + '/api/cart', { withCredentials: true })
         .then((res) => {
           if (Array.isArray(res.data.items)) {
             setItems(res.data.items.map(item => {
-              // Find the selected color's details from product's availableColors
               const selectedColorObj = item.product.availableColors?.find(
                   color => color.colorName === item.selectedColor
               );
@@ -20,12 +20,9 @@ export default function Cart() {
               return {
                 id: item.product._id,
                 name: item.product.name,
-                price: item.product.price - (item.product.price * item.product.discountPercent / 100),
-                color: item.selectedColor || 'No color selected', // Use selectedColor or default text
-                // Use the selected color's image, first available image, or a default
-                image: selectedColorObj?.images?.[0]
-                    || item.product.availableColors?.[0]?.images?.[0]
-                    || 'default-image-url.jpg',
+                price: item.product.price - (item.product.price * (item.product.discountPercent || 0) / 100),
+                color: item.selectedColor || 'No color selected',
+                image: selectedColorObj?.images?.[0] || item.product.images?.[0] || 'default-image-url.jpg',
                 quantity: item.quantity
               };
             }));
@@ -36,7 +33,6 @@ export default function Cart() {
         .catch((err) => console.error('Error fetching cart:', err));
   }, []);
 
-
   const updateQuantity = (id, change) => {
     setItems(prevItems =>
         prevItems.map(item =>
@@ -45,21 +41,26 @@ export default function Cart() {
     );
   };
 
-  const removeItem = (id) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== id));
+  const removeItem = async (id) => {
+    try {
+      const response = await axios.delete(`${BACKEND_URL}/api/cart/${id}`,{withCredentials: true});
+      setItems(prevItems => prevItems.filter(item => item.id !== id));
+    }catch (error) {
+      console.log(error);
+    }
   };
 
-  const subtotal = items.reduce((sum, item) => sum + (item.price * (1 - item.discount / 100)) * item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const wrappingCost = 10.00;
   const total = subtotal + (document.getElementById('gift-wrap')?.checked ? wrappingCost : 0);
 
   return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-black dark:text-white">Shopping Cart</h1>
-            <div className="text-sm breadcrumbs text-gray-600 dark:text-gray-400 mt-2">
-              <Link to="/" className="hover:text-black dark:hover:text-white">Home</Link>
+            <h1 className="text-3xl font-bold">Shopping Cart</h1>
+            <div className="text-sm breadcrumbs">
+              <Link to="/" className="hover:text-black dark:hover:text-gray-300">Home</Link>
               <span className="mx-2">/</span>
               <span>Your Shopping Cart</span>
             </div>
@@ -69,7 +70,7 @@ export default function Cart() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2">
                   <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                    <table className="w-full">
+                    <table className="w-full text-black dark:text-white">
                       <thead>
                       <tr className="border-b border-gray-200 dark:border-gray-700">
                         <th className="text-left py-4">Product</th>
@@ -93,7 +94,7 @@ export default function Cart() {
                                 </div>
                               </div>
                             </td>
-                            <td className="text-center">${(item.price * (1 - item.discount / 100)).toFixed(2)}</td>
+                            <td className="text-center">${item.price.toFixed(2)}</td>
                             <td className="text-center">
                               <div className="flex items-center justify-center gap-2">
                                 <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => updateQuantity(item.id, -1)} className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
@@ -105,7 +106,7 @@ export default function Cart() {
                                 </motion.button>
                               </div>
                             </td>
-                            <td className="text-right">${((item.price * (1 - item.discount / 100)) * item.quantity).toFixed(2)}</td>
+                            <td className="text-right">${(item.price * item.quantity).toFixed(2)}</td>
                           </tr>
                       ))}
                       </tbody>
@@ -140,7 +141,7 @@ export default function Cart() {
               </div>
           ) : (
               <div className="text-center py-16">
-                <h2 className="text-2xl font-bold mb-4 dark: text-white">Your cart is empty</h2>
+                <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
                 <Link to="/">
                   <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black rounded-md font-medium hover:shadow-lg transition-all duration-300">
                     Continue Shopping

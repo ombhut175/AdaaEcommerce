@@ -439,6 +439,10 @@ async function searchProducts(req, res) {
     }
 }
 
+async function getDealsOfTheMonth(req, res) {
+
+}
+
 
 
 module.exports = {
