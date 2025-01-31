@@ -79,7 +79,7 @@ mongoose.connect(process.env.MONGO_URL)
         //auth middlewares
         app.use('/api/google', googleRoutes);
         app.use('/api', authRouter)
-        app.use('/api/',addressRouter)
+        app.use('/api/address',addressRouter)
 
         // app.get('/api/products',(req,res)=>{
         //     console.log("entered");

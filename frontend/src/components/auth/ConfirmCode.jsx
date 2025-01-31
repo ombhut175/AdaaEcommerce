@@ -10,7 +10,7 @@ function ConfirmCode() {
     const [errors, setErrors] = useState('');
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [isDisabled, setIsDisabled] = useState(true);
+    const [isDisabled, setIsDisabled] = useState(false);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Function to verify the OTP entered by the user
@@ -41,7 +41,7 @@ function ConfirmCode() {
                     toast(data.msg);
                     dispatch(fetchUser());
                     dispatch(logInUser());
-                    navigate('/home'); // Redirect to home page after successful OTP verification
+                    navigate('/'); // Redirect to home page after successful OTP verification
 
                 } else {
                     console.log(data);
