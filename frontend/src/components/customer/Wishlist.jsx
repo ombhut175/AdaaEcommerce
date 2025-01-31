@@ -35,14 +35,22 @@ export default function Wishlist() {
     .then((res)=>{
       console.log(res.data);
       setWishlist(res.data)
+      // setState(0)
     })
   },[user])
   
   
   
-  const removeFromWishlist = (id) => {
-    setWishlist(wishlist.filter(item => item.id !== id));
-  };
+    const removeFromWishlist = (id) => {
+      console.log(id);
+      
+      axios.delete(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + id + '/' +user.id)
+      .then((res)=>{
+        console.log(res);
+        setWishlist((prevWishlist) => prevWishlist.filter((item) => item._id !== id));
+      })
+      
+    };
 
   const addToCart = (item) => {
     navigate('/product/'+ item.product?._id)
@@ -53,7 +61,7 @@ export default function Wishlist() {
     const swipeThreshold = 100;
     const swipeDistance = Math.abs(info.offset.x);
     
-    if (info.offset.x < -swipeThreshold) {
+    if (info.offset.x <   -swipeThreshold) {
       removeFromWishlist(item.id);
     }
     
@@ -157,7 +165,7 @@ export default function Wishlist() {
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={() => removeFromWishlist(item.id)}
+                        onClick={() => removeFromWishlist(item._id)}
                         className="p-2 bg-red-500 text-white rounded-full hover:shadow-lg transition-all duration-300"
                       >
                         <FaTrash size={20} />

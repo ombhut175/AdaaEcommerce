@@ -2,9 +2,6 @@ const Wishlist = require('../models/WishList');
 const Product = require('../models/Product');
 const mongoose = require('mongoose');
 
-// @desc    Add item to wishlist
-// @route   POST /api/wishlist
-// @access  Private
 const addToWishlist = async (req, res) => {
   try {
     console.log(req.body);
@@ -25,12 +22,12 @@ const addToWishlist = async (req, res) => {
     // Validate color selection
     const colorExists = product.colors.some(c => c.colorName === color);
     if (!colorExists) {
-      return res.status(400).json({ message: 'Invalid color selection' });
+      return res.status(200).json({ message: 'Invalid color selection' });
     }
 
     // Validate size selection
     if (!product.size.includes(size)) {
-      return res.status(400).json({ message: 'Invalid size selection' });
+      return res.status(200).json({ message: 'Invalid size selection' });
     }
 
     // Check if item already exists in wishlist
@@ -42,7 +39,7 @@ const addToWishlist = async (req, res) => {
     });
 
     if (existingItem) {
-      return res.status(400).json({ message: 'Item already in wishlist' });
+      return res.status(200).json({ message: 'Item already in wishlist' });
     }
 
     // Create new wishlist item
@@ -96,24 +93,25 @@ const getWishlistItems = async (req, res) => {
   }
 };
 
-// @desc    Remove item from wishlist
-// @route   DELETE /api/wishlist/:id
-// @access  Private
 const removeFromWishlist = async (req, res) => {
   try {
-    const itemId = req.params.id;
+    console.log(req.params.productId  );
+    
+    const itemId = new mongoose.Types.ObjectId(req.params.productId);
+
+    const userId =  new mongoose.Types.ObjectId(req.params.userId);
 
     if (!mongoose.Types.ObjectId.isValid(itemId)) {
-      return res.status(400).json({ message: 'Invalid wishlist item ID' });
+      return res.status(200).json({ message: 'Invalid wishlist item ID' });
     }
 
     const item = await Wishlist.findOneAndDelete({
       _id: itemId,
-      user: req.user.id
+      user: userId
     });
 
     if (!item) {
-      return res.status(404).json({ message: 'Wishlist item not found' });
+      return res.status(200).json({ message: 'Wishlist item not found' });
     }
 
     res.json({ message: 'Item removed from wishlist', id: itemId });

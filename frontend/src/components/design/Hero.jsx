@@ -23,7 +23,7 @@ export default function Hero() {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     useEffect(() => {
-        if (user && user.role.includes('admin')) {
+        if (user && user.role?.includes('admin')) {
             setIsAdmin(true);
         }
     }, [user]);

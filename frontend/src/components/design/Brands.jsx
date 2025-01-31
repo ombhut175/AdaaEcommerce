@@ -23,7 +23,7 @@ export default function Brands() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user && user.role.includes('admin')) {
+    if (user && user.role?.includes('admin')) {
       setIsAdmin(true);
     }
   }, [user]);

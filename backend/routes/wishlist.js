@@ -8,6 +8,6 @@ const {
 
 router.post('/:id', addToWishlist);
 router.get('/:id', getWishlistItems);
-router.delete('/:id', removeFromWishlist);
+router.delete('/:productId/:userId', removeFromWishlist);
 
 module.exports = router;

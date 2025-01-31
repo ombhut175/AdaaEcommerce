@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link,Navigate,useNavigate,useParams } from 'react-router-dom';
 import { FaHeart, FaShare } from 'react-icons/fa';
 import { useSelector } from 'react-redux'
+import {toast} from 'react-toastify'
 import axios from 'axios'
 export default function ProductDetail() {
   
@@ -292,6 +293,10 @@ export default function ProductDetail() {
                         axios.post(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id , {color:selectedColor,size:selectedSize,productId : id})
                         .then((res)=>{
                           console.log(res.data);
+                          toast(res.data.message)
+                        })
+                        .catch((err)=>{
+                          console.log(err);
                           
                         })
                     

@@ -116,7 +116,12 @@ mongoose.connect(process.env.MONGO_URL)
         //delivery 
 
         app.use('/api',deliveryRouter)
-
+        app.delete('/clearCookie', (req, res) => {
+            Object.keys(req.cookies).forEach(cookie => {
+                res.clearCookie(cookie);
+            });
+            res.status(200).json({success:true ,  message: 'Cookie has been cleared' });
+          });
         //listen at specific port
         app.listen(PORT, (err) => {
             console.log(err ? `Error is occurred in program : ${err}` : `Server started at ${PORT}`);

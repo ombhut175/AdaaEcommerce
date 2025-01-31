@@ -23,7 +23,7 @@ export default function InstagramFeed() {
 
   useEffect(() => {
     console.log(user);
-    if (user && user.role.includes('admin')) {
+    if (user && user.role?.includes('admin')) {
       setIsAdmin(true);
     }
   },[user]);
