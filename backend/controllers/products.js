@@ -394,6 +394,8 @@ async function searchProducts(req, res) {
             ],
         });
 
+        console.log(products);
+
         if (products.length === 0) {
             return res.status(404).json({ message: "No products found." });
         }

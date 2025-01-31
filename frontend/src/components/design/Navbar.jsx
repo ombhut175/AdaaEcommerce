@@ -127,6 +127,7 @@ export default function Navbar() {
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
+        console.log(searchQuery);
         if (searchQuery.trim()) {
             setIsSearchOpen(false);
             setShowSuggestions(false);
@@ -150,8 +151,7 @@ export default function Navbar() {
         {name: 'Deals', path: '/deals'},
         {name: 'Shop', path: '/shop'},
         {name: 'New Arrivals', path: '/new-arrivals'},
-        // { name: 'Dealer', path: '/dealer/products' }
-        ...(isDealer ? [{name: 'Dealer', path: '/dealer/products'}] : [])
+        ...(user.role.includes('dealer') ? [{name: 'Dealer', path: '/dealer/products'}] : [])
     ];
 
 

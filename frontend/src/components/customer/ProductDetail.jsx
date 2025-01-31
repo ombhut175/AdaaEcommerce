@@ -173,8 +173,8 @@ export default function ProductDetail() {
               </div>
 
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">${product?.price}</span>
-                <span className="text-xl text-gray-500 line-through">$59.00</span>
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">₹{product?.price}</span>
+                <span className="text-xl text-gray-500 line-through">₹59.00</span>
                 <span className="px-2 py-1 bg-red-100 text-red-600 rounded-md text-sm">
                   SAVE {product?.discountPercent}%
                 </span>
@@ -225,14 +225,7 @@ export default function ProductDetail() {
                       key={color}
                       onClick={() => {
                         setSelectedColor(color)
-                        setIndex(colorsName.findIndex((c)=>c==color))
-
-
-
-
-
-
-
+                        setIndex(colorsName.findIndex((c)=>c===color))
                       }}
                       className={`w-8 h-8 rounded-full border-2 ${
                         selectedColor === color
@@ -253,14 +246,14 @@ export default function ProductDetail() {
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700"
+                    className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 text-white"
                   >
                     -
                   </button>
-                  <span className="w-12 text-center">{quantity}</span>
+                  <span className="w-12 text-center dark:text-white">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700"
+                    className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 text-white"
                   >
                     +
                   </button>

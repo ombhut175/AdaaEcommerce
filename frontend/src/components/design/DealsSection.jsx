@@ -29,7 +29,7 @@ export default function DealsSection() {
     if (user && user.role?.includes('admin')) {
       setIsAdmin(true);
     }
-  },[]);
+  },[user]);
 
   useEffect(() => {
     const timer = setInterval(() => {
