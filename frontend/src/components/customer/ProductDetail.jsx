@@ -25,7 +25,7 @@ export default function ProductDetail() {
   const navigate = useNavigate()
   const user = useSelector(state => state.user)
   useEffect(()=>{
-    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + id)
+    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + id,{withCredentials:true})
     .then((res)=>{
       
       setProduct(res.data);
@@ -77,7 +77,7 @@ export default function ProductDetail() {
   }, [product,selectedColor]);
   
   const handleAddCart = ()=>{
-    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/"+id,{selectedColor})
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/"+id,{selectedColor},{withCredentials: true})
     .then((res)=>{
       console.log(res);
       
@@ -149,15 +149,15 @@ export default function ProductDetail() {
                   <div className="flex items-center">
                   {[1, 1, 1, 1, 1].map((_, index) => {
                     if (index < Math.floor(avgReview)) {
-                      return <i class="fa-solid fa-star text-yellow-400"></i>; // Full star
+                      return <i className="fa-solid fa-star text-yellow-400"></i>; // Full star
                     } else if (index === Math.floor(avgReview) && (avgReview % 1 !== 0)) {
                       return (
                         <span key={index} className="text-yellow-400">
-                          <i class="fa-regular fa-star-half-stroke"></i>
+                          <i className="fa-regular fa-star-half-stroke"></i>
                         </span>
                       ); // Half star
                     } else {
-                      return <i class="fa-regular fa-star"></i>; // Empty star
+                      return <i className="fa-regular fa-star"></i>; // Empty star
                     }
                   })}
 
