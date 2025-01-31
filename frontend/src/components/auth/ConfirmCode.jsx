@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import {toast} from 'react-toastify'
 import {fetchUser, logInUser} from "../../store/features/userSlice.js";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {LoadingBar} from "../loadingBar/LoadingBar.jsx";
 
 function ConfirmCode() {
@@ -12,12 +12,12 @@ function ConfirmCode() {
     const dispatch = useDispatch();
     const [isDisabled, setIsDisabled] = useState(false);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
+    const user = useSelector(state => state.user)
 // Function to verify the OTP entered by the user
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        setIsDisabled(true);
+        // setIsDisabled(true);
         if (!otp || otp.length !== 6) {
             setErrors('Please enter a valid 6-digit OTP.');
             return;
@@ -26,7 +26,7 @@ function ConfirmCode() {
 
         // Assume you already have the email sent earlier
         const email = localStorage.getItem('email'); // Retrieve email from storage
-
+        
         fetch(BACKEND_URL + '/api/signup/verify-otp', {
             method: 'POST',
             headers: {
@@ -34,15 +34,19 @@ function ConfirmCode() {
             },
             body: JSON.stringify({email, otp}),
         })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.success) {
+        .then((res) => res.json())
+        .then((data) => {
+            setIsDisabled(false)
+            if (data.success) {
+                console.log(user);
+                
                     localStorage.setItem('authToken', data.token)
                     toast(data.msg);
                     dispatch(fetchUser());
                     dispatch(logInUser());
-                    navigate('/'); // Redirect to home page after successful OTP verification
-
+                    console.log();
+                    
+                    navigate('/signin'); // Redirect to home page after successful OTP verification
                 } else {
                     console.log(data);
                     toast(data.msg);
@@ -97,7 +101,7 @@ function ConfirmCode() {
                             }`}
                             disabled={isDisabled}
                         >
-                            Recover Account
+                            Go
                         </button>
 
 

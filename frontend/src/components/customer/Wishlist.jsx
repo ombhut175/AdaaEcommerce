@@ -4,24 +4,9 @@ import { FaTrash, FaShoppingCart, FaChevronLeft } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import { LoadingBar } from '../loadingBar/LoadingBar';
 // Mock wishlist data - replace with actual data from your state management
 const initialWishlist = [
-  {
-    id: 1,
-    name: 'Summer Dress',
-    price: 89.99,
-    image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80',
-    color: 'Pink',
-    size: 'M'
-  },
-  {
-    id: 2,
-    name: 'Denim Jacket',
-    price: 129.99,
-    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&q=80',
-    color: 'Blue',
-    size: 'L'
-  }
 ];
 
 export default function Wishlist() {
@@ -30,12 +15,12 @@ export default function Wishlist() {
   const [swipeProgress, setSwipeProgress] = useState(0);
   const user = useSelector(state => state.user)
   const navigate = useNavigate();
+  const [isDisabled,setIsDisabled] = useState(false)
   useEffect(()=>{
     axios.get(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id)
     .then((res)=>{
       console.log(res.data);
       setWishlist(res.data)
-      // setState(0)
     })
   },[user])
   
@@ -43,10 +28,12 @@ export default function Wishlist() {
   
     const removeFromWishlist = (id) => {
       console.log(id);
-      
+      setIsDisabled(true)
       axios.delete(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + id + '/' +user.id)
       .then((res)=>{
         console.log(res);
+        setIsDisabled(false)
+
         setWishlist((prevWishlist) => prevWishlist.filter((item) => item._id !== id));
       })
       
@@ -75,6 +62,8 @@ export default function Wishlist() {
       animate={{ opacity: 1 }}
       className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900"
     >
+          <LoadingBar isLoading={isDisabled} />
+      
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <motion.div

@@ -5,6 +5,7 @@ import { FaHeart, FaShare } from 'react-icons/fa';
 import { useSelector } from 'react-redux'
 import {toast} from 'react-toastify'
 import axios from 'axios'
+import { LoadingBar } from '../loadingBar/LoadingBar'; 
 export default function ProductDetail() {
   
 
@@ -22,15 +23,17 @@ export default function ProductDetail() {
   const [images , setImages] = useState([]);
   const [index,setIndex] = useState(0);
   const [indexImageChange,setIndexImageChange] = useState(0);
+  const [isDisabled,setIsDisabled]= useState(false)
   const navigate = useNavigate()
   const user = useSelector(state => state.user)
   useEffect(()=>{
+    setIsDisabled(true)
     axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + id,{withCredentials:true})
     .then((res)=>{
       
       setProduct(res.data);
       
-      
+      setIsDisabled(false)
     })
     .catch((err)=>{
       console.log(err );
@@ -92,6 +95,8 @@ export default function ProductDetail() {
       animate={{ opacity: 1 }}
       className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900"
     >
+          <LoadingBar isLoading={isDisabled} />
+
       <div className="max-w-7xl mx-auto">
         <div className="text-sm breadcrumbs text-gray-600 dark:text-gray-400 mb-8">
           <Link to="/" className="hover:text-primary-500 dark:hover:text-primary-400">Home</Link>

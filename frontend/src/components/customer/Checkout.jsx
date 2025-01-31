@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { FaCreditCard, FaLock } from 'react-icons/fa';
 import axios from 'axios';
 import { toast } from 'react-toastify'; // Import toastify
 import { useSelector } from 'react-redux';
+import { LoadingBar } from '../loadingBar/LoadingBar';
 
 const RAZOR_API_KEY = import.meta.env.RAZOR_API_KEY;
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -47,6 +48,9 @@ export default function Checkout() {
   const [savePaymentInfo, setSavePaymentInfo] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState('');
   const [amount, setAmount] = useState(20000);
+  const {userId} = useParams()
+  const [isDisabled,setIsDisabled] = useState(true)
+
   // Create state to store address fields
   const [address, setAddress] = useState({
     firstName: '',
@@ -99,17 +103,46 @@ export default function Checkout() {
     return true;
   };
   
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    setIsDisabled(true)
+    axios.get(BACKEND_URL + '/api/cart', { withCredentials: true })
+      .then((res) => {
+        if (Array.isArray(res.data.items)) {
+          setItems(res.data.items.map(item => {
+            const selectedColorObj = item.product.availableColors?.find(
+              color => color.colorName === item.selectedColor
+            );
+
+            return {
+              id:   item.product._id,
+              name: item.product.name,
+              price: item.product.price - (item.product.price * (item.product.discountPercent || 0) / 100),
+              color: item.selectedColor || 'No color selected',
+              image: selectedColorObj?.images?.[0] || item.product.images?.[0] || 'default-image-url.jpg',
+              quantity: item.quantity
+            };
+          }));
+        } else {
+          setItems([]);
+        }
+        setIsDisabled(false)
+      })
+      .catch((err) => console.error('Error fetching cart:', err));
+  }, []);
+
   const handlePayNow = async () => {
+    setIsDisabled(true)
     if (!validateAddress()) return; // Only proceed if the address is valid
-    
     await axios.post(BACKEND_URL + "/api/address",address)
     .then((res)=>{
       console.log(res);
-      
     })
+
     try {
+      setAmount(localStorage.getItem('totalCart'))
       const { data: { order } } = await axios.post(BACKEND_URL + '/api/payment', {
-        amount,
+        amount
       });
 
       const options = {
@@ -137,7 +170,7 @@ export default function Checkout() {
       // Open Razorpay checkout
       const razor = new window.Razorpay(options);
       razor.open();
-
+      setIsDisabled(false)
 
 
     } catch (error) {
@@ -145,13 +178,13 @@ export default function Checkout() {
       alert('There was an error initiating the payment.');
     }
   };
-
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900"
     >
+    <LoadingBar isLoading={isDisabled} />
       <div className="max-w-7xl mx-auto">
         <motion.h1
           initial={{ y: -20, opacity: 0 }}
@@ -290,13 +323,16 @@ export default function Checkout() {
             transition={{ delay: 0.3 }}
             className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg h-fit"
           >
-            <div className="flex items-center space-x-4 mb-6">
+            {items && items.map((item)=>{
+
+              
+              return (<div className="flex items-center space-x-4 mb-6">
               <motion.div 
                 whileHover={{ scale: 1.05 }}
                 className="relative"
-              >
+                >
                 <img
-                  src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&q=80"
+                  src={item.image}
                   alt="Mini Dress"
                   className="w-20 h-20 object-cover rounded"
                 />
@@ -304,16 +340,17 @@ export default function Checkout() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs"
-                >
+                  >
                   1
                 </motion.span>
               </motion.div>
               <div className="flex-1">
-                <h3 className="text-black dark:text-white font-medium">Mini Dress With Ruffled Straps</h3>
-                <p className="text-gray-600 dark:text-gray-400">Red</p>
+                <h3 className="text-black dark:text-white font-medium">{item.name}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{item.color}</p>
               </div>
-              <span className="text-black dark:text-white font-medium">$100.00</span>
-            </div>
+              <span className="text-black dark:text-white font-medium">${item.price}</span>
+            </div>)
+                })}
 
             <div className="space-y-4 mb-6">
               <div className="flex">
@@ -344,11 +381,11 @@ export default function Checkout() {
             >
               <div className="flex justify-between text-gray-600 dark:text-gray-400">
                 <span>Subtotal</span>
-                <span>$100.00</span>
+                <span>${localStorage.getItem('totalCart')}</span>
               </div>
               <div className="flex justify-between text-gray-600 dark:text-gray-400">
                 <span>Shipping</span>
-                <span>$40.00</span>
+                <span>- $40.00</span>
               </div>
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
@@ -357,7 +394,7 @@ export default function Checkout() {
                 className="flex justify-between text-black dark:text-white font-medium pt-2 border-t border-gray-200 dark:border-gray-700"
               >
                 <span>Total</span>
-                <span>$140.00</span>
+                <span>${localStorage.getItem('totalCart') }</span>
               </motion.div>
             </motion.div>
           </motion.div>
