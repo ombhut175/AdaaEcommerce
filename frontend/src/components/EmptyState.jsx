@@ -2,9 +2,11 @@ import { useSelector } from "react-redux"
 import { motion } from "framer-motion"
 import { selectDarkMode } from "../store/features/themeSlice.js"
 import { ShoppingBag } from "lucide-react"
+import {useNavigate} from "react-router-dom";
 
 const EmptyState = () => {
-    const darkMode = useSelector(selectDarkMode)
+    const darkMode = useSelector(selectDarkMode);
+    const navigate = useNavigate();
 
     return (
         <motion.div
@@ -25,6 +27,9 @@ const EmptyState = () => {
                     className={`inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md ${
                         darkMode ? "text-white bg-blue-600 hover:bg-blue-700" : "text-white bg-blue-500 hover:bg-blue-600"
                     } transition-colors duration-200`}
+                    onClick={() => {
+                        navigate("/shop");
+                    }}
                 >
                     Browse Products
                 </motion.button>
