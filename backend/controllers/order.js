@@ -2,6 +2,7 @@ const Orders = require('../models/Orders');
 const Cart = require('../models/Cart');
 const { giveUserIdFromCookies } = require('../services/auth');
 const UserBehavior = require('../models/UserBehavior');
+const Product = require('../models/Product');
 
 // Create a new order
 async function createOrder(req, res) {
@@ -13,6 +14,22 @@ async function createOrder(req, res) {
 
         const { productId, addressId, quantity, paymentMethod, paymentStatus } = req.body;
 
+        // Fetch the product
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        // Check if enough stock is available
+        if (product.stock < quantity) {
+            return res.status(400).json({ error: 'Not enough stock available' });
+        }
+
+        // Decrease stock quantity
+        product.stock -= quantity;
+        await product.save();
+
+        // Create a new order
         const newOrder = new Orders({
             userId,
             productId,
@@ -28,6 +45,7 @@ async function createOrder(req, res) {
         res.status(400).json({ error: error.message });
     }
 }
+
 
 // Add all products from cart to an order
 async function addAllProductsOfCart(req, res) {
