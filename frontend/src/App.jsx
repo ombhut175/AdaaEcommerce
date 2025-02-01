@@ -40,6 +40,7 @@ import UserDetails from "./components/admin/UserDetails.jsx";
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Unauthorized from './Unauthorized.jsx';
 import DealerProductEditingPage from "./components/dealer/DealerProductEditForm.jsx";
+import OrdersPage from "./components/customer/OrdersPage.jsx";
 
 
 
@@ -127,6 +128,7 @@ function App() {
               <Route path="/shop" element={<Shop />} />
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/cart" element={<Cart />} />
+                <Route path={'/orders'} element={<OrdersPage />} />
               <Route path="/checkout/:userId" element={<Checkout />} />
 
               {/* User Profile Routes */}

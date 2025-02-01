@@ -170,12 +170,13 @@ export default function Checkout() {
       // Open Razorpay checkout
       const razor = new window.Razorpay(options);
       razor.open();
-      setIsDisabled(false)
 
 
     } catch (error) {
       console.error('Error during payment initiation:', error);
       alert('There was an error initiating the payment.');
+    }finally {
+        setIsDisabled(false)
     }
   };
   return (
@@ -191,7 +192,7 @@ export default function Checkout() {
           animate={{ y: 0, opacity: 1 }}
           className="text-3xl font-bold text-center text-black dark:text-white mb-8"
         >
-          FASCO Demo Checkout
+          ADAA Demo Checkout
         </motion.h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -405,7 +406,7 @@ export default function Checkout() {
           transition={{ delay: 0.8 }}
           className="text-center text-gray-600 dark:text-gray-400 text-sm mt-8"
         >
-          Copyright © 2023 FASCO. All Rights Reserved.
+          Copyright © 2025 ADAA. All Rights Reserved.
         </motion.div>
       </div>
     </motion.div>
