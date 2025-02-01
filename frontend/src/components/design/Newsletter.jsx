@@ -6,16 +6,9 @@ import {useDispatch, useSelector} from "react-redux";
 export default function Newsletter() {
   const [email, setEmail] = useState('');
 
-  const [isAdmin,setIsAdmin] = useState(false);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log(user);
-    if (user && user.role?.includes('admin')) {
-      setIsAdmin(true);
-    }
-  },[user]);
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Subscribing email:', email);
@@ -37,7 +30,7 @@ export default function Newsletter() {
               alt="Fashion Model"
               className="w-full h-[600px] object-cover rounded-lg"
             />
-            {isAdmin && (
+            {user && user.role?.includes('admin') && (
               <div className="absolute inset-0 flex items-center justify-center 
                 bg-black bg-opacity-40 
                 opacity-0 group-hover:opacity-100 
@@ -69,7 +62,7 @@ export default function Newsletter() {
               alt="Fashion Model"
               className="w-full h-[600px] object-cover rounded-lg"
             />
-            {isAdmin && (
+            {user && user.role?.includes('admin') && (
               <div className="absolute inset-0 flex items-center justify-center 
                 bg-black bg-opacity-40 
                 opacity-0 group-hover:opacity-100 

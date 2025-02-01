@@ -9,7 +9,6 @@ import {fetchStaticImages} from "../../store/features/staticImagesSlice.js";
 import {submitImage} from "../utils/changeStaticImages.js";
 
 export default function Hero() {
-    const [isAdmin, setIsAdmin] = useState(false); // For demo purposes
     const [images, setImages] = useState({
         left: "https://images.unsplash.com/photo-1520975661595-6453be3f7070?auto=format&fit=crop&q=80",
         right: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80"
@@ -22,11 +21,6 @@ export default function Hero() {
     const dispatch = useDispatch();
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-    useEffect(() => {
-        if (user && user.role?.includes('admin')) {
-            setIsAdmin(true);
-        }
-    }, [user]);
 
 
     useEffect(() => {
@@ -88,7 +82,7 @@ export default function Hero() {
                 initial={{opacity: 0, x: -100}}
                 animate={{opacity: 1, x: 0}}
                 className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden"
-                onMouseEnter={() => isAdmin && setHoveredImage('left')}
+                onMouseEnter={() => user && user.role?.includes('admin') && setHoveredImage('left')}
                 onMouseLeave={() => setHoveredImage(null)}
             >
                 <img
@@ -96,7 +90,7 @@ export default function Hero() {
                     alt="Fashion Model"
                     className="w-full h-full object-cover"
                 />
-                {isAdmin && hoveredImage === 'left' && (
+                {user && user.role?.includes('admin') && hoveredImage === 'left' && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                         <label className="cursor-pointer">
                             <input
@@ -139,7 +133,7 @@ export default function Hero() {
                 initial={{opacity: 0, x: 100}}
                 animate={{opacity: 1, x: 0}}
                 className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden"
-                onMouseEnter={() => isAdmin && setHoveredImage('right')}
+                onMouseEnter={() => user && user.role?.includes('admin') && setHoveredImage('right')}
                 onMouseLeave={() => setHoveredImage(null)}
             >
                 <img
@@ -147,7 +141,7 @@ export default function Hero() {
                     alt="Fashion Model"
                     className="w-full h-full object-cover"
                 />
-                {isAdmin && hoveredImage === 'right' && (
+                {user && user.role?.includes('admin') && hoveredImage === 'right' && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                         <label className="cursor-pointer">
                             <input

@@ -15,18 +15,12 @@ export default function Brands() {
   // ]);
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const brandLogos = useSelector(state => state.staticImages.brands);
   // console.log("from brands");
   console.log(brandLogos);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (user && user.role?.includes('admin')) {
-      setIsAdmin(true);
-    }
-  }, [user]);
 
   const handleLogoChange = (index, e) => {
     const file = e.target.files[0];
@@ -52,7 +46,7 @@ export default function Brands() {
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.1 }}
                     className="relative brand-logo"
-                    onMouseEnter={() => isAdmin && setHoveredIndex(index)}
+                    onMouseEnter={() => user && user.role?.includes('admin') && setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <img
@@ -60,7 +54,7 @@ export default function Brands() {
                       alt={`Brand ${index + 1}`}
                       className="h-8 md:h-12 object-contain filter dark:invert"
                   />
-                  {isAdmin && hoveredIndex === index && (
+                  {user && user.role?.includes('admin') && hoveredIndex === index && (
                       <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                         <label className="cursor-pointer">
                           <input

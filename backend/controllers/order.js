@@ -3,6 +3,7 @@ const Cart = require('../models/Cart');
 const { giveUserIdFromCookies } = require('../services/auth');
 const UserBehavior = require('../models/UserBehavior');
 const Product = require('../models/Product');
+const {updateProductsUsingSocketIo} = require("../services/socket");
 
 // Create a new order
 async function createOrder(req, res) {
@@ -39,6 +40,7 @@ async function createOrder(req, res) {
             paymentStatus,
         });
 
+        updateProductsUsingSocketIo();
         const savedOrder = await newOrder.save();
         res.status(201).json(savedOrder);
     } catch (error) {
@@ -72,7 +74,7 @@ async function addAllProductsOfCart(req, res) {
 
         await Orders.insertMany(orders);
         await Cart.findOneAndUpdate({ userId }, { cartItems: [] }, { new: true });
-
+        updateProductsUsingSocketIo();
         res.status(201).json({ message: 'Orders placed successfully.' });
     } catch (error) {
         res.status(400).json({ error: error.message });

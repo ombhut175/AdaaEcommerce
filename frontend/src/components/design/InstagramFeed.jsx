@@ -16,17 +16,10 @@ export default function InstagramFeed() {
   //   'https://images.unsplash.com/photo-1469334031218-e382a71b716b'
   // ]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [isAdmin,setIsAdmin] = useState(false);
   const user = useSelector((state) => state.user);
   const images = useSelector((state) => state.staticImages.instagram);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log(user);
-    if (user && user.role?.includes('admin')) {
-      setIsAdmin(true);
-    }
-  },[user]);
 
   const handleImageChange = (index, e) => {
     const file = e.target.files[0];
@@ -65,7 +58,7 @@ export default function InstagramFeed() {
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.05 }}
               className="relative group overflow-hidden aspect-square"
-              onMouseEnter={() => isAdmin && setHoveredIndex(index)}
+              onMouseEnter={() => user && user.role?.includes('admin') && setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <img
@@ -73,7 +66,7 @@ export default function InstagramFeed() {
                 alt={`Instagram post ${index + 1}`}
                 className="w-full h-full object-cover"
               />
-              {isAdmin && hoveredIndex === index && (
+              {user && user.role?.includes('admin') && hoveredIndex === index && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center gap-2">
                   <label className="cursor-pointer">
                     <input

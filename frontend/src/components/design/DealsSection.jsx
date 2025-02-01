@@ -19,17 +19,10 @@ export default function DealsSection() {
   // ]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  const [isAdmin,setIsAdmin] = useState(false);
   const user = useSelector((state) => state.user);
   const images = useSelector((state) => state.staticImages.deals);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log(user);
-    if (user && user.role?.includes('admin')) {
-      setIsAdmin(true);
-    }
-  },[user]);
 
   useEffect(() => {
 
@@ -118,7 +111,7 @@ export default function DealsSection() {
               key={index}
               whileHover={{ y: -10, scale: 1.02 }}
               className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
-              onMouseEnter={() => isAdmin && setHoveredIndex(index)}
+              onMouseEnter={() => user && user.role?.includes('admin') && setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <img
@@ -126,7 +119,7 @@ export default function DealsSection() {
                 alt={`Product ${index + 1}`}
                 className="w-full h-80 object-cover transform hover:scale-105 transition-transform duration-500"
               />
-              {isAdmin && hoveredIndex === index && (
+              {user && user.role?.includes('admin') && hoveredIndex === index && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <label className="cursor-pointer">
                     <input
