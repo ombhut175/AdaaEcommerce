@@ -2,7 +2,9 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { LoadingBar } from '../loadingBar/LoadingBar';
+import { LoadingBar } from '../loadingBar/LoadingBar.jsx';
+import { io } from 'socket.io-client';
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 export default function Shop() {
   const navigate = useNavigate();
@@ -13,19 +15,58 @@ export default function Shop() {
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [sortOrder, setSortOrder] = useState('');
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  console.log("from Shop");
 
   useEffect(() => {
-    setIsDisabled(true);
-    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/products/')
-      .then((res) => {
-        setProductsData(res.data.products);
-        setFilteredProducts(res.data.products);
-        setIsDisabled(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // setIsDisabled(true);
+    // axios.get(import.meta.env.VITE_BACKEND_URL + '/api/products/')
+    //   .then((res) => {
+    //     setProductsData(res.data.products);
+    //     setFilteredProducts(res.data.products);
+    //     setIsDisabled(false);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + '/api/products/');
+        setProductsData(response.data.products);
+        setFilteredProducts(response.data.products);
+    }catch(err) {
+      console.log(err);
+    }
+  }
+
+
+  useEffect(() => {
+    console.log("io on");
+    socket.on('products updated', () => {
+      // console.log(data);
+      // // Assuming data contains the new product
+      // setProductsData(prevProducts => {
+      //   // Add the new product to the existing products data
+      //   const updatedProducts = [...prevProducts, data];
+      //
+      //   // Update the filtered products based on the new data
+      //   setFilteredProducts(updatedProducts);
+      //
+      //   // Return the updated products data
+      //   return updatedProducts;
+      // });
+      fetchProducts();
+    });
+
+    // Clean up the socket listener when the component unmounts
+    return () => {
+      socket.off('products updated');
+    };
+  }, [socket]);
+
 
   useEffect(() => {
     let filtered = [...productsData];

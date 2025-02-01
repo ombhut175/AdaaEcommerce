@@ -108,7 +108,6 @@ async function handleGiveUserInfo(req, res) {
         // console.log("from handleGiveUserInfo");
         // console.log(req.cookies.authToken);
         const user = await giveUserFromDb(req.cookies.authToken);
-        console.log(user);
         // console.log(user);
         if (!user) {
             return res.status(400).json({message: 'No user found'});

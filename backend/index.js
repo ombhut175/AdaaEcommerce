@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv')
 const authRouter = require('./routes/auth');
 const requireLogin = require('./middlewares/requiredLogin');
 const cookieParser = require('cookie-parser');
@@ -29,7 +28,6 @@ const { initSocket } = require("./services/socket");
 
 
 //configuration--------------------------------------------------
-dotenv.config()
 const PORT = process.env.PORT;
 
 
@@ -119,7 +117,7 @@ mongoose.connect(process.env.MONGO_URL)
 
         //trackingProducts
 
-        app.use('/api',trackingRoutes)
+        app.use('/api/tracking',trackingRoutes)
 
         //delivery 
 
@@ -131,7 +129,7 @@ mongoose.connect(process.env.MONGO_URL)
             res.status(200).json({success:true ,  message: 'Cookie has been cleared' });
           });
         //listen at specific port
-        app.listen(PORT, (err) => {
+        server.listen(PORT, (err) => {
             console.log(err ? `Error is occurred in program : ${err}` : `Server started at ${PORT}`);
         })
     })

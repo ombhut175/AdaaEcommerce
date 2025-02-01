@@ -5,6 +5,7 @@ const {uploadOnCloudinary, uploadOnCloudinaryForProducts} = require("../services
 const {getUser, giveUserIdFromCookies} = require("../services/auth");
 const {ObjectId} = require('mongoose').Types;
 const fs = require("node:fs");
+const {getIo, updateProductsUsingSocketIo} = require("../services/socket");
 
 
 
@@ -92,6 +93,7 @@ const addProduct = async (req, res) => {
 
             await savedProduct.save();
         }
+        updateProductsUsingSocketIo();
 
         res.status(201).json({
             success: true,
@@ -238,6 +240,8 @@ const updateProduct = async (req, res) => {
         // Cleanup old images after successful update
         await deleteCloudinaryImages(oldImageUrls);
 
+        updateProductsUsingSocketIo();
+
         res.status(200).json({
             success: true,
             product: updatedProduct
@@ -315,6 +319,7 @@ const removeProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({success: false, message: 'Product not found'});
         }
+        updateProductsUsingSocketIo();
         res.status(200).json({success: true, message: 'Product removed successfully'});
     } catch (error) {
         res.status(500).json({success: false, message: 'Failed to remove product', error: error.message});
@@ -485,6 +490,7 @@ async function getNewArrivals(req, res) {
         res.status(500).json({ success: false, message: 'Server error', error });
     }
 }
+
 
 
 

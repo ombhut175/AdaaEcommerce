@@ -15,16 +15,6 @@ router.post('/filter',filterProduct);
 router.get('/dealsOfMonth',getDealsOfTheMonth);
 router.get('/:id',getProduct);
 router.get('/search/:searchText',searchProducts);
-router.delete('/:id',removeProduct);
-router.patch('/:id',updateProduct);
-// Accept multiple files for any field
 
-//testing
 
-// router.post('/add',(req,res)=>{
-//     console.log("entered");
-//     return res.status(201).send({
-//         message:"Product added successfully",
-//     });
-// });
 module.exports = router

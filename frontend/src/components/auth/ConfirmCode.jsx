@@ -43,7 +43,6 @@ function ConfirmCode() {
                     localStorage.setItem('authToken', data.token)
                     toast(data.msg);
                     dispatch(fetchUser());
-                    dispatch(logInUser());
                     console.log();
                     
                     navigate('/signin'); // Redirect to home page after successful OTP verification

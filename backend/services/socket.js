@@ -5,6 +5,7 @@ const {Server} = require('socket.io');
 let io;
 
 function initSocket(server){
+    console.log("from initSocket");
     io = new Server(server,{
         cors:{
             origin:[process.env.CLIENT_URL,process.env.CLIENT_URL_FOR_CORS],
@@ -27,7 +28,14 @@ function getIo(){
 }
 
 
+function updateProductsUsingSocketIo(){
+    if (io){
+        io.emit('products updated');
+    }
+}
+
 module.exports = {
     initSocket,
-    getIo
+    getIo,
+    updateProductsUsingSocketIo
 }

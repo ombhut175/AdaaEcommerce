@@ -4,6 +4,7 @@ import {Link, useNavigate, useParams} from 'react-router-dom';
 import {FaUpload, FaTimes} from 'react-icons/fa';
 import axios from "axios";
 import {toast} from "react-toastify";
+import {LoadingBar} from "../loadingBar/LoadingBar.jsx";
 
 const inputVariants = {
     focus: {scale: 1.02, transition: {type: "spring", stiffness: 300}},
@@ -21,6 +22,7 @@ const colors = [
 export default function DealerProductForm() {
     const {id} = useParams();
     const isEditing = Boolean(id);
+    const [isDisabled, setIsDisabled] = useState(false);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const [colorImages, setColorImages] = useState({});
@@ -99,6 +101,7 @@ export default function DealerProductForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setIsDisabled(true);
         // Check if any colors with images exist
         const validColors = Object.entries(colorImages).filter(
             ([colorValue, data]) => Object.keys(data?.files || {}).length > 0
@@ -140,7 +143,7 @@ export default function DealerProductForm() {
         formPayload.append("stock", formData.stock);
 
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/products/add`,
+            const response = await axios.post(`${BACKEND_URL}/api/dealer/add`,
                 formPayload,
                 { withCredentials: true }
             );
@@ -155,6 +158,8 @@ export default function DealerProductForm() {
         } catch (error) {
             console.error("Error:", error);
             alert("Error uploading product. Please try again.");
+        } finally {
+            setIsDisabled(false);
         }
     };
 
@@ -167,6 +172,7 @@ export default function DealerProductForm() {
             animate={{opacity: 1}}
             className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900"
         >
+            <LoadingBar isLoading={isDisabled} />
             <div className="max-w-3xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <div>
@@ -408,13 +414,19 @@ export default function DealerProductForm() {
                         </Link>
                         <motion.button
                             type="submit"
-                            whileHover={{scale: 1.05}}
-                            whileTap={{scale: 0.95}}
-                            className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                            whileHover={!isDisabled ? { scale: 1.05 } : {}}
+                            whileTap={!isDisabled ? { scale: 0.95 } : {}}
+                            className={`px-6 py-2 rounded-md ${
+                                isDisabled
+                                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed' // Disabled state styles
+                                    : 'bg-indigo-600 text-white hover:bg-indigo-700' // Active state styles
+                            }`}
+                            disabled={isDisabled}
                             onClick={handleSubmit}
                         >
                             {isEditing ? 'Update Product' : 'Add Product'}
                         </motion.button>
+
                     </div>
                 </form>
             </div>
