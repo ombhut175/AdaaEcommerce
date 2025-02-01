@@ -74,7 +74,7 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
   }
 
   return (
-    <div className="relative mb-4 overflow-hidden rounded-lg touch-pan-y">
+    <div className="relative mb-4 mt-20 overflow-hidden rounded-lg touch-pan-y">
       {/* Actions Container */}
       <div className="absolute inset-y-0 right-0 flex items-center justify-end gap-2 px-4">
         <button

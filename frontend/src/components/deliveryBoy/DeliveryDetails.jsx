@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import {toast} from "react-toastify";
 
 function DeliveryDetails() {
   const { id } = useParams()
@@ -9,8 +10,8 @@ function DeliveryDetails() {
 
   const handleDelivered = () => {
     // Update delivery status
-    alert('Delivery marked as completed!')
-    navigate('/')
+    toast.success('Delivery marked as completed!')
+    navigate('/delivery');
   }
 
   const handleCancel = () => {
@@ -19,16 +20,16 @@ function DeliveryDetails() {
 
   const submitCancelForm = () => {
     if (!cancelReason) {
-      alert('Please provide a reason for cancellation')
+      toast.error('Please provide a reason for cancellation')
       return
     }
     // Update delivery status with cancel reason
-    alert('Delivery canceled!')
-    navigate('/')
+    toast.success('Delivery canceled!')
+    navigate('/delivery');
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 pt-24">
       <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Delivery Details #{id}</h2>
       
       {!showCancelForm ? (

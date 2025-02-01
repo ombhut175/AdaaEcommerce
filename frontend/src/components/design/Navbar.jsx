@@ -158,6 +158,7 @@ export default function Navbar() {
         {name: 'New Arrivals', path: '/new-arrivals'},
         {name: 'Dealer', path: '/dealer/products'},
         {name: 'Orders', path: '/orders'},
+        {name: 'Delivery Boy', path: '/delivery'},
         // ...(user.role?.includes('dealer') ? [{name: 'Dealer', path: '/dealer/products'}] : [])
     ];
 
