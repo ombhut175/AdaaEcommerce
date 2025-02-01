@@ -4,6 +4,7 @@ const { giveUserIdFromCookies } = require('../services/auth');
 const UserBehavior = require('../models/UserBehavior');
 const Product = require('../models/Product');
 const {updateProductsUsingSocketIo} = require("../services/socket");
+const {ObjectId} = require('mongoose').Types;
 
 // Create a new order
 async function createOrder(req, res) {
@@ -51,33 +52,39 @@ async function createOrder(req, res) {
 
 // Add all products from cart to an order
 async function addAllProductsOfCart(req, res) {
+    console.log("from addAllProductsOfCart");
     try {
         const userId = giveUserIdFromCookies(req.cookies.authToken);
+        console.log(userId);
         if (!userId) {
             return res.status(401).json({ error: 'Unauthorized: Invalid auth token.' });
         }
 
-        const cart = await Cart.findOne({ userId }).populate('cartItems.productId');
-        if (!cart || cart.cartItems.length === 0) {
+        const cartItems = await Cart.find({ userId: new ObjectId(userId) }).populate('productId');
+        if (!cartItems.length) {
             return res.status(400).json({ error: 'Cart is empty.' });
         }
 
-        const orders = cart.cartItems.map(item => ({
+        const orders = cartItems.map(item => ({
             userId,
-            productId: item.productId._id,
+            productId:new ObjectId(item.productId._id) ,
             price: item.productId.price,
             discount: item.productId.discount || 0,
             quantity: item.quantity,
+            orderType: req.body.orderType || 'normal', // Required as per schema
             paymentMethod: req.body.paymentMethod || 'COD',
             paymentStatus: req.body.paymentStatus || 'pending',
+            orderStatus: 'success',
+            orderDate: new Date(),
         }));
 
         await Orders.insertMany(orders);
-        await Cart.findOneAndUpdate({ userId }, { cartItems: [] }, { new: true });
+        await Cart.deleteMany({ userId: new ObjectId(userId) });
         updateProductsUsingSocketIo();
         res.status(201).json({ message: 'Orders placed successfully.' });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -94,8 +101,8 @@ async function getAllOrders(req, res) {
 // Get orders by user ID
 async function getOrdersByUserId(req, res) {
     try {
-        const userId = req.params.userId;
-        const orders = await Orders.find({ userId }).populate('productId addressId');
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
+        const orders = await Orders.find({ userId: new ObjectId(userId) }).populate('productId addressId');
         res.status(200).json(orders);
     } catch (error) {
         res.status(500).json({ error: error.message });

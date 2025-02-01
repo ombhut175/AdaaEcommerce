@@ -5,7 +5,7 @@ import { FaHeart, FaShare } from 'react-icons/fa';
 import { useSelector } from 'react-redux'
 import {toast} from 'react-toastify'
 import axios from 'axios'
-import { LoadingBar } from '../loadingBar/LoadingBar'; 
+import { LoadingBar } from '../loadingBar/LoadingBar.jsx';
 export default function ProductDetail() {
   
 
@@ -82,8 +82,7 @@ export default function ProductDetail() {
   const handleAddCart = ()=>{
     axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/"+id,{selectedColor},{withCredentials: true})
     .then((res)=>{
-      console.log(res);
-      
+      toast("Product added to cart");
     })  
   }
     

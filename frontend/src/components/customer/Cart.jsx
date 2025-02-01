@@ -155,7 +155,7 @@ export default function Cart() {
           ) : (
               <div className="text-center py-10">
                 <h2 className="text-xl font-bold">Your cart is empty</h2>
-                <Link to="/">
+                <Link to="/shop">
                   <motion.button className="mt-4 px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-md font-medium hover:shadow-lg">
                     Continue Shopping
                   </motion.button>

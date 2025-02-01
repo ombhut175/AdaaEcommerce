@@ -1,25 +1,41 @@
-import { useState } from "react"
-import { useSelector } from "react-redux"
-import { motion, AnimatePresence } from "framer-motion"
-import { selectDarkMode } from "../../store/features/themeSlice.js"
-import { mockOrders } from "../../data/mockOrder.js"
-import OrderCard from "./OrderCard.jsx"
-import EmptyState from "../EmptyState.jsx"
-import { Filter, Search } from "lucide-react"
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import { selectDarkMode } from "../../store/features/themeSlice.js";
+import OrderCard from "./OrderCard.jsx";
+import EmptyState from "../EmptyState.jsx";
+import { Filter, Search } from "lucide-react";
+import axios from "axios";
 
 const OrdersPage = () => {
-    const darkMode = useSelector(selectDarkMode)
-    const [filterStatus, setFilterStatus] = useState("all")
-    const [searchTerm, setSearchTerm] = useState("")
-    const [isFilterOpen, setIsFilterOpen] = useState(false)
+    const darkMode = useSelector(selectDarkMode);
+    const [orders, setOrders] = useState([]);
+    const [filterStatus, setFilterStatus] = useState("all");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-    const filteredOrders = mockOrders.filter((order) => {
-        const matchesStatus = filterStatus === "all" || order.orderStatus === filterStatus
+    useEffect(() => {
+        fetchOrders();
+    }, []); // Ensure it runs only once on component mount
+
+    const fetchOrders = async () => {
+        try {
+            const response = await axios.get(`${BACKEND_URL}/api/orders`, { withCredentials: true });
+            setOrders(response.data); // Assuming response.data contains the list of orders
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        }
+    };
+
+    const filteredOrders = orders.filter((order) => {
+        const matchesStatus = filterStatus === "all" || order.orderStatus === filterStatus;
         const matchesSearch =
-            order.productId.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order._id.toLowerCase().includes(searchTerm.toLowerCase())
-        return matchesStatus && matchesSearch
-    })
+            order.productId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            order._id.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return matchesStatus && matchesSearch;
+    });
 
     return (
         <div
@@ -78,12 +94,12 @@ const OrdersPage = () => {
                                             <button
                                                 key={status}
                                                 onClick={() => {
-                                                    setFilterStatus(status)
-                                                    setIsFilterOpen(false)
+                                                    setFilterStatus(status);
+                                                    setIsFilterOpen(false);
                                                 }}
                                                 className={`block w-full text-left px-4 py-2 text-sm capitalize ${
                                                     darkMode ? "text-gray-200 hover:bg-gray-700" : "text-gray-700 hover:bg-gray-100"
-                                                } ${filterStatus === status ? "bg-blue-50 text-blue-600" : ""}`}
+                                                } ${filterStatus === status ? "text-blue-600" : ""}`}
                                             >
                                                 {status}
                                             </button>
@@ -108,8 +124,7 @@ const OrdersPage = () => {
                 </AnimatePresence>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default OrdersPage
-
+export default OrdersPage;

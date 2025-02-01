@@ -17,7 +17,7 @@ import Newsletter from './components/design/Newsletter.jsx';
 import Footer from './components/design/Footer.jsx';
 import Cart from './components/customer/Cart.jsx';
 import Shop from './components/pages/Shop.jsx';
-import ProductDetail from './components/customer/ProductDetail.jsx';
+import ProductDetail from './components/pages/ProductDetail.jsx';
 import Checkout from './components/customer/Checkout.jsx';
 import UserProfile from './components/customer/UserProfile.jsx';
 import EditProfile from './components/customer/EditProfile.jsx';

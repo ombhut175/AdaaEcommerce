@@ -1,5 +1,7 @@
 const addressModel = require('../models/Address')
 const z = require('zod');
+const {giveUserIdFromCookies} = require("../services/auth");
+const {ObjectId} = require('mongoose').Types;
 
 const addressSchemaForValidation = z.object({
     flat: z.string().nonempty().max(30),
@@ -19,9 +21,11 @@ async function address(req, res) {
         state, 
         country,
         city,
-        userId } = req.body;
+        } = req.body;
+
 
     try {
+        const userId = giveUserIdFromCookies(req.cookies.authToken);
 
         const data = await addressModel.create({
             fullName:firstName + ' ' + lastName,
@@ -30,12 +34,12 @@ async function address(req, res) {
             state,
             country,
             city,
-            userId:userId
+            userId:new ObjectId(userId)
         })
         if (!data) {
             res.status(500).json({ success: false, msg: "Insertion error in address" });
         }
-        res.status(200).json({ success: true, msg: "Address saved successful" });
+        res.status(200).json({ success: true, msg: "Address saved successful" ,addressId: data._id});
     } catch (err) {
         console.log("Insertion in address error :", err);
     }

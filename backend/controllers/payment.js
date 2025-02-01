@@ -41,7 +41,7 @@ const paymentVerification =  async (req, res) => {
     await payment.save();
     
 
-    return res.redirect(process.env.CLIENT_URL)
+    return res.redirect(`${process.env.CLIENT_URL}/orders`);
   } else {
     res.status(400).json({
       success: false,
