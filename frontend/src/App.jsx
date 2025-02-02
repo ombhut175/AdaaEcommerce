@@ -41,6 +41,8 @@ import ProtectedRoute from './ProtectedRoute.jsx';
 import Unauthorized from './Unauthorized.jsx';
 import DealerProductEditingPage from "./components/dealer/DealerProductEditForm.jsx";
 import OrdersPage from "./components/customer/OrdersPage.jsx";
+import ChatBot from "./components/ChatBot/ChatBot.jsx";
+import ChatToggle from "./components/ChatBot/ChatToggle.jsx";
 
 
 function App() {
@@ -210,6 +212,9 @@ function App() {
                         </Routes>
                         <Footer/>
                     </Suspense>
+
+                    <ChatBot />
+                    <ChatToggle />
 
                     {/* Cart and Scroll-to-Top Buttons */}
                     <Link to="/cart">
