@@ -1,6 +1,6 @@
 const express = require('express');
 const {addProduct,removeProduct,getAllProducts,getProduct,updateProduct,filterProduct, searchProducts,
-    getDealsOfTheMonth, getNewArrivals
+    getDealsOfTheMonth, getNewArrivals, handleSuggestion
 } = require('../controllers/products')
 const uploadForProducts = require('../middlewares/multer.middleware');
 
@@ -9,6 +9,7 @@ const router = express.Router();
  
 //routes
 router.get('/',getAllProducts);
+router.get('/suggestions',handleSuggestion);
 router.get('/newArrivals',getNewArrivals);
 router.post('/add', uploadForProducts.any(), addProduct);
 router.post('/filter',filterProduct);

@@ -19,6 +19,7 @@ export default function SearchResults() {
       const response = await axios.get(`${BACKEND_URL}/api/products/search/${query}`);
       setProducts(response.data);
     } catch (error) {
+      setProducts([]);
       console.error('Error fetching products:', error);
     }
   };

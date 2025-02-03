@@ -492,6 +492,37 @@ async function getNewArrivals(req, res) {
 }
 
 
+const handleSuggestion = async (req, res) => {
+    const query = req.query.q;
+
+    if (!query) {
+        return res.status(400).json({error: 'Query parameter "q" is required.'});
+    }
+
+    try {
+        // Create a regex for prefix matching (case-insensitive)
+        const regex = new RegExp('^' + query, 'i');
+
+        // Find products with names that start with the query.
+        // You can adjust the search criteria (for example, search in the "title" field) if desired.
+        const products = await Product.find({name: regex})
+            .limit(10) // Limit the number of suggestions returned
+            .select('name'); // Only select the "name" field
+
+        // Map the results to an array of suggestions.
+        // Here we use the product _id as the id and product name as the text.
+        const suggestions = products.map(product => ({
+            id: product._id,
+            text: product.name
+        }));
+
+        return res.json(suggestions);
+    } catch (error) {
+        console.error('Error fetching suggestions:', error);
+        return res.status(500).json({error: 'Server error'});
+    }
+}
+
 
 
 module.exports = {
@@ -503,5 +534,6 @@ module.exports = {
     filterProduct,
     searchProducts,
     getDealsOfTheMonth,
-    getNewArrivals
+    getNewArrivals,
+    handleSuggestion
 }

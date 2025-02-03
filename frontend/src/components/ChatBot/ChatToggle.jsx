@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { toggleChat } from '../../store/features/chatSlice.js';
 
+
 const ToggleButton = styled(motion.button)`
   position: fixed;
   bottom: 30px;
@@ -29,6 +30,7 @@ const ToggleButton = styled(motion.button)`
 const ChatToggle = () => {
   const dispatch = useDispatch();
   const { isOpen } = useSelector((state) => state.chat);
+  const { darkMode } = useSelector((state) => state.theme);
 
   if (isOpen) return null;
 
