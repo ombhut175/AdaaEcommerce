@@ -24,7 +24,7 @@ import EditProfile from './components/customer/EditProfile.jsx';
 import Deals from './components/pages/Deals';
 import NewArrivalsPage from './components/pages/NewArrivalsPage';
 import Wishlist from './components/customer/Wishlist.jsx';
-import SearchResults from './components/pages/SearchResults.jsx';
+import SearchResults from './components/searchProducts/SearchResults.jsx';
 import SignIn from "./components/auth/SignIn.jsx";
 import SignUp from "./components/auth/SignUp.jsx";
 import ForgotPassword from "./components/auth/ForgotPassword.jsx";
