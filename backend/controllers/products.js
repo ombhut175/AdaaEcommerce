@@ -20,7 +20,11 @@ const addProduct = async (req, res) => {
             discount,
             stock,
             colorNames,
-            colorValues
+            colorValues,
+            gender,
+            category,
+            size,
+            material
         } = req.body;
 
         // Validate color data
@@ -43,6 +47,10 @@ const addProduct = async (req, res) => {
             name,
             title,
             description,
+            gender,
+            categoryOfProduct:category,
+            size,
+            material,
             price: Number(price),
             discountPercent: Number(discount),
             stock: Number(stock),
