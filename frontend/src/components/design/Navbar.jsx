@@ -23,9 +23,6 @@ export default function Navbar() {
     const userDropdownRef = useRef(null)
     const submenuRef = useRef(null)
     const mobileSubmenuRef = useRef(null)
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [isAdmin, setIsAdmin] = useState(false)
-    const [isDealer, setIsDealer] = useState(false)
 
     const submenuItems = [
         { name: "Deals", path: "/deals" },
@@ -36,15 +33,6 @@ export default function Navbar() {
         { name: "Delivery Boy", path: "/delivery" },
     ]
 
-    useEffect(() => {
-        if (user) {
-            setIsLoggedIn(user.isLoggedIn)
-            if (user.isLoggedIn && user.role?.includes("admin")) setIsAdmin(true)
-            if (user.isLoggedIn && user.role?.includes("dealer")) setIsDealer(true)
-        } else {
-            dispatch(fetchUser())
-        }
-    }, [dispatch, user])
 
     useEffect(() => {
         const handleClickOutside = (event) => {

@@ -44,6 +44,7 @@ import OrdersPage from "./components/customer/OrdersPage.jsx";
 import ChatBot from "./components/ChatBot/ChatBot.jsx";
 import ChatToggle from "./components/ChatBot/ChatToggle.jsx";
 import GlobeContainer from "./components/Globe/GlobeContainer.jsx";
+import AdminPermissionsPage from "./components/admin/AdminPermissionsPage.jsx";
 
 
 function App() {
@@ -152,6 +153,8 @@ function App() {
                             <Route path="/dealer/products/:id" element={<DealerProductDetail/>}/>
                             <Route path="/dealer/products/new" element={<DealerProductForm/>}/>
                             <Route path="/dealer/products/:id/edit" element={<DealerProductEditingPage/>}/>
+
+                            <Route path={'/admin/new'} element={<AdminPermissionsPage />}/>
 
 
                             {/* Dealer Routes */}

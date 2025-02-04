@@ -82,9 +82,36 @@ async function giveStaticImages(req, res) {
     }
 }
 
+
+async function givePermission(req, res) {
+    try {
+        const { permission, userEmail } = req.body;
+
+        const user = await User.findOne({ email: userEmail });
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+
+        // Check if permission already exists to avoid duplicates
+        if (!user.role.includes(permission)) {
+            user.role.push(permission);
+            await user.save(); // Save the updated document
+        }
+
+        return res.status(200).json({ message: 'User permission successfully updated' });
+    } catch (e) {
+        console.error("Error in givePermission:", e);
+        return res.status(400).json({ error: 'Failed to give permission' });
+    }
+}
+
+
+
+
 module.exports = {
     getOrCreateStaticImages,
     updateStaticImages,
     changeImages,
-    giveStaticImages
+    giveStaticImages,
+    givePermission
 };
