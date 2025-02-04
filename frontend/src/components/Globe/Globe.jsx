@@ -1,13 +1,33 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 
 export default function Globe({ mousePosition }) {
     const meshRef = useRef();
     const earthTexture = useTexture('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg');
+    const [radius, setRadius] = useState(2);
 
-    // Calculate radius based on viewport size
-    const radius = window.innerWidth < 768 ? 1.5 : 2;
+    useEffect(() => {
+        const handleResize = () => {
+            // More granular breakpoints for better responsiveness
+            if (window.innerWidth <= 480) {
+                setRadius(1); // Extra small devices
+            } else if (window.innerWidth <= 768) {
+                setRadius(1.3); // Small devices
+            } else if (window.innerWidth <= 1024) {
+                setRadius(1.7); // Medium devices
+            } else {
+                setRadius(2); // Large devices
+            }
+        };
+
+        // Set initial size
+        handleResize();
+
+        // Add resize listener
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useFrame(() => {
         if (!meshRef.current || !mousePosition.current) return;
