@@ -18,7 +18,7 @@ import {
 
 
 export default function ProductDetail() {
-
+  
 
   //product _id 
   const { id } = useParams()
@@ -35,22 +35,58 @@ export default function ProductDetail() {
   const [index, setIndex] = useState(0);
   const [indexImageChange, setIndexImageChange] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false)
+  const [isAddCartHide,setIsAddCartHide] = useState(false);
   const navigate = useNavigate()
   const user = useSelector(state => state.user)
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     setIsDisabled(true)
-    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/products/' + id, { withCredentials: true })
-      .then((res) => {
-
-        setProduct(res.data);
-
-        setIsDisabled(false)
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+    axios.get(BACKEND_URL + '/api/products/' + id, { withCredentials: true })
+    .then((res) => {
+      
+      setProduct(res.data);
+      setIsDisabled(false)
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    
   }, [id])
+  
+  useEffect(()=>{
+    
+    axios.get(BACKEND_URL+ '/api/cart', { withCredentials: true })
+    .then((res)=>{
+      
+      const product = res.data.items.find((p)=>p.product._id===id)
+      console.log(product.quantity);
+      
+      setQuantity(product.quantity)
+      
+      
+    })
+  },[id])
+  
+  const handleUpdateProductQuantity = (change)=>{
+  
+    if(quantity>1){
+      setIsAddCartHide(true)
+    }else{
+      setIsAddCartHide(false)
+    }setQuantity(change);
 
+    axios.put(BACKEND_URL + '/api/cart/changeProductQuantity/' + id,
+      { selectedSize,
+        selectedColor,
+        quantity:change
+      } ,{ withCredentials: true })
+      .then((res) => {
+        console.log(res);
+        
+      })
+      .catch((err) => console.error('Error updating cart:', err));
+      
+    }
   //calculate the stars of review
   const setReviewStars = () => {
     let sum = 0, avg = 0;
@@ -64,7 +100,7 @@ export default function ProductDetail() {
 
   }
 
-  // share 
+  // -------------------------------------------share ------------------------------------------------------------------------
   const [isPopUpOpen, setPopUpOpen] = useState(false);
 
   // Toggle the pop-up visibility when the button is clicked
@@ -133,8 +169,10 @@ export default function ProductDetail() {
     }
   }, [product, selectedColor]);
 
+  
+
   const handleAddCart = () => {
-    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/" + id, { selectedColor }, { withCredentials: true })
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/" + id, { selectedColor,selectedSize,quantity }, { withCredentials: true })
       .then((res) => {
         toast("Product added to cart");
       })
@@ -298,14 +336,14 @@ export default function ProductDetail() {
                 </h3>
                 <div className="flex items-center gap-4">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    onClick={() => handleUpdateProductQuantity(Math.max(1, quantity - 1))}
                     className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 text-white"
                   >
                     -
                   </button>
                   <span className="w-12 text-center dark:text-white">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
+                    onClick={() => handleUpdateProductQuantity(quantity + 1)}
                     className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 text-white"
                   >
                     +
@@ -315,14 +353,18 @@ export default function ProductDetail() {
 
               {/* Actions */}
               <div className="flex gap-4 mb-8">
+                {
+                  quantity==1? 
+                
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex-1 bg-black dark:bg-white text-white dark:text-black py-3 rounded-full font-medium hover:bg-gray-900 dark:hover:bg-gray-100"
-                  onClick={handleAddCart}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 bg-black dark:bg-white text-white dark:text-black py-3 rounded-full font-medium hover:bg-gray-900 dark:hover:bg-gray-100"
+                onClick={handleAddCart}
                 >
                   Add to cart
-                </motion.button>
+                </motion.button>: <></>
+                }
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -331,15 +373,11 @@ export default function ProductDetail() {
 
 
                     () => {
-                      console.log(user.id);
-                      console.log(id);
-                      console.log(selectedColor);
-                      console.log(selectedSize);
-
-                      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id, { color: selectedColor, size: selectedSize, productId: id })
+                      
+                      axios.post(BACKEND_URL + '/api/wishlist/' + user.id , { color: selectedColor, size: selectedSize, productId: id })
                         .then((res) => {
                           console.log(res.data);
-                          toast(res.data.message)
+                          toast("Product added into Wishlist")
                         })
                         .catch((err) => {
                           console.log(err);

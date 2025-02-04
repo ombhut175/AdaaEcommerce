@@ -18,6 +18,9 @@ const cartSchema = mongoose.Schema({
     selectedColor: {
         type: String,
     },
+    selectedSize:{
+        type:String
+    },
     createdAt: {
         type: Date,
         default: Date.now

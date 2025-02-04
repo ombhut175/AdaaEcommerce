@@ -44,6 +44,7 @@ async function handleGetCart(req, res) {
                 },
                 quantity: item.quantity,
                 selectedColor: item.selectedColor,
+                selectedSize:item.selectedSize,
                 itemAddedAt: item.createdAt
             };
         });
@@ -82,9 +83,9 @@ async function handleGetCart(req, res) {
 async function handleAddProductToCart(req, res) {
     try {
         const { productId } = req.params;
-        const { selectedColor } = req.body;
+        const { selectedColor,selectedSize,quantity } = req.body;
         const userId = giveUserIdFromCookies(req.cookies.authToken);
-
+        
         // Validate userId and productId are valid ObjectIds
         if (!ObjectId.isValid(userId) || !ObjectId.isValid(productId)) {
             return res.status(400).json({ message: "Invalid ID format" });
@@ -96,17 +97,19 @@ async function handleAddProductToCart(req, res) {
         });
 
         if (existingCartItem) {
-            existingCartItem.quantity += 1;
+            existingCartItem.quantity = quantity;
             existingCartItem.selectedColor = selectedColor;
             existingCartItem.updatedAt = Date.now();
+            existingCartItem.selectedSize = selectedSize
             await existingCartItem.save();
             return res.status(200).json({ message: "Product quantity updated", cart: existingCartItem });
         } else {
             const newCartItem = await Cart.create({
                 userId: new ObjectId(userId),
                 productId: new ObjectId(productId),
-                quantity: 1,
+                quantity,
                 selectedColor: selectedColor,
+                selectedSize:selectedSize
             });
             return res.status(200).json({ message: "Product added to cart", cart: newCartItem });
         }
@@ -140,7 +143,7 @@ async function handleDeleteProductFromCart(req, res) {
 async function handleUpdateProductQuantity(req, res) {
     try {
         const { productId } = req.params;
-        const { quantity, selectedColor } = req.body;
+        const { quantity, selectedColor,selectedSize } = req.body;
         const userId = giveUserIdFromCookies(req.cookies.authToken);
 
         const updatedCartItem = await Cart.findOneAndUpdate(
@@ -149,6 +152,7 @@ async function handleUpdateProductQuantity(req, res) {
                 $set: {
                     quantity: quantity,
                     selectedColor: selectedColor,
+                    selectedSize:selectedSize,
                     updatedAt: Date.now(),
                 }
             },
