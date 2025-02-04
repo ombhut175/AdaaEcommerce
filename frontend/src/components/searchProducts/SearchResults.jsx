@@ -6,38 +6,28 @@ import axios from "axios"
 import FilterSystem from "./FilterSystem.jsx"
 
 export default function SearchResults() {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const query = searchParams.get("q")
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
-  const [priceRange, setPriceRange] = useState([0, 10000])
+  const [priceRange, setPriceRange] = useState([
+    Number.parseInt(searchParams.get("minPrice") || "0"),
+    Number.parseInt(searchParams.get("maxPrice") || "10000"),
+  ])
   const [filters, setFilters] = useState({
-    colors: [],
-    sizes: [],
+    colors: searchParams.get("colors")?.split(",") || [],
+    size: searchParams.get("size")?.split(",") || [],
   })
-  const [sortOrder, setSortOrder] = useState(null)
+  const [sortOrder, setSortOrder] = useState(searchParams.get("sort") || "")
 
   useEffect(() => {
     if (query) fetchProducts()
   }, [query])
 
   useEffect(() => {
-    let filtered = products.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1])
-
-    if (filters.colors.length) {
-      filtered = filtered.filter((product) => product.colors.some((color) => filters.colors?.includes(color.colorName)))
-    }
-    if (filters.sizes.length) {
-      filtered = filtered.filter((product) => product.sizes.some((size) => filters.sizes.includes(size)))
-    }
-    if (sortOrder === "low-to-high") {
-      filtered.sort((a, b) => a.price - b.price)
-    } else if (sortOrder === "high-to-low") {
-      filtered.sort((a, b) => b.price - a.price)
-    }
-    setFilteredProducts(filtered)
-  }, [products, filters, priceRange, sortOrder])
+    applyFilters()
+  }, [products, filters, priceRange, sortOrder]) //This line was flagged for improvement
 
   const fetchProducts = async () => {
     try {
@@ -47,6 +37,23 @@ export default function SearchResults() {
       setProducts([])
       console.error("Error fetching products:", error)
     }
+  }
+
+  const applyFilters = () => {
+    let filtered = products.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1])
+
+    if (filters.colors.length) {
+      filtered = filtered.filter((product) => product.colors.some((color) => filters.colors.includes(color.colorName)))
+    }
+    if (filters.size.length) {
+      filtered = filtered.filter((product) => product.size.some((size) => filters.size.includes(size)))
+    }
+    if (sortOrder === "low-to-high") {
+      filtered.sort((a, b) => a.price - b.price)
+    } else if (sortOrder === "high-to-low") {
+      filtered.sort((a, b) => b.price - a.price)
+    }
+    setFilteredProducts(filtered)
   }
 
   const uniqueValues = (key) => [
@@ -129,7 +136,7 @@ export default function SearchResults() {
                             {product.name}
                           </h3>
                         </Link>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{product.categoryOfProduct}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{product.size.join(", ")}</p>
                         <div className="flex justify-between items-center">
                           <span className="text-lg font-bold text-gray-900 dark:text-white">₹{product.price}</span>
                         </div>

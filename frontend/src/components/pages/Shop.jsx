@@ -1,25 +1,29 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import axios from "axios"
 import { LoadingBar } from "../loadingBar/LoadingBar.jsx"
 import { io } from "socket.io-client"
-import FilterSystem from "../searchProducts/FilterSystem.jsx";
+import FilterSystem from "../searchProducts/FilterSystem.jsx"
 
 const socket = io(import.meta.env.VITE_BACKEND_URL)
 
 export default function Shop() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [viewMode, setViewMode] = useState("grid")
   const [productsData, setProductsData] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
   const [isDisabled, setIsDisabled] = useState(false)
-  const [priceRange, setPriceRange] = useState([0, 10000])
+  const [priceRange, setPriceRange] = useState([
+    Number.parseInt(searchParams.get("minPrice") || "0"),
+    Number.parseInt(searchParams.get("maxPrice") || "10000"),
+  ])
   const [filters, setFilters] = useState({
-    colors: [],
-    size: [],
+    colors: searchParams.get("colors")?.split(",") || [],
+    size: searchParams.get("size")?.split(",") || [],
   })
-  const [sortOrder, setSortOrder] = useState("")
+  const [sortOrder, setSortOrder] = useState(searchParams.get("sort") || "")
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
   useEffect(() => {
@@ -30,7 +34,7 @@ export default function Shop() {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/products/`)
       setProductsData(response.data.products)
-      setFilteredProducts(response.data.products)
+      applyFilters(response.data.products)
     } catch (err) {
       console.log(err)
     }
@@ -44,7 +48,11 @@ export default function Shop() {
   }, [socket, fetchProducts]) // Added fetchProducts to dependencies
 
   useEffect(() => {
-    let filtered = productsData.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1])
+    applyFilters(productsData)
+  }, [filters, priceRange, sortOrder, productsData])
+
+  const applyFilters = (products) => {
+    let filtered = products.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1])
 
     if (filters.colors.length) {
       filtered = filtered.filter((product) => product.colors.some((color) => filters.colors.includes(color.colorName)))
@@ -58,7 +66,7 @@ export default function Shop() {
       filtered.sort((a, b) => b.price - a.price)
     }
     setFilteredProducts(filtered)
-  }, [filters, priceRange, sortOrder, productsData])
+  }
 
   const uniqueValues = (key) => [
     ...new Set(
@@ -92,7 +100,7 @@ export default function Shop() {
           </div>
 
           <div className="flex flex-col md:flex-row gap-8">
-            <div className="md:w-64 flex-shrink-0 md:sticky md:top-24 md:h-[calc(100vh-100px)]">
+            <div className="w-full md:w-64 flex-shrink-0">
               <FilterSystem
                   priceRange={priceRange}
                   setPriceRange={setPriceRange}
@@ -122,20 +130,13 @@ export default function Shop() {
                             className="w-full h-80 object-cover transform group-hover:scale-110 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
-                        <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                            onClick={(e) => { e.stopPropagation(); navigate('/cart'); }}
-                            className="bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-900 dark:hover:bg-gray-100">
-                            Add to Cart
-                          </motion.button>
-                        </div>
                       </div>
                       <div className="p-4">
                         <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white group-hover:text-indigo-500 dark:group-hover:text-indigo-400">
                           {product.name}
                         </h3>
                         <div className="flex justify-between items-center">
-                          <span className="font-bold text-gray-900 dark:text-white">${product.price.toFixed(2)}</span>
+                          <span className="font-bold text-gray-900 dark:text-white">₹{product.price.toFixed(2)}</span>
                           <div className="flex gap-1">
                             {product.colors.map((color, index) => (
                                 <div
