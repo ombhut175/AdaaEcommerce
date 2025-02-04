@@ -1,57 +1,111 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Link,Navigate,useNavigate,useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { FaHeart, FaShare } from 'react-icons/fa';
 import { useSelector } from 'react-redux'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 import axios from 'axios'
 import { LoadingBar } from '../loadingBar/LoadingBar.jsx';
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
+  TwitterIcon,
+  TelegramShareButton,
+  TwitterShareButton
+} from 'react-share'
+
+
 export default function ProductDetail() {
-  
+
 
   //product _id 
-  const {id} = useParams()
-  const [avgReview,setAvgReview ] = useState(0);
-  const [totalReviews,setTotalReviews ] = useState(0);
-  const [product,setProduct] = useState({});
+  const { id } = useParams()
+  const [avgReview, setAvgReview] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [product, setProduct] = useState({});
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Blue');
   const [quantity, setQuantity] = useState(1);
-  const [sizes,setSizes] = useState([])
-  const [colors,setColors] = useState([]);  
-  const [colorsName,setColorsName] = useState([]);  
-  const [images , setImages] = useState([]);
-  const [index,setIndex] = useState(0);
-  const [indexImageChange,setIndexImageChange] = useState(0);
-  const [isDisabled,setIsDisabled]= useState(false)
+  const [sizes, setSizes] = useState([])
+  const [colors, setColors] = useState([]);
+  const [colorsName, setColorsName] = useState([]);
+  const [images, setImages] = useState([]);
+  const [index, setIndex] = useState(0);
+  const [indexImageChange, setIndexImageChange] = useState(0);
+  const [isDisabled, setIsDisabled] = useState(false)
   const navigate = useNavigate()
   const user = useSelector(state => state.user)
-  useEffect(()=>{
+  useEffect(() => {
     setIsDisabled(true)
-    axios.get(import.meta.env.VITE_BACKEND_URL+'/api/products/' + id,{withCredentials:true})
-    .then((res)=>{
-      
-      setProduct(res.data);
-      
-      setIsDisabled(false)
-    })
-    .catch((err)=>{
-      console.log(err );
-    })
-  },[id])
+    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/products/' + id, { withCredentials: true })
+      .then((res) => {
+
+        setProduct(res.data);
+
+        setIsDisabled(false)
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }, [id])
 
   //calculate the stars of review
-  const setReviewStars = ()=>{
-    let sum=0,avg=0;
-    product.reviews.map((review)=>{
+  const setReviewStars = () => {
+    let sum = 0, avg = 0;
+    product.reviews.map((review) => {
       sum += Number(review.rating)
-      
+
     })
-    
-    avg = sum/product.reviews.length
+
+    avg = sum / product.reviews.length
     setAvgReview(avg)
-    
+
   }
+
+  // share 
+  const [isPopUpOpen, setPopUpOpen] = useState(false);
+
+  // Toggle the pop-up visibility when the button is clicked
+  const togglePopUp = () => {
+    setPopUpOpen(!isPopUpOpen);
+  };
+
+  // Close the pop-up when clicking outside of it
+  const closePopUp = (e) => {
+    if (e.target === e.currentTarget) {
+      setPopUpOpen(false);
+    }
+  };
+  const shareLink = `${window.location.origin}/product/${id}`;
+  const ShareButton = ({ shareLink }) => {
+    return (
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700"
+      >
+        <FaShare className="text-gray-600 dark:text-gray-400" />
+      </motion.button>
+    );
+  };
+
+  const SocialShareButtons = ({ shareLink }) => {
+    return (
+      <div className="flex space-x-2">
+        <FacebookShareButton url={shareLink}>
+          <FacebookIcon size={32} round />
+        </FacebookShareButton>
+        <WhatsappShareButton url={shareLink}>
+          <WhatsappIcon size={32} round />
+        </WhatsappShareButton>
+        <TwitterShareButton url={shareLink}>
+          <TwitterIcon size={32} round />
+        </TwitterShareButton>
+      </div>
+    );
+  };
 
 
   useEffect(() => {
@@ -59,34 +113,34 @@ export default function ProductDetail() {
       setColors(product.colors);
       const colorNames = product.colors.map(c => c.colorName);
       setColorsName(colorNames);
-      
+
       // Set default selected color
       const defaultColor = colorNames[index] || product.colors[0].colorName;
       setSelectedColor(defaultColor);
-      
+
       // Find images for selected color
       const selectedColorData = product.colors.find(c => c.colorName === defaultColor);
       setImages(selectedColorData ? selectedColorData.images : []);
-  
+
       setTotalReviews(product.reviews.length);
       setReviewStars();
-      
+
       // Set default selected size
       if (product.size && product.size.length > 0) {
         setSelectedSize(product.size[0]);
         setSizes(product.size);
       }
     }
-  }, [product,selectedColor]);
-  
-  const handleAddCart = ()=>{
-    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/"+id,{selectedColor},{withCredentials: true})
-    .then((res)=>{
-      toast("Product added to cart");
-    })  
+  }, [product, selectedColor]);
+
+  const handleAddCart = () => {
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/" + id, { selectedColor }, { withCredentials: true })
+      .then((res) => {
+        toast("Product added to cart");
+      })
   }
-    
-  
+
+
 
   return (
     <motion.div
@@ -94,7 +148,7 @@ export default function ProductDetail() {
       animate={{ opacity: 1 }}
       className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900"
     >
-          <LoadingBar isLoading={isDisabled} />
+      <LoadingBar isLoading={isDisabled} />
 
       <div className="max-w-7xl mx-auto">
         <div className="text-sm breadcrumbs text-gray-600 dark:text-gray-400 mb-8">
@@ -126,14 +180,14 @@ export default function ProductDetail() {
                   whileHover={{ scale: 1.05 }}
                   className="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 cursor-pointer"
                 >
-                  
+
                   <img
                     src={image}
                     alt={`Product view ${i + 1}`}
                     className="w-full h-full object-cover"
-                    onClick={()=>{setIndexImageChange(i)}}
+                    onClick={() => { setIndexImageChange(i) }}
                   />
-                  
+
                 </motion.div>
               ))}
             </div>
@@ -151,28 +205,25 @@ export default function ProductDetail() {
                 </h1>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center">
-                  {[1, 1, 1, 1, 1].map((_, index) => {
-                    if (index < Math.floor(avgReview)) {
-                      return <i className="fa-solid fa-star text-yellow-400"></i>; // Full star
-                    } else if (index === Math.floor(avgReview) && (avgReview % 1 !== 0)) {
-                      return (
-                        <span key={index} className="text-yellow-400">
-                          <i className="fa-regular fa-star-half-stroke"></i>
-                        </span>
-                      ); // Half star
-                    } else {
-                      return <i className="fa-regular fa-star"></i>; // Empty star
-                    }
-                  })}
+                    {[1, 1, 1, 1, 1].map((_, index) => {
+                      if (index < Math.floor(avgReview)) {
+                        return <i className="fa-solid fa-star text-yellow-400"></i>; // Full star
+                      } else if (index === Math.floor(avgReview) && (avgReview % 1 !== 0)) {
+                        return (
+                          <span key={index} className="text-yellow-400">
+                            <i className="fa-regular fa-star-half-stroke"></i>
+                          </span>
+                        ); // Half star
+                      } else {
+                        return <i className="fa-regular fa-star"></i>; // Empty star
+                      }
+                    })}
 
 
                     {/* <span className="text-yellow-400">★</span>
                     <span className="text-gray-400">☆</span> */}
                     <span className="ml-1 text-gray-600 dark:text-gray-400">({totalReviews})</span>
                   </div>
-                  <span className="text-gray-600 dark:text-gray-400">
-                    24 people are viewing this right now
-                  </span>
                 </div>
               </div>
 
@@ -189,10 +240,10 @@ export default function ProductDetail() {
                   Hurry up! Sale ends in: 00:05:59:47
                 </p>
                 {
-                product?.stock < 10 ?
-                <p className="text-gray-600 dark:text-gray-400 mt-2">
-                  Only {product?.stock} item(s) left in stock!
-                </p>:<></>
+                  product?.stock < 10 ?
+                    <p className="text-gray-600 dark:text-gray-400 mt-2">
+                      Only {product?.stock} item(s) left in stock!
+                    </p> : <></>
                 }
               </div>
 
@@ -206,11 +257,10 @@ export default function ProductDetail() {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        selectedSize === size
-                          ? 'bg-black text-white dark:bg-white dark:text-black'
-                          : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700'
-                      }`}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${selectedSize === size
+                        ? 'bg-black text-white dark:bg-white dark:text-black'
+                        : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700'
+                        }`}
                     >
                       {size}
                     </button>
@@ -229,13 +279,12 @@ export default function ProductDetail() {
                       key={color}
                       onClick={() => {
                         setSelectedColor(color)
-                        setIndex(colorsName.findIndex((c)=>c===color))
+                        setIndex(colorsName.findIndex((c) => c === color))
                       }}
-                      className={`w-8 h-8 rounded-full border-2 ${
-                        selectedColor === color
-                          ? 'border-slate-200 border-4 dark:border-white'
-                          : 'border-transparent'
-                      }`}
+                      className={`w-8 h-8 rounded-full border-2 ${selectedColor === color
+                        ? 'border-slate-200 border-4 dark:border-white'
+                        : 'border-transparent'
+                        }`}
                       style={{ backgroundColor: color }}
                     />
                   ))}
@@ -280,36 +329,60 @@ export default function ProductDetail() {
                   className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700"
                   onClick={
 
-                    
-                    ()=>{
-                        console.log(user.id);
-                        console.log(id);
-                        console.log(selectedColor);
-                        console.log(selectedSize);
-                        
-                        axios.post(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id , {color:selectedColor,size:selectedSize,productId : id})
-                        .then((res)=>{
+
+                    () => {
+                      console.log(user.id);
+                      console.log(id);
+                      console.log(selectedColor);
+                      console.log(selectedSize);
+
+                      axios.post(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id, { color: selectedColor, size: selectedSize, productId: id })
+                        .then((res) => {
                           console.log(res.data);
                           toast(res.data.message)
                         })
-                        .catch((err)=>{
+                        .catch((err) => {
                           console.log(err);
-                          
+
                         })
-                    
-                      }
+
+                    }
                   }
-                
+
                 >
                   <FaHeart className="text-gray-600 dark:text-gray-400" />
                 </motion.button>
+
+                {/* share  */}
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700"
+                  onClick={togglePopUp}
                 >
                   <FaShare className="text-gray-600 dark:text-gray-400" />
                 </motion.button>
+
+                {/* Pop-up for Share Buttons */}
+                {isPopUpOpen && (
+                  <div
+                    className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 z-50"
+                    onClick={closePopUp}
+                  >
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg space-y-2 p-10">
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200">Share </h2>
+                        <button
+                          className="text-gray-600 dark:text-gray-400"
+
+                        >
+                          <i class="fa-solid fa-xmark" onClick={closePopUp}></i>
+                        </button>
+                      </div>
+                      <SocialShareButtons shareLink={shareLink} />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Shipping Info */}
