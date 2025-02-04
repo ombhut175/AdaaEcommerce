@@ -13,6 +13,7 @@ export const fetchUser = createAsyncThunk('fetchUser', async (_, rejectWithValue
     }
 })
 
+
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -22,7 +23,8 @@ export const userSlice = createSlice({
         profilePicture: '',
         userType: 'normal',
         isLoggedIn:false,
-        role: []
+        role: [],
+        cart:[]
     },
     reducers: {
         addUser: (state, action) => {

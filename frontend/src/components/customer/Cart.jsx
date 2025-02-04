@@ -13,7 +13,36 @@ export default function Cart() {
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
   const [isDisabled, setIsDisabled] = useState(false);
-
+  
+  
+  const updateQuantity = (id, change) => {
+    setItems(prevItems =>
+      prevItems.map(item =>
+        item.id === id
+          ? { ...item, quantity: Math.max(1, item.quantity + change) }
+          : item
+      )
+    );
+  
+    const product = items.find((item) => item.id === id);
+    if (!product) return;
+  
+    const newQuantity = Math.max(1, product.quantity + change);
+  
+    axios
+      .put(
+        `${BACKEND_URL}/api/cart/changeProductQuantity/${id}`,
+        {
+          selectedSize: product.size,
+          selectedColor: product.color,
+          quantity: newQuantity,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => console.log(res))
+      .catch((err) => console.error("Error updating cart:", err));
+  };
+  
   useEffect(() => {
     axios.get(BACKEND_URL + '/api/cart', { withCredentials: true })
         .then((res) => {
@@ -28,7 +57,8 @@ export default function Cart() {
                 price: item.product.price - (item.product.price * (item.product.discountPercent || 0) / 100),
                 color: item.selectedColor || 'No color selected',
                 image: selectedColorObj?.images?.[0] || item.product.images?.[0] || 'default-image-url.jpg',
-                quantity: item.quantity
+                quantity: item.quantity,
+                size:item.selectedSize
               };
             }));
           } else {
@@ -38,13 +68,6 @@ export default function Cart() {
         .catch((err) => console.error('Error fetching cart:', err));
   }, []);
 
-  const updateQuantity = (id, change) => {
-    setItems(prevItems =>
-        prevItems.map(item =>
-            item.id === id ? { ...item, quantity: Math.max(1, item.quantity + change) } : item
-        )
-    );
-  };
 
   const removeItem = async (id) => {
     try {
@@ -88,7 +111,7 @@ export default function Cart() {
                       </tr>
                       </thead>
                       <tbody>
-                      {items.map(item => (
+                      {items?.map(item => (
                           <tr key={item.id} className="border-b border-gray-200 dark:border-gray-700">
                             <td className="py-3">
                               <div className="flex items-center gap-4">
