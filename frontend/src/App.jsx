@@ -43,6 +43,7 @@ import DealerProductEditingPage from "./components/dealer/DealerProductEditForm.
 import OrdersPage from "./components/customer/OrdersPage.jsx";
 import ChatBot from "./components/ChatBot/ChatBot.jsx";
 import ChatToggle from "./components/ChatBot/ChatToggle.jsx";
+import GlobeContainer from "./components/Globe/GlobeContainer.jsx";
 
 
 function App() {
@@ -254,6 +255,7 @@ const HomePage = memo(() => (
     <>
         <Hero/>
         <Brands/>
+        <GlobeContainer />
         <DealsSection/>
         <NewArrivals/>
         <InstagramFeed/>
