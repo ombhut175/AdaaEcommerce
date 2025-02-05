@@ -16,18 +16,25 @@ export default function Cart() {
   
   
   const updateQuantity = (id, change) => {
+    
     setItems(prevItems =>
       prevItems.map(item =>
         item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + change) }
-          : item
+        ? { ...item, quantity: newQuantity }
+        : item
       )
     );
-  
+    
     const product = items.find((item) => item.id === id);
+    
+    const newQuantity = Math.max(1, product.quantity + change);
+    
+    if(newQuantity<1){
+      removeItem(id)
+      return 
+    }
     if (!product) return;
   
-    const newQuantity = Math.max(1, product.quantity + change);
   
     axios
       .put(
@@ -47,20 +54,28 @@ export default function Cart() {
     axios.get(BACKEND_URL + '/api/cart', { withCredentials: true })
         .then((res) => {
           if (Array.isArray(res.data.items)) {
-            setItems(res.data.items.map(item => {
+            const products = res.data.items.map((item) => {
               const selectedColorObj = item.product.availableColors?.find(
-                  color => color.colorName === item.selectedColor
+                (color) => color.colorName === item.selectedColor
               );
+  
               return {
                 id: item.product._id,
                 name: item.product.name,
-                price: item.product.price - (item.product.price * (item.product.discountPercent || 0) / 100),
-                color: item.selectedColor || 'No color selected',
-                image: selectedColorObj?.images?.[0] || item.product.images?.[0] || 'default-image-url.jpg',
+                price:
+                  item.product.price -
+                  (item.product.price * (item.product.discountPercent || 0)) / 100,
+                color: item.selectedColor || "No color selected",
+                image:
+                  selectedColorObj?.images?.[0] ||
+                  item.product.images?.[0] ||
+                  "default-image-url.jpg",
                 quantity: item.quantity,
-                size:item.selectedSize
+                size: item.selectedSize,
               };
-            }));
+            });
+            
+            setItems(products);
           } else {
             setItems([]);
           }

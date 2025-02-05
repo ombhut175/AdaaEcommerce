@@ -27,7 +27,7 @@ export default function ProductDetail() {
   const [product, setProduct] = useState({});
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Blue');
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
   const [sizes, setSizes] = useState([])
   const [colors, setColors] = useState([]);
   const [colorsName, setColorsName] = useState([]);
@@ -52,29 +52,35 @@ export default function ProductDetail() {
     })
     
   }, [id])
-  
+  const removeItem = async () => {
+    try {
+      setIsDisabled(false);
+      await axios.delete(`${BACKEND_URL}/api/cart/${id}`, { withCredentials: true });
+    } catch (error) {
+      console.log(error);
+    }
+    setIsDisabled(true);
+  };
   useEffect(()=>{
     
     axios.get(BACKEND_URL+ '/api/cart', { withCredentials: true })
     .then((res)=>{
       
       const product = res.data.items.find((p)=>p.product._id===id)
-      console.log(product.quantity);
       
       setQuantity(product.quantity)
-      
-      
     })
   },[id])
   
   const handleUpdateProductQuantity = (change)=>{
   
-    if(quantity>1){
-      setIsAddCartHide(true)
-    }else{
-      setIsAddCartHide(false)
-    }setQuantity(change);
+    if(change==0){
+      removeItem()
+      setQuantity(change);
 
+      return 
+    }
+    setQuantity(change);
     axios.put(BACKEND_URL + '/api/cart/changeProductQuantity/' + id,
       { selectedSize,
         selectedColor,
@@ -172,7 +178,8 @@ export default function ProductDetail() {
   
 
   const handleAddCart = () => {
-    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/" + id, { selectedColor,selectedSize,quantity }, { withCredentials: true })
+    handleUpdateProductQuantity(1)
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/cart/addProduct/" + id, { selectedColor,selectedSize,quantity:1 }, { withCredentials: true })
       .then((res) => {
         toast("Product added to cart");
       })
@@ -334,7 +341,7 @@ export default function ProductDetail() {
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
                   Quantity
                 </h3>
-                <div className="flex items-center gap-4">
+                {/* <div className="flex items-center gap-4">
                   <button
                     onClick={() => handleUpdateProductQuantity(Math.max(1, quantity - 1))}
                     className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 text-white"
@@ -348,13 +355,13 @@ export default function ProductDetail() {
                   >
                     +
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {/* Actions */}
               <div className="flex gap-4 mb-8">
                 {
-                  quantity==1? 
+                  quantity==0? 
                 
                 <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -363,7 +370,22 @@ export default function ProductDetail() {
                 onClick={handleAddCart}
                 >
                   Add to cart
-                </motion.button>: <></>
+                </motion.button>: 
+                <div className="flex items-center gap-4">
+                <button
+                  onClick={() => handleUpdateProductQuantity(Math.max(0, quantity - 1))}
+                  className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 text-white"
+                >
+                  -
+                </button>
+                <span className="w-12 text-center dark:text-white">{quantity}</span>
+                <button
+                  onClick={() => handleUpdateProductQuantity(quantity + 1)}
+                  className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 text-white"
+                >
+                  +
+                </button>
+              </div>
                 }
                 <motion.button
                   whileHover={{ scale: 1.1 }}

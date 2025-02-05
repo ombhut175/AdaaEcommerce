@@ -60,6 +60,7 @@ export default function Checkout() {
       
       if(res.data.success){
           const addressUser = res.data.address[0]
+          setSelectedCountry(addressUser.country)
           setAddress({
             firstName:addressUser.fullName?.split(" ")[0],
             lastName:addressUser.fullName?.split(" ")[1],
@@ -67,9 +68,8 @@ export default function Checkout() {
             city:addressUser.city,
             postalCode:addressUser.pincode,
             state:addressUser.state,
-            country:selectedCountry
+            country:addressUser.country
           })  
-          setSelectedCountry(res.data.address[0].country)
           console.log("this is " ,address);
           
           setIsAddressHide(true)
@@ -138,6 +138,7 @@ export default function Checkout() {
                   }
                 }),
             )
+
           } else {
             setItems([])
           }
@@ -146,9 +147,9 @@ export default function Checkout() {
         .catch((err) => console.error("Error fetching cart:", err))
   }, [])
 
+
   const handlePayNow = async () => {
     setIsDisabled(true)
-    setAddress({...address,country:selectedCountry})
     if (!validateAddress()) {
       setIsDisabled(false)
       return
@@ -201,7 +202,6 @@ export default function Checkout() {
       )
     } catch (error) {
       console.error("Error during payment initiation:", error)
-      toast.error("There was an error initiating the payment.")
     } finally {
       setIsDisabled(false)
     }
@@ -348,7 +348,7 @@ export default function Checkout() {
           <strong>State:</strong> {address.state}
         </div>
         <div>
-          <strong>Postal Code:</strong> {address.pincode}
+          <strong>Postal Code:</strong> {address.postalCode}
         </div>
         <div>
           <strong>Country:</strong> {address.country}

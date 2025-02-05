@@ -21,27 +21,56 @@ async function address(req, res) {
         state, 
         country,
         city,
-        } = req.body;
-
+    } = req.body;
 
     try {
         const userId = giveUserIdFromCookies(req.cookies.authToken);
 
-        const data = await addressModel.create({
-            fullName:firstName + ' ' + lastName,
-            address:addressLine,
-            pincode:postalCode,
+        // Check if an address already exists for the user
+        let existingAddress = await addressModel.findOne({ userId: new ObjectId(userId) });
+
+        if (existingAddress) {
+            // Update existing address
+            existingAddress.fullName = `${firstName} ${lastName}`;
+            existingAddress.address = addressLine;
+            existingAddress.pincode = postalCode;
+            existingAddress.state = state;
+            existingAddress.country = country;
+            existingAddress.city = city;
+
+            await existingAddress.save();
+
+            return res.status(200).json({ 
+                success: true, 
+                msg: "Address updated successfully", 
+                addressId: existingAddress._id 
+            });
+        } 
+
+        // If no existing address, create a new one
+        const newAddress = await addressModel.create({
+            fullName: `${firstName} ${lastName}`,
+            address: addressLine,
+            pincode: postalCode,
             state,
             country,
             city,
-            userId:new ObjectId(userId)
-        })
-        if (!data) {
-            res.status(500).json({ success: false, msg: "Insertion error in address" });
+            userId: new ObjectId(userId),
+        });
+
+        if (!newAddress) {
+            return res.status(500).json({ success: false, msg: "Insertion error in address" });
         }
-        res.status(200).json({ success: true, msg: "Address saved successful" ,addressId: data._id});
+
+        res.status(200).json({ 
+            success: true, 
+            msg: "Address saved successfully", 
+            addressId: newAddress._id 
+        });
+
     } catch (err) {
-        console.log("Insertion in address error :", err);
+        console.error("Insertion in address error:", err);
+        res.status(500).json({ success: false, msg: "Server error while saving address" });
     }
 }
 async function checkAddress(req, res) {
