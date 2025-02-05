@@ -22,9 +22,9 @@ export const userSlice = createSlice({
         name: '',
         profilePicture: '',
         userType: 'normal',
-        isLoggedIn:false,
+        isLoggedIn: false,
         role: [],
-        cart:[]
+        cart: []
     },
     reducers: {
         addUser: (state, action) => {
@@ -55,12 +55,12 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchUser.fulfilled, (state, action) => {
-            return {...state, ...action.payload};
+            return {...state, ...action.payload, isLoggedIn: true};
         })
     }
 });
 
 
-export const {addUser, logOutUser, setProfilePicture, changeName, editUser,logInUser,changeRole} = userSlice.actions;
+export const {addUser, logOutUser, setProfilePicture, changeName, editUser, logInUser, changeRole} = userSlice.actions;
 
 export default userSlice.reducer;

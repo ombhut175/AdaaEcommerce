@@ -33,6 +33,9 @@ export default function Navbar() {
         { name: "Delivery Boy", path: "/delivery" },
     ]
 
+    useEffect(()=>{
+        dispatch(fetchUser());
+    },[]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
