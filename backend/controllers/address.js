@@ -44,7 +44,24 @@ async function address(req, res) {
         console.log("Insertion in address error :", err);
     }
 }
+async function checkAddress(req, res) {
+    
+    try {
+        const userId = req.params.id 
+        const objId = new ObjectId(userId)
+        const data = await addressModel.find({_id : objId})
+        // console.log(objId);
+        
+        if (data.length < 1) {
+            res.json({ success: false, msg: "Please Enter a Address" });
+        }
+        res.status(200).json({ success: true, msg: "Please Check Your Address" ,address:data});
+    } catch (err) {
+        console.log("Get in address error :", err);
+    }
+}
 
 module.exports = {
     address,
+    checkAddress
 }

@@ -119,6 +119,7 @@ export default function Cart() {
                                 <div>
                                   <h3 className="font-medium">{item.name}</h3>
                                   <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Color: {item.color}</p>
+                                  <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Size: {item.size}</p>
                                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => removeItem(item.id)} className="text-red-500 text-xs flex items-center gap-1 mt-1 hover:text-red-600">
                                     <FaTrash size={10} /> Remove
                                   </motion.button>

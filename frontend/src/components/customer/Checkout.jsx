@@ -41,7 +41,7 @@ export default function Checkout() {
   const [amount, setAmount] = useState(20000)
   const { userId } = useParams()
   const [isDisabled, setIsDisabled] = useState(true)
-
+  const [isAddressHide,setIsAddressHide] =useState(false);
   // Create state to store address fields
   const [address, setAddress] = useState({
     firstName: "",
@@ -52,7 +52,22 @@ export default function Checkout() {
     state: "",
     country: "",
   })
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state  ) => state.user)
+
+  useEffect(()=>{  
+    axios.get(BACKEND_URL + '/api/address/' + user?.id )
+    .then((res)=>{
+      console.log(res.data);
+      
+      if(res.data.success){
+          setAddress(res.data.address)  
+          setIsAddressHide(true)
+      }else{   
+          setIsAddressHide(false)
+      }
+      
+    })
+  },[])
 
   // Handle change of address fields
   const handleInputChange = (e) => {
@@ -63,35 +78,31 @@ export default function Checkout() {
       country: selectedCountry,
       userId: user.id,
     }))
-
+    
     // Validate the address after each change
-    validateAddress()
   }
 
   // Address validation function
   const validateAddress = () => {
     const requiredFields = ["firstName", "lastName", "addressLine", "city", "postalCode", "state", "country"]
     const emptyFields = requiredFields.filter((field) => !address[field])
-
+  
     if (emptyFields.length > 0) {
       toast.error(`Please fill in the following fields: ${emptyFields.join(", ")}`)
       return false
     }
-
+  
     const postalCodeRegex = /^\d{6}$/
     if (!postalCodeRegex.test(address.postalCode)) {
       toast.error("Postal code must be 6 digits long and contain only numbers.")
       return false
     }
-
+  
     return true
   }
+  
 
-  useEffect(() => {
-    if (Object.values(address).some((value) => value !== "")) {
-      validateAddress()
-    }
-  }, [address])
+  
 
   const [items, setItems] = useState([])
   useEffect(() => {
@@ -126,6 +137,7 @@ export default function Checkout() {
 
   const handlePayNow = async () => {
     setIsDisabled(true)
+    setAddress({...address,country:selectedCountry})
     if (!validateAddress()) {
       setIsDisabled(false)
       return
@@ -201,7 +213,10 @@ export default function Checkout() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Left Column - Form */}
+            {
+              !isAddressHide?
             <motion.div variants={formVariants} initial="hidden" animate="visible" className="space-y-8">
+            
               {/* Delivery Section */}
               <motion.div variants={formVariants}>
                 <h2 className="text-2xl font-semibold text-black dark:text-white mb-4">Delivery</h2>
@@ -295,8 +310,53 @@ export default function Checkout() {
                   </motion.label>
                 </div>
               </motion.div>
-
+ 
               {/* Payment Section */}
+              <motion.div variants={formVariants}>
+                <div className="space-y-4">
+                  <motion.button
+                      variants={buttonVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                      onClick={handlePayNow}
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white py-3 rounded-md font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <FaLock className="text-sm" />
+                    <span>Pay Now</span>
+                  </motion.button>
+                </div> 
+              </motion.div>
+            </motion.div>:
+  <motion.div variants={formVariants} initial="hidden" animate="visible" className="space-y-8">          
+    <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Delivery Address</h2>
+      <div className="space-y-4">
+        <div>
+          <strong>Full Name:</strong> {address.fullname}  {address.lastName}
+        </div>
+        <div>
+          <strong>Address:</strong> {address.addressLine}
+        </div>
+        <div>
+          <strong>City:</strong> {address.city}
+        </div>
+        <div>
+          <strong>State:</strong> {address.state}
+        </div>
+        <div>
+          <strong>Postal Code:</strong> {address.postalCode}
+        </div>
+        <div>
+          <strong>Country:</strong> {address.country}
+        </div>
+        <div>
+          <strong>Phone:</strong> {address.phone || 'Not Provided'}
+        </div>
+      </div>
+      <div className="mt-6">
+        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Edit Address</button>
+      </div>
+    </div>
               <motion.div variants={formVariants}>
                 <div className="space-y-4">
                   <motion.button
@@ -311,8 +371,8 @@ export default function Checkout() {
                   </motion.button>
                 </div>
               </motion.div>
-            </motion.div>
-
+    </motion.div>
+            }
             {/* Right Column - Payment Details */}
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
