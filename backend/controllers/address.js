@@ -49,8 +49,8 @@ async function checkAddress(req, res) {
     try {
         const userId = req.params.id 
         const objId = new ObjectId(userId)
-        const data = await addressModel.find({_id : objId})
-        // console.log(objId);
+        const data = await addressModel.find({userId : objId})
+        console.log(objId);
         
         if (data.length < 1) {
             res.json({ success: false, msg: "Please Enter a Address" });

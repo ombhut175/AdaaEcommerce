@@ -54,13 +54,24 @@ export default function Checkout() {
   })
   const user = useSelector((state  ) => state.user)
 
-  useEffect(()=>{  
+  useEffect(()=>{   
     axios.get(BACKEND_URL + '/api/address/' + user?.id )
     .then((res)=>{
-      console.log(res.data);
       
       if(res.data.success){
-          setAddress(res.data.address)  
+          const addressUser = res.data.address[0]
+          setAddress({
+            firstName:addressUser.fullName?.split(" ")[0],
+            lastName:addressUser.fullName?.split(" ")[1],
+            addressLine:addressUser.address,
+            city:addressUser.city,
+            postalCode:addressUser.pincode,
+            state:addressUser.state,
+            country:selectedCountry
+          })  
+          setSelectedCountry(res.data.address[0].country)
+          console.log("this is " ,address);
+          
           setIsAddressHide(true)
       }else{   
           setIsAddressHide(false)
@@ -68,7 +79,7 @@ export default function Checkout() {
       
     })
   },[])
-
+ 
   // Handle change of address fields
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -300,14 +311,7 @@ export default function Checkout() {
                   />
 
                   <motion.label whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        checked={saveInfo}
-                        onChange={(e) => setSaveInfo(e.target.checked)}
-                        className="rounded border-gray-300 text-indigo-600 focus:ring-slate-900 dark:border-gray-700 transition-colors"
-                    />
-                    <span className="text-gray-700 dark:text-gray-300">Save This Info For Future</span>
-                  </motion.label>
+                    </motion.label>
                 </div>
               </motion.div>
  
@@ -332,7 +336,7 @@ export default function Checkout() {
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Delivery Address</h2>
       <div className="space-y-4">
         <div>
-          <strong>Full Name:</strong> {address.fullname}  {address.lastName}
+          <strong>Full Name:</strong> {address?.fullName}  {address.lastName}
         </div>
         <div>
           <strong>Address:</strong> {address.addressLine}
@@ -344,17 +348,14 @@ export default function Checkout() {
           <strong>State:</strong> {address.state}
         </div>
         <div>
-          <strong>Postal Code:</strong> {address.postalCode}
+          <strong>Postal Code:</strong> {address.pincode}
         </div>
         <div>
           <strong>Country:</strong> {address.country}
         </div>
-        <div>
-          <strong>Phone:</strong> {address.phone || 'Not Provided'}
-        </div>
       </div>
       <div className="mt-6">
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Edit Address</button>
+        <button onClick={()=>setIsAddressHide(false)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Edit Address</button>
       </div>
     </div>
               <motion.div variants={formVariants}>
