@@ -31,8 +31,12 @@ export default function Navbar() {
         { name: "Dealer", path: "/dealer/products" },
         { name: "Orders", path: "/orders" },
         { name: "Delivery Boy", path: "/delivery" },
+        { name: "Admin", path: "/admin" },
     ]
 
+    useEffect(()=>{
+        dispatch(fetchUser());
+    },[]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -130,17 +134,6 @@ export default function Navbar() {
                                                     </motion.div>
                                                 </Link>
                                             ))}
-                                            <motion.div
-                                                whileHover={{
-                                                    x: 4,
-                                                    backgroundColor: darkMode ? "rgb(55, 65, 81)" : "rgb(243, 244, 246)",
-                                                }}
-                                                className="px-4 py-2 cursor-pointer text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-                                                onClick={giveAdmin}
-                                                role="menuitem"
-                                            >
-                                                Admin
-                                            </motion.div>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>

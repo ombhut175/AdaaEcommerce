@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux"
 import axios from "axios"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import {useNavigate} from "react-router-dom";
 // import ThemeToggle from "../components/ThemeToggle"
 
 const AdminPermissionsPage = () => {
@@ -12,15 +13,18 @@ const AdminPermissionsPage = () => {
         permission: "",
     })
     const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate();
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsLoading(true)
-        try {
-            await axios.put("/api/admin/givePermissions", {
+        try {~
+            await axios.put(`${BACKEND_URL}/api/admin/givePermissions`, {
                 userEmail: formData.userEmail,
                 permission: formData.permission,
-            })
+            },{withCredentials: true})
 
             toast.success("Permissions updated successfully!", {
                 position: "top-right",
@@ -71,7 +75,7 @@ const AdminPermissionsPage = () => {
           `}
                 >
                     <button
-                        onClick={() => window.history.back()}
+                        onClick={() => navigate('/admin')}
                         className={`
               mb-6 px-4 py-2 rounded-lg flex items-center gap-2
               transition-all duration-200 ease-in-out transform hover:scale-105

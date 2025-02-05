@@ -154,7 +154,12 @@ function App() {
                             <Route path="/dealer/products/new" element={<DealerProductForm/>}/>
                             <Route path="/dealer/products/:id/edit" element={<DealerProductEditingPage/>}/>
 
-                            <Route path={'/admin/new'} element={<AdminPermissionsPage />}/>
+                            <Route path={'/admin'} >
+                                <Route index element={<AdminPanel/>}/>
+                                <Route path={':id'} element={<UserDetails/>} />
+                                <Route path={'give-roles'} element={<AdminPermissionsPage />}/>
+                            </Route>
+
 
 
                             {/* Dealer Routes */}
