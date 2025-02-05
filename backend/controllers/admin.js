@@ -2,7 +2,9 @@ const User = require('../models/User');
 const {giveUserFromDb} = require("../services/common.services");
 const {uploadOnCloudinary} = require("../services/cloudinary");
 const StaticImages = require('../models/StaticImages');
+const Orders = require('../models/Orders');
 const {giveUserIdFromCookies} = require("../services/auth");
+const {ObjectId} = require('mongoose').Types;
 
 async function changeImages(req, res) {
     try {
@@ -105,7 +107,83 @@ async function givePermission(req, res) {
     }
 }
 
+async function giveAllUsers(req, res) {
+    try {
+        const users = await User.find({});
+        if (!users) {
+            return res.status(400).json({ error: 'Users not found' });
+        }
+        return res.status(200).json(users);
+    }catch (e) {
+        console.error("Error in giveAllUsers:", e);
+        return res.status(400).json({error: 'Failed to giveAllUsers'});
+    }
+}
 
+
+async function deleteUser(req, res) {
+    try {
+        const {userId} = req.params;
+        const user = await User.findByIdAndDelete(userId);
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+        return res.status(200).json({ message: 'User deleted' });
+    }catch (e) {
+        console.error("Error in deleteUser:", e);
+        return res.status(400).json({error: 'Failed to delete User'});
+    }
+}
+
+async function removePermission(req, res) {
+    try {
+        const { permission, userEmail } = req.body;
+
+        // Find the user by email
+        const user = await User.findOne({ email: userEmail });
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+
+        // Check if the permission exists in the user's role array
+        if (!user.role.includes(permission)) {
+            return res.status(400).json({ error: 'Permission not found in user roles' });
+        }
+
+        // Remove the permission
+        user.role = user.role.filter((role) => role !== permission);
+
+        // Save the updated user
+        await user.save();
+
+        return res.status(200).json({ message: 'Permission removed successfully', user });
+
+    } catch (e) {
+        console.error("Error in removePermission:", e);
+        return res.status(500).json({ error: 'Failed to remove permission' });
+    }
+}
+
+async function giveUserAndOrdersInfo(req, res) {
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+        const orders = await Orders.find({userId: new ObjectId(userId)});
+        if (!orders) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+        return res.status(200).json({
+            user,
+            orders,
+        })
+    }catch (e) {
+        console.error("Error in addProductToOrders:", e);
+        return res.status(400).json({error: 'Failed to addProductToOrders'});
+    }
+}
 
 
 module.exports = {
@@ -113,5 +191,9 @@ module.exports = {
     updateStaticImages,
     changeImages,
     giveStaticImages,
-    givePermission
+    givePermission,
+    giveAllUsers,
+    deleteUser,
+    removePermission,
+    giveUserAndOrdersInfo
 };
