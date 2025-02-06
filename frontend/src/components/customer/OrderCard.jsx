@@ -8,6 +8,7 @@ const OrderStatusBar = ({ status }) => {
     const statuses = ["processing", "in transit", "delivered"];
     const currentIndex = statuses.indexOf(status);
 
+
     return (
         <div className="relative mt-6">
             <div className="flex justify-between mb-2">
@@ -32,7 +33,7 @@ const OrderStatusBar = ({ status }) => {
     );
 };
 
-const OrderCard = ({ order }) => {
+const OrderCard = ({ order , address}) => {
     const darkMode = useSelector(selectDarkMode);
 
     // Accessing the first color's image safely
@@ -76,9 +77,9 @@ const OrderCard = ({ order }) => {
                     <div>
                         <h4 className={`text-sm font-medium ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Shipping Address</h4>
                         <p className={`mt-1 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                            {order.addressId?.street || "Address not available"}
+                            {address?.address || "Address not available"}
                             <br />
-                            {order.addressId?.city}, {order.addressId?.state} {order.addressId?.zipCode}
+                            {address?.city}, {address?.state} {address?.pincode}
                         </p>
                     </div>
                     <div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { selectDarkMode } from "../../store/features/themeSlice.js";
 import OrderCard from "./OrderCard.jsx";
@@ -14,10 +14,30 @@ const OrdersPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+    const [address , setAddress]  = useState({});
+    const user = useSelector(state=>state.user)
 
+
+    //-------------------------------------------fetch address ------------------------
+    useEffect(()=>{   
+        axios.get(BACKEND_URL + '/api/address/' + user?.id )
+        .then((res)=>{
+          
+          if(res.data.success){
+              const addressUser = res.data.address[0]
+              setAddress(addressUser)  
+              console.log("this is " ,address);
+              
+          }
+          
+        })
+      },[])
     useEffect(() => {
         fetchOrders();
     }, []); // Ensure it runs only once on component mount
+
+
+    //-------------------------------------------fetch orders ------------------------
 
     const fetchOrders = async () => {
         try {
@@ -115,7 +135,7 @@ const OrdersPage = () => {
                     {filteredOrders.length > 0 ? (
                         <motion.div layout className="space-y-6">
                             {filteredOrders.map((order) => (
-                                <OrderCard key={order._id} order={order} darkMode={darkMode} />
+                                <OrderCard key={order._id} order={order} address={address} darkMode={darkMode} />
                             ))}
                         </motion.div>
                     ) : (

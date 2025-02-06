@@ -1,4 +1,6 @@
+const Address = require('../models/Address');
 const Order = require('../models/Orders');
+const User = require('../models/User');
 
 // Mark product as delivered
 markProductDelivered = async (req, res) => {
@@ -55,8 +57,25 @@ markProductPickedUpForExchange = async (req, res) => {
     }
 };
 
+const findDeliveryBoy = async (req,res) => {
+    try{
+        console.log("Enter ");
+        // const {userId} = req.params
+        // const objId = new mongoose.Types.ObjectId(userId)
+        
+        // const deliveryBoy = await User.find({ role: { $in: ["delivery"] } });
+        // const addressOfCustomer = await Address.find({ _id:objId });
+        // console.log(deliveryBoy,addressOfCustomer);
+    }
+    catch(err){
+        console.log(err);
+        
+    }
+}
+
 module.exports = {
     markProductDelivered,
     markProductPickedUpForReturn,
     markProductPickedUpForExchange,
+    findDeliveryBoy
 };

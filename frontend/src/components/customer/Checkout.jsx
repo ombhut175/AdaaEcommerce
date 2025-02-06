@@ -194,12 +194,23 @@ export default function Checkout() {
       // Open Razorpay checkout
       const razor = new window.Razorpay(options)
       razor.open()
+    //-------------------------------------------post all orders which in cart  ------------------------
 
       const addAllCartItems = await axios.post(
           `${BACKEND_URL}/api/orders/addAllProductsOfCart`,
           {},
           { withCredentials: true },
       )
+
+    //-------------------------------------------assign delivery boy ------------------------
+    const deliveryBoy = await axios.get(
+      `${BACKEND_URL}/api/delivery/${user?.id}`,
+      {},
+      { withCredentials: true },
+    ) 
+
+
+
     } catch (error) {
       console.error("Error during payment initiation:", error)
     } finally {

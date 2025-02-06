@@ -60,7 +60,7 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
   })
 
   const handleActionClick = (action) => {
-    onSwipeAction(delivery.id, action)
+    onSwipeAction(delivery?.id, action)
     setShowActions(false)
     setOffset(0)
   }
@@ -69,7 +69,7 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
     // Prevent navigation if we're showing actions or in the middle of a swipe
     if (!showActions && offset === 0) {
       e.stopPropagation()
-      navigate(`/delivery/${delivery.id}`)
+      navigate(`/delivery/${delivery?.id}`)
     }
   }
 
@@ -105,8 +105,8 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
           {/* Profile Image */}
           <div className="flex-shrink-0">
             <img
-              src={delivery.image}
-              alt={delivery.customerName}
+              src={delivery?.image}
+              alt={delivery?.customerName}
               className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
             />
           </div>
@@ -114,23 +114,23 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
           {/* Content */}
           <div className="flex-grow min-w-0">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-              {delivery.customerName}
+              {delivery?.customerName}
             </h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm truncate">
-              {delivery.address}
+              {delivery?.address}
             </p>
             <div className="mt-2 flex justify-between items-center">
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                delivery.status === 'pending'
+                delivery?.status === 'pending'
                   ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                  : delivery.status === 'delivered'
+                  : delivery?.status === 'delivered'
                   ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                   : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
               }`}>
-                {delivery.status.charAt(0).toUpperCase() + delivery.status.slice(1)}
+                {delivery?.status.charAt(0).toUpperCase() + delivery?.status.slice(1)}
               </span>
               <span className="font-semibold text-gray-900 dark:text-white">
-                {delivery.total}
+                {delivery?.total}
               </span>
             </div>
           </div>
@@ -154,7 +154,7 @@ function DeliveryList() {
   const [deliveries, setDeliveries] = useState(mockDeliveries)
 
   const filteredDeliveries = deliveries.filter(delivery => 
-    filter === 'all' ? true : delivery.status === filter
+    filter === 'all' ? true : delivery?.status === filter
   )
 
   const handleSwipeAction = (id, action) => {
@@ -181,7 +181,7 @@ function DeliveryList() {
       <div className="space-y-2">
         {filteredDeliveries.map(delivery => (
           <DeliveryCard 
-            key={delivery.id}
+            key={delivery?.id}
             delivery={delivery} 
             onSwipeAction={handleSwipeAction}
             navigate={navigate}
