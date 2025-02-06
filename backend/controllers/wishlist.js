@@ -1,12 +1,14 @@
 const Wishlist = require('../models/WishList');
 const Product = require('../models/Product');
 const mongoose = require('mongoose');
+const {giveUserIdFromCookies} = require("../services/auth");
 
 const addToWishlist = async (req, res) => {
   try {
     console.log(req.body);
-    const userId = req.params.id
-    let { productId, color , size } = req.body;
+    const userId = giveUserIdFromCookies(req.cookies.authToken);
+    let {productId} = req.params;
+    let {  color , size } = req.body;
     productId = new mongoose.Types.ObjectId(productId)
     // Validate product ID
     if (!mongoose.Types.ObjectId.isValid(productId)) {

@@ -100,8 +100,8 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api/wishlist',wishListRouter)
         //user middleware
 
-        app.use('/api/user', userRoutes);
         app.use('/api/orders' ,orderRoutes);
+        app.use('/api/user', userRoutes);
 
         //dealer middlewares
         app.use('/api/dealer',checkForDealerAuthentication,dealerRouter);

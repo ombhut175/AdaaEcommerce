@@ -194,6 +194,40 @@ async function getTotalAmountFromCart(userId) {
     }
 }
 
+// async function handleAddProductWithDefaultValues(req, res) {
+//     try {
+//         const { productId } = req.params;
+//         const userId = giveUserIdFromCookies(req.cookies.authToken);
+//
+//         // Validate userId and productId are valid ObjectIds
+//         if (!ObjectId.isValid(userId) || !ObjectId.isValid(productId)) {
+//             return res.status(400).json({ message: "Invalid ID format" });
+//         }
+//
+//         const existingCartItem = await Cart.findOne({
+//             userId: new ObjectId(userId),
+//             productId: new ObjectId(productId),
+//         });
+//
+//         if (existingCartItem) {
+//             existingCartItem.quantity += 1;
+//             existingCartItem.updatedAt = Date.now();
+//             await existingCartItem.save();
+//             return res.status(200).json({ message: "Product quantity updated", cart: existingCartItem });
+//         } else {
+//             const newCartItem = await Cart.create({
+//                 userId: new ObjectId(userId),
+//                 productId: new ObjectId(productId),
+//                 selectedColor: selectedColor,
+//                 selectedSize:selectedSize
+//             });
+//             return res.status(200).json({ message: "Product added to cart", cart: newCartItem });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ message: error.message });
+//     }
+// }
 
 module.exports = {
     handleGetCart,

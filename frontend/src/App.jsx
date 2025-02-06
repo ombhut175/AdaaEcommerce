@@ -147,8 +147,8 @@ function App() {
                             <Route path="/search" element={<SearchResults/>}/>
 
 
-                            {/* <Route path={'/delivery'} element={<DeliveryList/>}/> */}
-                             {/* <Route path={'/delivery/:id'} element={<DeliveryDetails/>}/> */}
+                            {/*<Route path={'/delivery'} element={<DeliveryList/>}/>*/}
+                            {/*<Route path={'/delivery/:id'} element={<DeliveryDetails/>}/>*/}
 
                             {/*/!* Dealer Routes *!/*/}
                             {/*<Route path="/dealer/products" element={<DealerProducts/>}/>*/}
@@ -164,7 +164,6 @@ function App() {
 
 
 
-                            {/* Dealer Routes */} */
                             {/*<Route >*/}
                             {/*  <Route path='/unauthorized' element={<Unauthorized/>}></Route>*/}
                             {/*  <Route*/}
@@ -256,12 +255,12 @@ function App() {
 
                                 {/* Delivery Boy Routes */}
                                 <Route path="/delivery" element={
-                                    <ProtectedRoute allowedRoles={["delivery"]}>
+                                    <ProtectedRoute allowedRoles={["Delivery Boy"]}>
                                         <DeliveryList />
                                     </ProtectedRoute>
                                 }/>
                                 <Route path="/delivery/:id" element={
-                                    <ProtectedRoute allowedRoles={["delivery"]}>
+                                    <ProtectedRoute allowedRoles={["Delivery Boy"]}>
                                         <DeliveryDetails />
                                     </ProtectedRoute>
                                 }/>
@@ -317,7 +316,7 @@ const HomePage = memo(() => (
     <>
         <Hero/>
         <Brands/>
-        <GlobeContainer />
+        {/*<GlobeContainer />*/}
         <DealsSection/>
         <NewArrivals/>
         <InstagramFeed/>

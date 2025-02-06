@@ -503,7 +503,7 @@ async function getDealsOfTheMonth(req, res) {
             createdAt: { $gte: startOfMonth, $lte: endOfMonth }
         })
             .sort({ discountPercent: -1 }) // Sort by highest discount
-            .limit(4); // Limit to top 10 deals
+            .limit(10); // Limit to top 10 deals
 
         res.status(200).json({ success: true, deals });
     } catch (error) {
