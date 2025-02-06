@@ -30,7 +30,7 @@ export default function Navbar() {
         {name: "New Arrivals", path: "/new-arrivals"},
         {name: "Orders", path: "/orders"},
         ...(user.role?.includes("dealer") ? [{name: "Dealer", path: "/dealer/products"}] : []),
-        ...(user.role?.includes("Delivery Boy") ? [{name: "Delivery Boy", path: "/delivery"}] : []),
+        ...(user.role?.includes("delivery") ? [{name: "Delivery Boy", path: "/delivery"}] : []),
         ...(user.role?.includes("admin") ? [{name: "Admin", path: "/admin"}] : []),
     ]
 

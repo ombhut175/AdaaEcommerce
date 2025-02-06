@@ -101,8 +101,10 @@ async function getAllOrders(req, res) {
 // Get orders by user ID
 async function getOrdersByUserId(req, res) {
     try {
-        const userId = giveUserIdFromCookies(req.cookies.authToken);
-        const orders = await Orders.find({ userId: new ObjectId(userId) }).populate('productId addressId');
+        
+        const userId = new mongoose.Types.ObjectId(giveUserIdFromCookies(req.cookies.authToken));
+        
+        const orders = await Orders.find({ userId }).populate('productId addressId');
         res.status(200).json(orders);
     } catch (error) {
         res.status(500).json({ error: error.message });

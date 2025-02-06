@@ -31,7 +31,7 @@ const OrdersPage = () => {
           }
           
         })
-      },[])
+      },[orders])
     useEffect(() => {
         fetchOrders();
     }, []); // Ensure it runs only once on component mount

@@ -126,10 +126,13 @@ function DeliveryCard({ delivery, onSwipeAction, navigate ,addresses}) {
                 {product?.price}
               </span>
               <span className="font-semibold text-gray-900 dark:text-white">
-                {address.address + " "}
+                {address?.address + " "}
                 
-                {address.city + " "}
-                {address.pincode}
+                {address?.city + " "}
+                {address?.pincode + " "}
+                <span className='text-red-800'>
+                {delivery.orderStatus}
+                </span>
               </span>
             </div>
           </div>

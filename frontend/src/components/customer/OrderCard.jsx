@@ -5,9 +5,8 @@ import { selectDarkMode } from "../../store/features/themeSlice.js";
 import { ChevronRight, Package, Truck, CheckCircle } from "lucide-react";
 
 const OrderStatusBar = ({ status }) => {
-    const statuses = ["processing", "in transit", "delivered"];
+    const statuses = ["Pending", "Delivered", "Cancelled"];
     const currentIndex = statuses.indexOf(status);
-
 
     return (
         <div className="relative mt-6">
@@ -32,6 +31,7 @@ const OrderStatusBar = ({ status }) => {
         </div>
     );
 };
+
 
 const OrderCard = ({ order , address}) => {
     const darkMode = useSelector(selectDarkMode);
