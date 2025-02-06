@@ -28,10 +28,10 @@ export default function Navbar() {
         { name: "Deals", path: "/deals" },
         { name: "Shop", path: "/shop" },
         { name: "New Arrivals", path: "/new-arrivals" },
-        { name: "Dealer", path: "/dealer/products" },
         { name: "Orders", path: "/orders" },
-        { name: "Delivery Boy", path: "/delivery" },
-        { name: "Admin", path: "/admin" },
+        ...(user.role?.includes("dealer") ? [{ name: "Dealer", path: "/dealer/products" }] : []),
+        ...(user.role?.includes("Delivery Boy") ? [{ name: "Delivery Boy", path: "/delivery" }] : []),
+        ...(user.role?.includes("admin") ? [{ name: "Admin", path: "/admin" }] : []),
     ]
 
     useEffect(()=>{
@@ -59,9 +59,6 @@ export default function Navbar() {
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
 
-    const giveAdmin = async () => {
-        dispatch(changeRole("admin"))
-    }
 
     return (
         <nav className="fixed w-full bg-white dark:bg-gray-900 shadow-md z-50">
