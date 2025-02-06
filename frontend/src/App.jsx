@@ -317,7 +317,7 @@ const HomePage = memo(() => (
     <>
         <Hero/>
         <Brands/>
-        <GlobeContainer />
+        {/*<GlobeContainer />*/}
         <DealsSection/>
         <NewArrivals/>
         <InstagramFeed/>
