@@ -53,6 +53,8 @@ function App() {
     const [isDealer, setIsDealer] = useState(null);
     const [isDelivery, setIsDelivery] = useState(null);
     const [isAdmin, setIsAdmin] = useState(null);
+    const user = useSelector(state => state.user);
+
     //
     //  useEffect(() => {
     //    const roles = localStorage.getItem('role');
@@ -145,20 +147,20 @@ function App() {
                             <Route path="/search" element={<SearchResults/>}/>
 
 
-                            <Route path={'/delivery'} element={<DeliveryList/>}/>
-                            <Route path={'/delivery/:id'} element={<DeliveryDetails/>}/>
+                            {/*<Route path={'/delivery'} element={<DeliveryList/>}/>*/}
+                            {/*<Route path={'/delivery/:id'} element={<DeliveryDetails/>}/>*/}
 
-                            {/* Dealer Routes */}
-                            <Route path="/dealer/products" element={<DealerProducts/>}/>
-                            <Route path="/dealer/products/:id" element={<DealerProductDetail/>}/>
-                            <Route path="/dealer/products/new" element={<DealerProductForm/>}/>
-                            <Route path="/dealer/products/:id/edit" element={<DealerProductEditingPage/>}/>
+                            {/*/!* Dealer Routes *!/*/}
+                            {/*<Route path="/dealer/products" element={<DealerProducts/>}/>*/}
+                            {/*<Route path="/dealer/products/:id" element={<DealerProductDetail/>}/>*/}
+                            {/*<Route path="/dealer/products/new" element={<DealerProductForm/>}/>*/}
+                            {/*<Route path="/dealer/products/:id/edit" element={<DealerProductEditingPage/>}/>*/}
 
-                            <Route path={'/admin'} >
-                                <Route index element={<AdminPanel/>}/>
-                                <Route path={':id'} element={<UserDetails/>} />
-                                <Route path={'give-roles'} element={<AdminPermissionsPage />}/>
-                            </Route>
+                            {/*<Route path={'/admin'} >*/}
+                            {/*    <Route index element={<AdminPanel/>}/>*/}
+                            {/*    <Route path={':id'} element={<UserDetails/>} />*/}
+                            {/*    <Route path={'give-roles'} element={<AdminPermissionsPage />}/>*/}
+                            {/*</Route>*/}
 
 
 
@@ -211,13 +213,65 @@ function App() {
                             {/*        </ProtectedRoute>}/>*/}
                             {/*</Route> */}
 
+                            <Route>
 
-                            <Route path="/admin" element={<ProtectedRoute role={isAdmin}>
-                                <AdminPanel/>
-                            </ProtectedRoute>}/>
-                            <Route path="/admin/user/:id/edit" element={<ProtectedRoute role={isAdmin}>
-                                <UserDetails/>
-                            </ProtectedRoute>}/>
+                                {/* Admin Routes */}
+                                <Route path="/admin" element={
+                                    <ProtectedRoute allowedRoles={["admin"]}>
+                                        <AdminPanel />
+                                    </ProtectedRoute>
+                                }/>
+                                <Route path="/admin/user/:id/edit" element={
+                                    <ProtectedRoute allowedRoles={["admin"]}>
+                                        <UserDetails />
+                                    </ProtectedRoute>
+                                }/>
+                                <Route path="/admin/give-roles" element={
+                                    <ProtectedRoute allowedRoles={["admin"]}>
+                                        <AdminPermissionsPage />
+                                    </ProtectedRoute>
+                                }/>
+
+                                {/* Dealer Routes */}
+                                <Route path="/dealer/products" element={
+                                    <ProtectedRoute allowedRoles={["dealer"]}>
+                                        <DealerProducts />
+                                    </ProtectedRoute>
+                                }/>
+                                <Route path="/dealer/products/:id" element={
+                                    <ProtectedRoute allowedRoles={["dealer"]}>
+                                        <DealerProductDetail />
+                                    </ProtectedRoute>
+                                }/>
+                                <Route path="/dealer/products/new" element={
+                                    <ProtectedRoute allowedRoles={["dealer"]}>
+                                        <DealerProductForm />
+                                    </ProtectedRoute>
+                                }/>
+                                <Route path="/dealer/products/:id/edit" element={
+                                    <ProtectedRoute allowedRoles={["dealer"]}>
+                                        <DealerProductEditingPage />
+                                    </ProtectedRoute>
+                                }/>
+
+                                {/* Delivery Boy Routes */}
+                                <Route path="/delivery" element={
+                                    <ProtectedRoute allowedRoles={["Delivery Boy"]}>
+                                        <DeliveryList />
+                                    </ProtectedRoute>
+                                }/>
+                                <Route path="/delivery/:id" element={
+                                    <ProtectedRoute allowedRoles={["Delivery Boy"]}>
+                                        <DeliveryDetails />
+                                    </ProtectedRoute>
+                                }/>
+
+                                {/* Unauthorized Page */}
+                                <Route path="/unauthorized" element={<Unauthorized />} />
+
+                            </Route>
+
+
                         </Routes>
                         <Footer/>
                     </Suspense>

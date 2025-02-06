@@ -31,7 +31,6 @@ const addProduct = async (req, res) => {
         const parsedColorValues = JSON.parse(colorValues);
         const parsedSizes = JSON.parse(size);
 
-        console.log(parsedSizes);
 
         if (!Array.isArray(parsedColorNames) ||
             !Array.isArray(parsedColorValues) ||
@@ -113,9 +112,10 @@ const addProduct = async (req, res) => {
 
     } catch (err) {
         // Cleanup files
-        if (req.files) {
-            req.files.forEach(file => fs.unlinkSync(file.path));
-        }
+        console.log(err);
+        // if (req.files) {
+        //     req.files.forEach(file => fs.unlinkSync(file.path));
+        // }
         res.status(500).json({
             success: false,
             message: "Product creation failed",
