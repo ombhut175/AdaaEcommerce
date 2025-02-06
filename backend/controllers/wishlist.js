@@ -5,30 +5,31 @@ const {giveUserIdFromCookies} = require("../services/auth");
 
 const addToWishlist = async (req, res) => {
   try {
-    console.log(req.body);
     const userId = giveUserIdFromCookies(req.cookies.authToken);
-    let {productId} = req.params;
-    let {  color , size } = req.body;
-    productId = new mongoose.Types.ObjectId(productId)
+    
+    let {  productId,color , size } = req.body;
+    const objId = new mongoose.Types.ObjectId(productId)
+    
     // Validate product ID
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
+    if (!mongoose.Types.ObjectId.isValid(objId)) {
       return res.status(400).json({ message: 'Invalid product ID' });
     }
-
+    
     // Check if product exists
-    const product = await Product.findById(productId);
+    const product = await Product.find({_id:objId});
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
+    console.log(product);
+    
     // Validate color selection
-    const colorExists = product.colors.some(c => c.colorName === color);
+    const colorExists =product[0].colors?.some(c => c.colorName === color);
     if (!colorExists) {
       return res.status(200).json({ message: 'Invalid color selection' });
     }
 
     // Validate size selection
-    if (!product.size.includes(size)) {
+    if (!product[0].size.includes(size)) {
       return res.status(200).json({ message: 'Invalid size selection' });
     }
 
@@ -97,7 +98,6 @@ const getWishlistItems = async (req, res) => {
 
 const removeFromWishlist = async (req, res) => {
   try {
-    console.log(req.params.productId  );
     
     const itemId = new mongoose.Types.ObjectId(req.params.productId);
 
@@ -106,7 +106,7 @@ const removeFromWishlist = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(itemId)) {
       return res.status(200).json({ message: 'Invalid wishlist item ID' });
     }
-
+    
     const item = await Wishlist.findOneAndDelete({
       _id: itemId,
       user: userId
