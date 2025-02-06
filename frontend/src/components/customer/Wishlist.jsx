@@ -29,7 +29,7 @@ export default function Wishlist() {
     const removeFromWishlist = (id) => {
       console.log(id);
       setIsDisabled(true)
-      axios.delete(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + id + '/' +user.id)
+      axios.delete(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + id + '/' +user.id,{withCredentials: true})
       .then((res)=>{
         console.log(res);
         setIsDisabled(false)
