@@ -17,7 +17,7 @@ export default function Wishlist() {
   const navigate = useNavigate();
   const [isDisabled,setIsDisabled] = useState(false)
   useEffect(()=>{
-    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id)
+    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/wishlist/' + user.id,{withCredentials: true})
     .then((res)=>{
       console.log(res.data);
       setWishlist(res.data)
