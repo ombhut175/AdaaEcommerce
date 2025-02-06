@@ -14,7 +14,7 @@ function DeliveryCard({ delivery, onSwipeAction, navigate ,addresses}) {
   const address =addresses.filter((a)=>a.userId===delivery.userId)[0] 
   console.log(address);
   useEffect(()=>{
-    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/products/'+delivery.productId)
+    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/products/'+delivery.productId,{withCredentials: true})
     .then((res)=>{
       setProduct(res.data);
       

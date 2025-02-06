@@ -10,19 +10,16 @@ function DeliveryDetails() {
   const [cancelReason, setCancelReason] = useState('')
 
   const handleDelivered = () => {
-    axios.post(import.meta.env.VITE_BACKEND_URL + '/api/orders/' + id)
+    axios.post(import.meta.env.VITE_BACKEND_URL + '/api/orders/' + id,{},{withCredentials: true})
     .then((res)=>{
-      
       console.log(res.data);
-      
-      
     })
     toast.success('Delivery marked as completed!')
     navigate('/delivery');
   }
 
   const handleCancel = () => {
-    axios.post(import.meta.env.VITE_BACKEND_URL + '/api/orders/cancel/' + id)
+    axios.post(import.meta.env.VITE_BACKEND_URL + '/api/orders/cancel/' + id,{},{withCredentials:true})
     .then((res)=>{
       
       toast.success('Delivery marked as completed!')
