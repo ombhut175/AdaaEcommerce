@@ -55,7 +55,7 @@ export default function Checkout() {
   const user = useSelector((state  ) => state.user)
 
   useEffect(()=>{   
-    axios.get(BACKEND_URL + '/api/address/' + user?.id )
+    axios.get(BACKEND_URL + '/api/address/' + user?.id ,{withCredentials:true})
     .then((res)=>{
       
       if(res.data.success){
