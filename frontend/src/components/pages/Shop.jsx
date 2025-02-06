@@ -5,6 +5,7 @@ import axios from "axios"
 import { LoadingBar } from "../loadingBar/LoadingBar.jsx"
 import { io } from "socket.io-client"
 import FilterSystem from "../searchProducts/FilterSystem.jsx"
+import {handleAddCartWithDefaultValues} from "../utils/cart.js";
 
 const socket = io(import.meta.env.VITE_BACKEND_URL)
 
@@ -130,6 +131,13 @@ export default function Shop() {
                             className="w-full h-80 object-cover transform group-hover:scale-110 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
+                        <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                                         onClick={(e) => { handleAddCartWithDefaultValues(product) }}
+                                         className="bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-900 dark:hover:bg-gray-100">
+                            Add to Cart
+                          </motion.button>
+                        </div>
                       </div>
                       <div className="p-4">
                         <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white group-hover:text-indigo-500 dark:group-hover:text-indigo-400">

@@ -6,7 +6,7 @@ const {
   removeFromWishlist
 } = require('../controllers/wishlist');
 
-router.post('/:id', addToWishlist);
+router.post('/:productId', addToWishlist);
 router.get('/:id', getWishlistItems);
 router.delete('/:productId/:userId', removeFromWishlist);
 

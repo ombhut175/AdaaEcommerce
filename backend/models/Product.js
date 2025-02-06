@@ -15,15 +15,17 @@ const productSchema = mongoose.Schema(
             {
                 type: String,
                 enum: [
-                    "XXS (Extra Extra Small)",
-                    "XS (Extra Small)",
-                    "S (Small)",
-                    "M (Medium)",
-                    "L (Large)",
-                    "XL (Extra Large)",
-                    "XXL (Double Extra Large)",
-                    "XXXL (Triple Extra Large) / 3XL",
-                    "4XL, 5XL, 6XL (Extended plus sizes)"
+                    "XXS",
+                    "XS",
+                    "S",
+                    "M",
+                    "L",
+                    "XL",
+                    "XXL",
+                    "XXXL",
+                    "4XL",
+                    "5XL",
+                    "6XL"
                 ]
             }
         ],

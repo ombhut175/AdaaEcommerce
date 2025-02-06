@@ -164,7 +164,6 @@ function App() {
 
 
 
-                            Dealer Routes */}
                             {/*<Route >*/}
                             {/*  <Route path='/unauthorized' element={<Unauthorized/>}></Route>*/}
                             {/*  <Route*/}

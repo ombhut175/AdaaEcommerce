@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FaHeart, FaShoppingCart, FaStar } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import {handleAddCartWithDefaultValues, handleAddWishlistWithDefaultValues} from "../utils/cart.js";
 // If there are internal organization modules to use for axios or similar, import them accordingly.
 
 const categories = ['All', 'Women', 'Men'];
@@ -63,6 +64,7 @@ export default function NewArrivalsPage() {
     }
     return 'https://via.placeholder.com/400x320?text=No+Image';
   };
+
 
   return (
       <motion.div
@@ -138,6 +140,7 @@ export default function NewArrivalsPage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             className="p-3 bg-white rounded-full text-gray-900 hover:bg-gray-100"
+                            onClick={()=> handleAddCartWithDefaultValues(product)}
                         >
                           <FaShoppingCart size={20} />
                         </motion.button>
@@ -145,6 +148,7 @@ export default function NewArrivalsPage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             className="p-3 bg-white rounded-full text-gray-900 hover:bg-gray-100"
+                            onClick={()=> handleAddWishlistWithDefaultValues(product)}
                         >
                           <FaHeart size={20} />
                         </motion.button>
