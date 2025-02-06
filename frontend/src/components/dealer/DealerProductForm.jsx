@@ -1,4 +1,4 @@
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { FaUpload, FaTimes } from "react-icons/fa"
@@ -84,6 +84,7 @@ export default function DealerProductForm() {
         category: "",
         size: "",
         material: "",
+        sizes: [],
     }
 
     const [formData, setFormData] = useState(initialFormState)
@@ -189,8 +190,10 @@ export default function DealerProductForm() {
         formPayload.append("stock", formData.stock)
         formPayload.append("gender", formData.gender)
         formPayload.append("category", formData.category)
-        formPayload.append("size", formData.size)
+        // formPayload.append("size", formData.size)
         formPayload.append("material", formData.material) // Add this line
+        formPayload.append("size", JSON.stringify(formData.sizes))
+        formPayload.append("brand", formData.brand);
 
         try {
             const response = await axios.post(`${BACKEND_URL}/api/dealer/add`, formPayload, { withCredentials: true })
@@ -239,109 +242,136 @@ export default function DealerProductForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-                            <input
+                            <motion.input
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
                                 required
+                                variants={inputVariants}
+                                whileFocus="focus"
+                                whileTap="tap"
                             />
                         </motion.div>
 
                         <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
-                            <input
+                            <motion.input
                                 type="text"
                                 value={formData.title}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
                                 required
+                                variants={inputVariants}
+                                whileFocus="focus"
+                                whileTap="tap"
                             />
                         </motion.div>
                     </div>
 
                     <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-                        <textarea
+                        <motion.textarea
                             value={formData.description}
                             onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
                             rows={4}
-                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
                             required
+                            variants={inputVariants}
+                            whileFocus="focus"
+                            whileTap="tap"
                         />
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Brand</label>
-                            <input
+                            <motion.input
                                 type="text"
                                 value={formData.brand}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, brand: e.target.value }))}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
                                 required
+                                variants={inputVariants}
+                                whileFocus="focus"
+                                whileTap="tap"
                             />
                         </motion.div>
 
                         <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Price</label>
-                            <input
+                            <motion.input
                                 type="number"
                                 value={formData.price}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, price: e.target.value }))}
                                 min="0"
                                 step="0.01"
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
                                 required
+                                variants={inputVariants}
+                                whileFocus="focus"
+                                whileTap="tap"
                             />
                         </motion.div>
 
                         <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Gender</label>
-                            <select
+                            <motion.select
                                 value={formData.gender}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, gender: e.target.value }))}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
+                                variants={inputVariants}
+                                whileFocus="focus"
+                                whileTap="tap"
                             >
                                 <option value="">Choose Gender</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
-                            </select>
+                            </motion.select>
                         </motion.div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Discount (%)</label>
-                            <input
+                            <motion.input
                                 type="number"
                                 value={formData.discount}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, discount: e.target.value }))}
                                 min="0"
                                 max="100"
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
                                 required
+                                variants={inputVariants}
+                                whileFocus="focus"
+                                whileTap="tap"
                             />
                         </motion.div>
 
                         <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Stock</label>
-                            <input
+                            <motion.input
                                 type="number"
                                 value={formData.stock}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, stock: e.target.value }))}
                                 min="0"
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
                                 required
+                                variants={inputVariants}
+                                whileFocus="focus"
+                                whileTap="tap"
                             />
                         </motion.div>
 
                         <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
-                            <select
+                            <motion.select
                                 value={formData.category}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
-                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
+                                variants={inputVariants}
+                                whileFocus="focus"
+                                whileTap="tap"
                             >
                                 <option value="">Choose Category</option>
                                 {formData.gender === "male"
@@ -357,16 +387,19 @@ export default function DealerProductForm() {
                                             </option>
                                         ))
                                         : null}
-                            </select>
+                            </motion.select>
                         </motion.div>
                     </div>
 
                     <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Select Color</label>
-                        <select
+                        <motion.select
                             value={formData.selectedColor}
                             onChange={(e) => setFormData((prev) => ({ ...prev, selectedColor: e.target.value }))}
-                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
+                            variants={inputVariants}
+                            whileFocus="focus"
+                            whileTap="tap"
                         >
                             <option value="">Choose a color</option>
                             {colors.map((color) => (
@@ -374,31 +407,19 @@ export default function DealerProductForm() {
                                     {color.name}
                                 </option>
                             ))}
-                        </select>
+                        </motion.select>
                     </motion.div>
 
-                    <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
-                        <select
-                            value={formData.size}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, size: e.target.value }))}
-                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                        >
-                            <option value="">Choose Size</option>
-                            {sizes.map((size) => (
-                                <option key={size} value={size}>
-                                    {size}
-                                </option>
-                            ))}
-                        </select>
-                    </motion.div>
 
                     <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Material</label>
-                        <select
+                        <motion.select
                             value={formData.material}
                             onChange={(e) => setFormData((prev) => ({ ...prev, material: e.target.value }))}
-                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white transition duration-200 ease-in-out"
+                            variants={inputVariants}
+                            whileFocus="focus"
+                            whileTap="tap"
                         >
                             <option value="">Choose Material</option>
                             {materialOptions.map((material) => (
@@ -406,54 +427,90 @@ export default function DealerProductForm() {
                                     {material}
                                 </option>
                             ))}
-                        </select>
+                        </motion.select>
                     </motion.div>
 
-                    {formData.selectedColor && (
-                        <div className="space-y-4">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Product Images for {colors.find((c) => c.value === formData.selectedColor)?.name} (Max 10)
-                            </label>
-
-                            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                {Object.entries(currentColorImages).map(([index, preview]) => (
-                                    <motion.div
-                                        key={index}
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="relative aspect-square"
-                                    >
-                                        <img
-                                            src={preview || "/placeholder.svg"}
-                                            alt={`Preview ${Number.parseInt(index) + 1}`}
-                                            className="w-full h-full object-cover rounded-lg"
-                                        />
-                                        <motion.button
-                                            whileHover={{ scale: 1.1 }}
-                                            whileTap={{ scale: 0.9 }}
-                                            type="button"
-                                            onClick={() => removeImage(formData.selectedColor, index)}
-                                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center"
-                                        >
-                                            <FaTimes size={12} />
-                                        </motion.button>
-                                    </motion.div>
-                                ))}
-
-                                {Object.keys(currentColorImages).length < 10 && (
-                                    <motion.label
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="aspect-square border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400"
-                                    >
-                                        <FaUpload className="text-gray-400 mb-2" size={24} />
-                                        <span className="text-sm text-gray-500 dark:text-gray-400">Upload Image</span>
-                                        <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                                    </motion.label>
-                                )}
-                            </div>
+                    <motion.div variants={inputVariants} whileFocus="focus" whileTap="tap" className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Sizes</label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {sizes.map((size) => (
+                                <motion.label
+                                    key={size}
+                                    className="flex items-center space-x-2 p-2 rounded-md cursor-pointer"
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        value={size}
+                                        checked={formData.sizes.includes(size)}
+                                        onChange={(e) => {
+                                            const updatedSizes = e.target.checked
+                                                ? [...formData.sizes, size]
+                                                : formData.sizes.filter((s) => s !== size)
+                                            setFormData((prev) => ({ ...prev, sizes: updatedSizes }))
+                                        }}
+                                        className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                    />
+                                    <span className="text-sm text-gray-700 dark:text-gray-300">{size}</span>
+                                </motion.label>
+                            ))}
                         </div>
-                    )}
+                    </motion.div>
+
+                    <AnimatePresence>
+                        {formData.selectedColor && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <div className="space-y-4">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Product Images for {colors.find((c) => c.value === formData.selectedColor)?.name} (Max 10)
+                                    </label>
+
+                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                        {Object.entries(currentColorImages).map(([index, preview]) => (
+                                            <motion.div
+                                                key={index}
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                className="relative aspect-square"
+                                            >
+                                                <img
+                                                    src={preview || "/placeholder.svg"}
+                                                    alt={`Preview ${Number.parseInt(index) + 1}`}
+                                                    className="w-full h-full object-cover rounded-lg"
+                                                />
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    type="button"
+                                                    onClick={() => removeImage(formData.selectedColor, index)}
+                                                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center"
+                                                >
+                                                    <FaTimes size={12} />
+                                                </motion.button>
+                                            </motion.div>
+                                        ))}
+
+                                        {Object.keys(currentColorImages).length < 10 && (
+                                            <motion.label
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                className="aspect-square border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400"
+                                            >
+                                                <FaUpload className="text-gray-400 mb-2" size={24} />
+                                                <span className="text-sm text-gray-500 dark:text-gray-400">Upload Image</span>
+                                                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                                            </motion.label>
+                                        )}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     <div className="flex justify-end gap-4">
                         <Link to="/dealer/products">
@@ -486,4 +543,3 @@ export default function DealerProductForm() {
         </motion.div>
     )
 }
-

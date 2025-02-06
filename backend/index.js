@@ -25,6 +25,8 @@ const addressRouter = require('./routes/address');
 const wishListRouter = require('./routes/wishlist');
 const { createServer } = require('node:http');
 const { initSocket } = require("./services/socket");
+const {checkForAdminAuthentication} = require("./middlewares/admin");
+const {checkForUserAuthentication} = require("./middlewares/user");
 
 
 //configuration--------------------------------------------------
@@ -72,11 +74,15 @@ mongoose.connect(process.env.MONGO_URL)
         //static files
         app.use('/api/static', express.static(path.join(__dirname, 'public/staticPictures')));
         app.get('/api/getStaticImages',giveStaticImages);
-        //routes
+
+        app.use('/api/products', productRouter);
+
 
         //auth middlewares
+        app.use(checkForUserAuthentication);
         app.use('/api/google', googleRoutes);
         app.use('/api', authRouter)
+
         app.use('/api',addressRouter)
 
         // app.get('/api/products',(req,res)=>{
@@ -96,14 +102,13 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api/orders' ,orderRoutes);
 
         //dealer middlewares
-        app.use('/api/dealer',dealerRouter);
+        app.use('/api/dealer',checkForDealerAuthentication,dealerRouter);
 
 
         //products middleware
-        app.use('/api/products', productRouter);
 
         //admin routes
-        app.use('/api/admin' ,adminRouter);
+        app.use('/api/admin' ,checkForAdminAuthentication,adminRouter);
 
 
         //checking
@@ -120,12 +125,10 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api/tracking',trackingRoutes)
 
         //delivery 
-
         app.use('/api',deliveryRouter)
+
         app.delete('/clearCookie', (req, res) => {
-            Object.keys(req.cookies).forEach(cookie => {
-                res.clearCookie(cookie);
-            });
+            res.clearCookie('authToken');
             res.status(200).json({success:true ,  message: 'Cookie has been cleared' });
           });
         //listen at specific port
@@ -134,5 +137,5 @@ mongoose.connect(process.env.MONGO_URL)
         })
     })
     .catch((err) => {
-        console.log(`mongodb connection failed : ${err}`);
+        console.log(err);
     })
