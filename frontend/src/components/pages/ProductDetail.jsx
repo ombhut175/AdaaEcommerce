@@ -260,7 +260,7 @@ export default function ProductDetail() {
                           </span>
                         ); // Half star
                       } else {
-                        return <i className="fa-regular fa-star"></i>; // Empty star
+                        return <i className="fa-regular fa-star dark:text-white"></i>; // Empty star
                       }
                     })}
 
