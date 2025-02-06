@@ -207,7 +207,7 @@ export default function DealerProductForm() {
             }
         } catch (error) {
             console.error("Error:", error)
-            toast.error("Error uploading product. Please try again.");
+            toast.error(error);
         } finally {
             setIsDisabled(false)
         }
