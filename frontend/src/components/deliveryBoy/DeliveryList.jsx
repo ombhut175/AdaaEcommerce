@@ -1,32 +1,26 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSwipeable } from 'react-swipeable'
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
 
-const mockDeliveries = [
-  {
-    id: 1,
-    customerName: 'John Doe',
-    address: '123 Main St',
-    status: 'pending',
-    items: ['T-shirt', 'Jeans'],
-    total: '$59.99',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces&auto=format&q=80'
-  },
-  {
-    id: 2,
-    customerName: 'Jane Smith',
-    address: '456 Oak Ave',
-    status: 'pending',
-    items: ['Dress', 'Shoes'],
-    total: '$89.99',
-    image: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop&crop=faces&auto=format&q=80'
-  }
-]
 
-function DeliveryCard({ delivery, onSwipeAction, navigate }) {
+
+function DeliveryCard({ delivery, onSwipeAction, navigate ,addresses}) {
   const [offset, setOffset] = useState(0)
   const [showActions, setShowActions] = useState(false)
+  const [product,setProduct] = useState({})
+  const address =addresses.filter((a)=>a.userId===delivery.userId)[0] 
+  console.log(address);
+  useEffect(()=>{
+    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/products/'+delivery.productId)
+    .then((res)=>{
+      setProduct(res.data);
+      
+    })
+  },[])
+
 
   const handlers = useSwipeable({
     onSwiping: (event) => {
@@ -69,7 +63,7 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
     // Prevent navigation if we're showing actions or in the middle of a swipe
     if (!showActions && offset === 0) {
       e.stopPropagation()
-      navigate(`/delivery/${delivery?.id}`)
+      navigate(`/delivery/${delivery?._id}`)
     }
   }
 
@@ -105,8 +99,7 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
           {/* Profile Image */}
           <div className="flex-shrink-0">
             <img
-              src={delivery?.image}
-              alt={delivery?.customerName}
+              src={product?.colors?.[0]?.images?.[0] ?? "./default-image.jpg"}
               className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
             />
           </div>
@@ -114,23 +107,29 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
           {/* Content */}
           <div className="flex-grow min-w-0">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-              {delivery?.customerName}
+              {address?.fullName}
             </h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm truncate">
               {delivery?.address}
             </p>
             <div className="mt-2 flex justify-between items-center">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+              {/* <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                 delivery?.status === 'pending'
                   ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                   : delivery?.status === 'delivered'
                   ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                   : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
               }`}>
-                {delivery?.status.charAt(0).toUpperCase() + delivery?.status.slice(1)}
+                {delivery?.status?.charAt(0).toUpperCase() + delivery?.status?.slice(1)}
+              </span> */}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                {product?.price}
               </span>
               <span className="font-semibold text-gray-900 dark:text-white">
-                {delivery?.total}
+                {address.address + " "}
+                
+                {address.city + " "}
+                {address.pincode}
               </span>
             </div>
           </div>
@@ -151,11 +150,30 @@ function DeliveryCard({ delivery, onSwipeAction, navigate }) {
 function DeliveryList() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState('all')
-  const [deliveries, setDeliveries] = useState(mockDeliveries)
-
-  const filteredDeliveries = deliveries.filter(delivery => 
-    filter === 'all' ? true : delivery?.status === filter
-  )
+  const [deliveries, setDeliveries] = useState([])
+  const user = useSelector(state=>state.user)
+  const [address,setAddress] = useState([])
+  const [products , setProducts] = useState([])
+  
+  useEffect(()=>{
+    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/delivery/' + user?.id)
+    .then((res)=>{
+      
+      setDeliveries(res.data.orders);
+      
+    })
+    axios.get(import.meta.env.VITE_BACKEND_URL + '/api/address')
+    .then((res)=>{
+      
+      setAddress(res.data.data)
+      
+      
+    })
+    
+  },[user])
+  // const filteredDeliveries = deliveries.filter(delivery => 
+  //   filter === 'all' ? true : delivery?.status === filter
+  // )
 
   const handleSwipeAction = (id, action) => {
     setDeliveries(prev => 
@@ -179,12 +197,13 @@ function DeliveryList() {
       </div>
 
       <div className="space-y-2">
-        {filteredDeliveries.map(delivery => (
+        {deliveries?.map(delivery => (
           <DeliveryCard 
-            key={delivery?.id}
+            key={delivery.id}
             delivery={delivery} 
             onSwipeAction={handleSwipeAction}
             navigate={navigate}
+            addresses={address}
           />
         ))}
       </div>

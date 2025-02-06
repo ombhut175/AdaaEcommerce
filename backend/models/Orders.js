@@ -41,6 +41,9 @@ const ordersSchema = mongoose.Schema({
     },
     deliveryDate: {
         type: Date,
+    },
+    deliveryBoyId: {
+        type:mongoose.Schema.Types.ObjectId
     }
 }, {timestamps: true});
 

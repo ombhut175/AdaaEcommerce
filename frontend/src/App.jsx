@@ -164,7 +164,7 @@ function App() {
 
 
 
-                            {/* Dealer Routes */}
+                            Dealer Routes */}
                             {/*<Route >*/}
                             {/*  <Route path='/unauthorized' element={<Unauthorized/>}></Route>*/}
                             {/*  <Route*/}
@@ -191,7 +191,7 @@ function App() {
                             {/*      </ProtectedRoute>*/}
                             {/*    }*/}
                             {/*  />*/}
-                            {/*  <Route*/}
+                            {/*  <Route
                             {/*    path="/dealer/products/:id/edit"*/}
                             {/*    element={*/}
                             {/*      <ProtectedRoute role={isDealer}>*/}
@@ -199,7 +199,7 @@ function App() {
                             {/*      </ProtectedRoute>*/}
                             {/*    }*/}
                             {/*  />*/}
-                            {/*</Route>*/}
+                            {/*</Route> */}
 
                             {/*<Route>*/}
                             {/*    <Route path="/delivery" element={*/}
@@ -211,7 +211,7 @@ function App() {
                             {/*        <ProtectedRoute role={isDelivery}>*/}
                             {/*            <DeliveryDetails/>*/}
                             {/*        </ProtectedRoute>}/>*/}
-                            {/*</Route>*/}
+                            {/*</Route> */}
 
                             <Route>
 

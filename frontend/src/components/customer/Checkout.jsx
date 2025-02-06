@@ -201,11 +201,11 @@ export default function Checkout() {
           {},
           { withCredentials: true },
       )
-
+      
     //-------------------------------------------assign delivery boy ------------------------
-    const deliveryBoy = await axios.get(
+    const deliveryBoy = await axios.post(
       `${BACKEND_URL}/api/delivery/${user?.id}`,
-      {},
+      {orders:addAllCartItems.data.ordersItems},
       { withCredentials: true },
     ) 
 

@@ -4,7 +4,7 @@ const { giveUserIdFromCookies } = require('../services/auth');
 const UserBehavior = require('../models/UserBehavior');
 const Product = require('../models/Product');
 const {updateProductsUsingSocketIo} = require("../services/socket");
-const {ObjectId} = require('mongoose').Types;
+const { default: mongoose } = require('mongoose');
 
 // Create a new order
 async function createOrder(req, res) {
@@ -78,10 +78,10 @@ async function addAllProductsOfCart(req, res) {
             orderDate: new Date(),
         }));
 
-        await Orders.insertMany(orders);
+        const ordersItems = await Orders.insertMany(orders);
         await Cart.deleteMany({ userId: new ObjectId(userId) });
         updateProductsUsingSocketIo();
-        res.status(201).json({ message: 'Orders placed successfully.' });
+        res.status(201).json({ message: 'Orders placed successfully.' , ordersItems });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -108,6 +108,101 @@ async function getOrdersByUserId(req, res) {
         res.status(500).json({ error: error.message });
     }
 }
+
+async function getById(req, res) {
+    const { id } = req.params;
+
+    try {
+        console.log("Received order ID:", id);
+
+        // Validate if the ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, message: "Invalid order ID format" });
+        }
+
+        const objId = new mongoose.Types.ObjectId(id);
+
+        // Fetch order (use `findOne` if fetching a single order)
+        const data = await Orders.findById(objId);
+
+        if (!data) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+
+        return res.status(200).json({ success: true, data });
+    } catch (error) {
+        console.error("Error fetching order:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    }
+}
+
+
+async function delivered(req, res) {
+    const { id } = req.params;
+
+    try {
+        console.log("Received order ID:", id);
+
+        // Validate if the ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, message: "Invalid order ID format" });
+        }
+
+        // Find order directly using ID (no need to convert manually)
+        const order = await Orders.findById(id);
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+
+        // Check if already delivered
+        if (order.orderStatus === "Delivered") {
+            return res.status(200).json({ success: true, message: "Order is already delivered", order });
+        }
+        console.log(order);
+        
+        // Update order status
+        order.orderStatus = "Delivered";
+        await order.save();
+
+        return res.status(200).json({ success: true, message: "Order marked as delivered", order });
+    } catch (error) {
+        console.error("Error updating order status:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    }
+}
+
+module.exports = { delivered };
+
+async function cancelled(req, res) {
+    const { id } = req.params;
+
+    try {
+        console.log("Received order ID:", id);
+
+        // Validate if the ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, message: "Invalid order ID format" });
+        }
+
+        const objId = new mongoose.Types.ObjectId(id);
+
+        // Fetch order (use `findOne` if fetching a single order)
+        const data = await Orders.findById(objId);
+
+        if (!data) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+        data.orderStatus = "Cancelled"
+        await data.save()
+        return res.status(200).json({ success: true, data });
+    } catch (error) {
+        console.error("Error fetching order:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    }
+}
+
+
 
 // Update an order
 async function updateOrder(req, res) {
@@ -206,4 +301,7 @@ module.exports = {
     getOrdersByStatus,
     requestReturn,
     requestExchange,
+    getById,
+    delivered,
+    cancelled
 };

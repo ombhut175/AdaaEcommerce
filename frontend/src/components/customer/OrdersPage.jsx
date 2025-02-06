@@ -42,7 +42,7 @@ const OrdersPage = () => {
     const fetchOrders = async () => {
         try {
             const response = await axios.get(`${BACKEND_URL}/api/orders`, { withCredentials: true });
-            setOrders(response.data); // Assuming response.data contains the list of orders
+            setOrders(response.data);
         } catch (error) {
             console.error("Error fetching orders:", error);
         }

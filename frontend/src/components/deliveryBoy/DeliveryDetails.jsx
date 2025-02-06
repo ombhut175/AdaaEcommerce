@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {toast} from "react-toastify";
@@ -9,12 +10,25 @@ function DeliveryDetails() {
   const [cancelReason, setCancelReason] = useState('')
 
   const handleDelivered = () => {
-    // Update delivery status
-    toast.success('Delivery marked as completed!')
-    navigate('/delivery');
+    axios.post(import.meta.env.VITE_BACKEND_URL + '/api/orders/' + id)
+    .then((res)=>{
+      
+      console.log(res.data);
+      
+      
+    })
+    // toast.success('Delivery marked as completed!')
+    // navigate('/delivery');
   }
 
   const handleCancel = () => {
+    axios.post(import.meta.env.VITE_BACKEND_URL + '/api/orders/cancel/' + id)
+    .then((res)=>{
+      
+      console.log(res.data);
+      
+      
+    })
     setShowCancelForm(true)
   }
 
