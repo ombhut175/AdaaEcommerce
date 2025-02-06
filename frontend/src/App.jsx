@@ -163,12 +163,12 @@ function App() {
 
                                 {/* Delivery Boy Routes */}
                                 <Route path="/delivery" element={
-                                    <ProtectedRoute allowedRoles={["Delivery Boy"]}>
+                                    <ProtectedRoute allowedRoles={["delivery"]}>
                                         <DeliveryList />
                                     </ProtectedRoute>
                                 } />
                                 <Route path="/delivery/:id" element={
-                                    <ProtectedRoute allowedRoles={["Delivery Boy"]}>
+                                    <ProtectedRoute allowedRoles={["delivery"]}>
                                         <DeliveryDetails />
                                     </ProtectedRoute>
                                 } />
