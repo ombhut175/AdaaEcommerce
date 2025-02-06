@@ -17,19 +17,19 @@ function DeliveryDetails() {
       
       
     })
-    // toast.success('Delivery marked as completed!')
-    // navigate('/delivery');
+    toast.success('Delivery marked as completed!')
+    navigate('/delivery');
   }
 
   const handleCancel = () => {
     axios.post(import.meta.env.VITE_BACKEND_URL + '/api/orders/cancel/' + id)
     .then((res)=>{
       
-      console.log(res.data);
-      
+      toast.success('Delivery marked as completed!')
+      navigate('/delivery');
+        
       
     })
-    setShowCancelForm(true)
   }
 
   const submitCancelForm = () => {

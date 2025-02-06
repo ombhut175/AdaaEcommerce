@@ -147,8 +147,8 @@ function App() {
                             <Route path="/search" element={<SearchResults/>}/>
 
 
-                            {/*<Route path={'/delivery'} element={<DeliveryList/>}/>*/}
-                            {/*<Route path={'/delivery/:id'} element={<DeliveryDetails/>}/>*/}
+                            {/* <Route path={'/delivery'} element={<DeliveryList/>}/> */}
+                             {/* <Route path={'/delivery/:id'} element={<DeliveryDetails/>}/> */}
 
                             {/*/!* Dealer Routes *!/*/}
                             {/*<Route path="/dealer/products" element={<DealerProducts/>}/>*/}
@@ -164,7 +164,7 @@ function App() {
 
 
 
-                            Dealer Routes */}
+                            {/* Dealer Routes */} */
                             {/*<Route >*/}
                             {/*  <Route path='/unauthorized' element={<Unauthorized/>}></Route>*/}
                             {/*  <Route*/}
@@ -256,12 +256,12 @@ function App() {
 
                                 {/* Delivery Boy Routes */}
                                 <Route path="/delivery" element={
-                                    <ProtectedRoute allowedRoles={["Delivery Boy"]}>
+                                    <ProtectedRoute allowedRoles={["delivery"]}>
                                         <DeliveryList />
                                     </ProtectedRoute>
                                 }/>
                                 <Route path="/delivery/:id" element={
-                                    <ProtectedRoute allowedRoles={["Delivery Boy"]}>
+                                    <ProtectedRoute allowedRoles={["delivery"]}>
                                         <DeliveryDetails />
                                     </ProtectedRoute>
                                 }/>
