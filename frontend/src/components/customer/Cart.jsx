@@ -6,8 +6,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { LoadingBar } from '../loadingBar/LoadingBar';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 
 export default function Cart() {

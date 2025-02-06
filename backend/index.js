@@ -83,7 +83,7 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api', authRouter)
 
         //user middlewares
-        // app.use(checkForUserAuthentication);
+        app.use(checkForUserAuthentication);
 
         app.use('/api',addressRouter)
 
