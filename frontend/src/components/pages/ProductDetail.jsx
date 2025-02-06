@@ -396,7 +396,7 @@ export default function ProductDetail() {
 
                     () => {
                       
-                      axios.post(BACKEND_URL + '/api/wishlist/' + user.id , { color: selectedColor, size: selectedSize, productId: id })
+                      axios.post(BACKEND_URL + '/api/wishlist/' + user.id , { color: selectedColor, size: selectedSize, productId: id },{withCredentials:true})
                         .then((res) => {
                           console.log(res.data);
                           toast("Product added into Wishlist")
