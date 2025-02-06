@@ -66,7 +66,7 @@ const findDeliveryBoy = async (req,res) => {
         // const deliveryBoy = await User.find({ role: { $in: ["delivery"] } });
         // const addressOfCustomer = await Address.find({ _id:objId });
         // console.log(deliveryBoy,addressOfCustomer);
-        return res.end();
+        return res.send({message:'Delivered'});
     }
     catch(err){
         console.log(err);
