@@ -20,7 +20,7 @@ const AdminPermissionsPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsLoading(true)
-        try {~
+        try {
             await axios.put(`${BACKEND_URL}/api/admin/givePermissions`, {
                 userEmail: formData.userEmail,
                 permission: formData.permission,

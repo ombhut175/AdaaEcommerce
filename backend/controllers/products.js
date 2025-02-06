@@ -30,6 +30,9 @@ const addProduct = async (req, res) => {
         // Validate color data
         const parsedColorNames = JSON.parse(colorNames);
         const parsedColorValues = JSON.parse(colorValues);
+        const parsedSizes = JSON.parse(size);
+
+        console.log(parsedSizes);
 
         if (!Array.isArray(parsedColorNames) ||
             !Array.isArray(parsedColorValues) ||
@@ -49,7 +52,7 @@ const addProduct = async (req, res) => {
             description,
             gender,
             categoryOfProduct:category,
-            size,
+            size: parsedSizes,
             material,
             price: Number(price),
             discountPercent: Number(discount),
