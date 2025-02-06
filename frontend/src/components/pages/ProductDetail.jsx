@@ -74,7 +74,7 @@ export default function ProductDetail() {
   
   const handleUpdateProductQuantity = (change)=>{
   
-    if(change==0){
+    if(change===0){
       removeItem()
       setQuantity(change);
 

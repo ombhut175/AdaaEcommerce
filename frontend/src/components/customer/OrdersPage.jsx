@@ -20,7 +20,7 @@ const OrdersPage = () => {
 
     //-------------------------------------------fetch address ------------------------
     useEffect(()=>{   
-        axios.get(BACKEND_URL + '/api/address/' + user?.id )
+        axios.get(BACKEND_URL + '/api/address/' + user?.id,{withCredentials:true} )
         .then((res)=>{
           
           if(res.data.success){
