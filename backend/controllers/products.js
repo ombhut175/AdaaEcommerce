@@ -1,11 +1,9 @@
 const Product = require('../models/Product');
 const UserActivities = require('../models/UserActivities');
-const {giveUserFromDb} = require("../services/common.services");
-const {uploadOnCloudinary, uploadOnCloudinaryForProducts} = require("../services/cloudinary");
+const {uploadOnCloudinaryForProducts,  deleteCloudinaryImageFromUrl} = require("../services/cloudinary");
 const {getUser, giveUserIdFromCookies} = require("../services/auth");
-const {ObjectId} = require('mongoose').Types;
 const fs = require("node:fs");
-const {getIo, updateProductsUsingSocketIo} = require("../services/socket");
+const {updateProductsUsingSocketIo} = require("../services/socket");
 
 
 
@@ -24,7 +22,8 @@ const addProduct = async (req, res) => {
             gender,
             category,
             size,
-            material
+            material,
+            brand
         } = req.body;
 
         // Validate color data
@@ -54,6 +53,7 @@ const addProduct = async (req, res) => {
             categoryOfProduct:category,
             size: parsedSizes,
             material,
+            brand,
             price: Number(price),
             discountPercent: Number(discount),
             stock: Number(stock),
@@ -153,11 +153,6 @@ const getProduct = async (req, res) => {
 
 // Update a product by ID
 const updateProduct = async (req, res) => {
-    console.log("from updateProduct");
-    console.log("Raw req.body:", req.body);
-    console.log("Raw req.body.colorNames:", req.body.colorNames);
-    console.log("Raw req.body.colorValues:", req.body.colorValues);
-    console.log("Raw req.body.existingImagesByColor:", req.body.existingImagesByColor);
 
     const oldImageUrls = [];
 
@@ -172,6 +167,9 @@ const updateProduct = async (req, res) => {
             colorNames,
             colorValues,
             productId,
+            category,
+            material,
+            size,
             existingImagesByColor: existingImagesStr
         } = req.body;
 
@@ -187,6 +185,9 @@ const updateProduct = async (req, res) => {
         const parsedColorNames = JSON.parse(colorNames);
         const parsedColorValues = JSON.parse(colorValues);
         const existingImagesByColor = JSON.parse(existingImagesStr);
+        // console.log(size);
+        const parsedSize = JSON.parse(size);
+        console.log(parsedSize);
 
         // Get existing product
         const existingProduct = await Product.findById(productId);
@@ -244,6 +245,9 @@ const updateProduct = async (req, res) => {
         existingProduct.discountPercent = Number(discount);
         existingProduct.stock = Number(stock);
         existingProduct.colors = updatedColors;
+        existingProduct.size = parsedSize;
+        existingProduct.material = material;
+        existingProduct.categoryOfProduct = category;
 
         // Save updated product
         const updatedProduct = await existingProduct.save();
@@ -323,19 +327,47 @@ const deleteCloudinaryImages = async (urls) => {
     }
 };
 
-// Remove a product by ID
+
+// Remove a product by ID and delete its Cloudinary images
 const removeProduct = async (req, res) => {
     try {
-        const product = await Product.findByIdAndDelete(req.params.id);
+        // First, retrieve the product by ID
+        const product = await Product.findById(req.params.id);
         if (!product) {
-            return res.status(404).json({success: false, message: 'Product not found'});
+            return res.status(404).json({ success: false, message: 'Product not found' });
         }
+
+        // Gather all image URLs from the product's colors array
+        let imageDeletionPromises = [];
+        product.colors.forEach(color => {
+            color.images.forEach(imageUrl => {
+                // If you need to extract a public ID from the image URL, do it here.
+                // For example, if your public IDs are stored in the URL path, you might do:
+                // const publicId = extractPublicId(imageUrl);
+                // imageDeletionPromises.push(deleteCloudinaryImage(publicId));
+
+                // Assuming deleteCloudinaryImage accepts the full URL or already handles extraction
+                imageDeletionPromises.push(deleteCloudinaryImageFromUrl(imageUrl));
+            });
+        });
+
+        // Wait for all image deletion promises to complete
+        await Promise.all(imageDeletionPromises);
+
+        // Delete the product from the database
+        await Product.findByIdAndDelete(req.params.id);
+
+        // Optionally, update connected clients via Socket.io
         updateProductsUsingSocketIo();
-        res.status(200).json({success: true, message: 'Product removed successfully'});
+
+        res.status(200).json({ success: true, message: 'Product removed successfully' });
     } catch (error) {
-        res.status(500).json({success: false, message: 'Failed to remove product', error: error.message});
+        res.status(500).json({ success: false, message: 'Failed to remove product', error: error.message });
     }
 };
+
+module.exports = { removeProduct };
+
 
 //filtration of products based on selection
 

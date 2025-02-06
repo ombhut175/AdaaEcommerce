@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {toast} from "react-toastify";
 
 export default function DealerProducts() {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -27,6 +28,8 @@ export default function DealerProducts() {
     try {
       await axios.delete(`${BACKEND_URL}/api/dealer/deleteProduct/${productId}`, { withCredentials: true });
       setProducts(products.filter(product => product._id !== productId));
+
+      toast.success('Product deleted successfully');
     } catch (error) {
       console.error("Error deleting product:", error);
     }

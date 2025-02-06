@@ -2,28 +2,44 @@ const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema(
     {
-        dealerId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-        name: {type: String, required: true},
-        title: {type: String, required: true},
-        description: {type: String},
-        brand: {type: String},
-        price: {type: Number, required: true},
-        categoryOfProduct: {type: String},
-        gender: {type: String},
-        size: [String],
+        dealerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        name: { type: String, required: true },
+        title: { type: String, required: true },
+        description: { type: String },
+        brand: { type: String },
+        price: { type: Number, required: true },
+        categoryOfProduct: { type: String },
+        gender: { type: String },
+        // Define size as an array of strings with enum validation for each element.
+        size: [
+            {
+                type: String,
+                enum: [
+                    "XXS (Extra Extra Small)",
+                    "XS (Extra Small)",
+                    "S (Small)",
+                    "M (Medium)",
+                    "L (Large)",
+                    "XL (Extra Large)",
+                    "XXL (Double Extra Large)",
+                    "XXXL (Triple Extra Large) / 3XL",
+                    "4XL, 5XL, 6XL (Extended plus sizes)"
+                ]
+            }
+        ],
         colors: [
             {
-                colorName: {type: String, required: true}, // e.g., "Red", "Blue"
-                images: {type: [String], required: true}, // Array of image URLs specific to this color
+                colorName: { type: String, required: true }, // e.g., "Red", "Blue"
+                images: { type: [String], required: true }, // Array of image URLs specific to this color
             },
         ],
         material: String,
-        discountPercent: {type: Number},
+        discountPercent: { type: Number },
         productType: {
             type: String,
             default: 'new',
         },
-        stock: {type: Number, default: 0},
+        stock: { type: Number, default: 0 },
         reviews: [
             {
                 userId: {
@@ -53,7 +69,7 @@ const productSchema = mongoose.Schema(
         },
         warrantyDetails: String,
     },
-    {timestamps: true}
+    { timestamps: true }
 );
 
 module.exports = mongoose.model('Product', productSchema);

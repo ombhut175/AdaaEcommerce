@@ -193,6 +193,7 @@ export default function DealerProductForm() {
         // formPayload.append("size", formData.size)
         formPayload.append("material", formData.material) // Add this line
         formPayload.append("size", JSON.stringify(formData.sizes))
+        formPayload.append("brand", formData.brand);
 
         try {
             const response = await axios.post(`${BACKEND_URL}/api/dealer/add`, formPayload, { withCredentials: true })
