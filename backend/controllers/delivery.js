@@ -66,10 +66,11 @@ const findDeliveryBoy = async (req,res) => {
         // const deliveryBoy = await User.find({ role: { $in: ["delivery"] } });
         // const addressOfCustomer = await Address.find({ _id:objId });
         // console.log(deliveryBoy,addressOfCustomer);
+        return res.end();
     }
     catch(err){
         console.log(err);
-        
+        return res.status(500).json({ message: 'Internal server error', error });
     }
 }
 

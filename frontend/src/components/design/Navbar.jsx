@@ -1,13 +1,13 @@
-import { useState, useRef, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaHeart, FaBars, FaTimes } from "react-icons/fa"
-import { Link, useNavigate } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
-import { selectDarkMode, toggleDarkMode } from "../../store/features/themeSlice.js"
-import { changeRole, fetchUser, logOutUser } from "../../store/features/userSlice.js"
+import {useState, useRef, useEffect} from "react"
+import {motion, AnimatePresence} from "framer-motion"
+import {FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaHeart, FaBars, FaTimes} from "react-icons/fa"
+import {Link, useNavigate} from "react-router-dom"
+import {useSelector, useDispatch} from "react-redux"
+import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js"
+import {changeRole, fetchUser, logOutUser} from "../../store/features/userSlice.js"
 import axios from "axios"
-import { toast } from "react-toastify"
-import { SearchBar } from "./SearchBar"
+import {toast} from "react-toastify"
+import {SearchBar} from "./SearchBar"
 
 export default function Navbar() {
     const navigate = useNavigate()
@@ -25,18 +25,18 @@ export default function Navbar() {
     const mobileSubmenuRef = useRef(null)
 
     const submenuItems = [
-        { name: "Deals", path: "/deals" },
-        { name: "Shop", path: "/shop" },
-        { name: "New Arrivals", path: "/new-arrivals" },
-        { name: "Orders", path: "/orders" },
-        ...(user.role?.includes("dealer") ? [{ name: "Dealer", path: "/dealer/products" }] : []),
-        ...(user.role?.includes("Delivery Boy") ? [{ name: "Delivery Boy", path: "/delivery" }] : []),
-        ...(user.role?.includes("admin") ? [{ name: "Admin", path: "/admin" }] : []),
+        {name: "Deals", path: "/deals"},
+        {name: "Shop", path: "/shop"},
+        {name: "New Arrivals", path: "/new-arrivals"},
+        {name: "Orders", path: "/orders"},
+        ...(user.role?.includes("dealer") ? [{name: "Dealer", path: "/dealer/products"}] : []),
+        ...(user.role?.includes("Delivery Boy") ? [{name: "Delivery Boy", path: "/delivery"}] : []),
+        ...(user.role?.includes("admin") ? [{name: "Admin", path: "/admin"}] : []),
     ]
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(fetchUser());
-    },[]);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -66,18 +66,18 @@ export default function Navbar() {
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-4">
                         <motion.button
-                            whileTap={{ scale: 0.95 }}
+                            whileTap={{scale: 0.95}}
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             className="md:hidden text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                             aria-label="Mobile menu toggle"
                         >
-                            {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+                            {isMobileMenuOpen ? <FaTimes size={24}/> : <FaBars size={24}/>}
                         </motion.button>
 
                         <Link to="/" className="flex-shrink-0">
                             <motion.h1
                                 className="text-2xl font-bold text-black dark:text-white hover-transition me-12"
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{scale: 1.05}}
                             >
                                 ADAA
                             </motion.h1>
@@ -86,7 +86,7 @@ export default function Navbar() {
                         <div className="hidden md:flex items-center gap-6">
                             <Link to="/">
                                 <motion.span
-                                    whileHover={{ scale: 1.1 }}
+                                    whileHover={{scale: 1.1}}
                                     className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                                 >
                                     Home
@@ -95,22 +95,23 @@ export default function Navbar() {
 
                             <div className="relative">
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                     onClick={() => setIsSubmenuOpen(!isSubmenuOpen)}
                                     className="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                                     aria-expanded={isSubmenuOpen}
                                     aria-haspopup="true"
                                 >
                                     Browse
-                                    <FaChevronDown className={`transition-transform duration-300 ${isSubmenuOpen ? "rotate-180" : ""}`} />
+                                    <FaChevronDown
+                                        className={`transition-transform duration-300 ${isSubmenuOpen ? "rotate-180" : ""}`}/>
                                 </motion.button>
 
                                 <AnimatePresence>
                                     {isSubmenuOpen && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: -10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
+                                            initial={{opacity: 0, y: -10}}
+                                            animate={{opacity: 1, y: 0}}
+                                            exit={{opacity: 0, y: -10}}
                                             className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2"
                                             ref={submenuRef}
                                             role="menu"
@@ -118,7 +119,8 @@ export default function Navbar() {
                                             aria-labelledby="user-menu-button"
                                         >
                                             {submenuItems.map((item) => (
-                                                <Link key={item.path} to={item.path} onClick={() => setIsSubmenuOpen(false)}>
+                                                <Link key={item.path} to={item.path}
+                                                      onClick={() => setIsSubmenuOpen(false)}>
                                                     <motion.div
                                                         whileHover={{
                                                             x: 4,
@@ -139,32 +141,33 @@ export default function Navbar() {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <SearchBar isOpen={isSearchOpen} onToggle={() => setIsSearchOpen(!isSearchOpen)} darkMode={darkMode} />
+                        <SearchBar isOpen={isSearchOpen} onToggle={() => setIsSearchOpen(!isSearchOpen)}
+                                   darkMode={darkMode}/>
 
                         <Link to="/wishlist">
                             <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.1}}
+                                whileTap={{scale: 0.95}}
                                 className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                             >
-                                <FaHeart className="text-2xl" />
+                                <FaHeart className="text-2xl"/>
                             </motion.div>
                         </Link>
 
                         <motion.button
-                            whileHover={{ scale: 1.1 }}
+                            whileHover={{scale: 1.1}}
                             onClick={() => dispatch(toggleDarkMode())}
                             className="text-xl"
                             aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
                         >
-                            {darkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
+                            {darkMode ? <FaSun className="text-yellow-400"/> : <FaMoon className="text-gray-700"/>}
                         </motion.button>
 
                         {user.isLoggedIn ? (
                             <div className="relative">
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    whileHover={{scale: 1.05}}
+                                    whileTap={{scale: 0.95}}
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                     className="flex items-center space-x-2 focus:outline-none"
                                     aria-expanded={isDropdownOpen}
@@ -174,16 +177,16 @@ export default function Navbar() {
                                         src={user.profilePicture}
                                         alt="Profile"
                                         className="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400"
-                                        whileHover={{ scale: 1.1 }}
+                                        whileHover={{scale: 1.1}}
                                     />
                                 </motion.button>
 
                                 <AnimatePresence>
                                     {isDropdownOpen && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                            initial={{opacity: 0, y: -10, scale: 0.95}}
+                                            animate={{opacity: 1, y: 0, scale: 1}}
+                                            exit={{opacity: 0, y: -10, scale: 0.95}}
                                             className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl py-2 border border-gray-200 dark:border-gray-700"
                                             ref={userDropdownRef}
                                             role="menu"
@@ -197,20 +200,20 @@ export default function Navbar() {
 
                                             <Link to="/profile">
                                                 <motion.div
-                                                    whileHover={{ x: 4 }}
+                                                    whileHover={{x: 4}}
                                                     className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                                     role="menuitem"
                                                 >
-                                                    <FaUser className="text-gray-500 dark:text-gray-400" />
+                                                    <FaUser className="text-gray-500 dark:text-gray-400"/>
                                                     <span>Your Profile</span>
                                                 </motion.div>
                                             </Link>
 
                                             <motion.button
-                                                whileHover={{ x: 4 }}
+                                                whileHover={{x: 4}}
                                                 className="w-full flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                                                 onClick={() => {
-                                                    axios.delete(BACKEND_URL + "/clearCookie").then((res) => {
+                                                    axios.delete(BACKEND_URL + "/clearCookie",{withCredentials:true}).then((res) => {
                                                         if (res.data?.success) {
                                                             dispatch(logOutUser())
                                                             navigate("/signin")
@@ -221,7 +224,7 @@ export default function Navbar() {
                                                 }}
                                                 role="menuitem"
                                             >
-                                                <FaSignOutAlt />
+                                                <FaSignOutAlt/>
                                                 <span>Logout</span>
                                             </motion.button>
                                         </motion.div>
@@ -231,7 +234,7 @@ export default function Navbar() {
                         ) : (
                             <>
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                     className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                                     onClick={() => navigate("/signIn")}
                                 >
@@ -239,7 +242,7 @@ export default function Navbar() {
                                 </motion.button>
 
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                     className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md"
                                     onClick={() => navigate("/signUp")}
                                 >
@@ -254,9 +257,9 @@ export default function Navbar() {
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
+                        initial={{opacity: 0, height: 0}}
+                        animate={{opacity: 1, height: "auto"}}
+                        exit={{opacity: 0, height: 0}}
                         className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
                         ref={mobileSubmenuRef}
                     >
@@ -272,7 +275,8 @@ export default function Navbar() {
                                     aria-haspopup="true"
                                 >
                                     <span>Browse</span>
-                                    <FaChevronDown className={`transition-transform duration-300 ${isSubmenuOpen ? "rotate-180" : ""}`} />
+                                    <FaChevronDown
+                                        className={`transition-transform duration-300 ${isSubmenuOpen ? "rotate-180" : ""}`}/>
                                 </button>
                                 {isSubmenuOpen && (
                                     <div className="pl-4 space-y-2" ref={submenuRef}>

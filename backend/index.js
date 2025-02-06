@@ -79,9 +79,11 @@ mongoose.connect(process.env.MONGO_URL)
 
 
         //auth middlewares
-        app.use(checkForUserAuthentication);
         app.use('/api/google', googleRoutes);
         app.use('/api', authRouter)
+
+        //user middlewares
+        app.use(checkForUserAuthentication);
 
         app.use('/api',addressRouter)
 
@@ -125,7 +127,7 @@ mongoose.connect(process.env.MONGO_URL)
         app.use('/api/tracking',trackingRoutes)
 
         //delivery 
-        app.use('/api',deliveryRouter)
+        app.use('/api',deliveryRouter);
 
         app.delete('/clearCookie', (req, res) => {
             res.clearCookie('authToken');
