@@ -1,11 +1,12 @@
 const express = require('express');
-const {address, checkAddress} = require('../controllers/address')
+const {address, checkAddress, getAllAddress} = require('../controllers/address')
 
 //declaration
 const router = express.Router();
 
 //routes
-router.post('/address',address);
 router.get('/address/:id',checkAddress);
+router.get('/address',getAllAddress);
+router.post('/address',address);
 
 module.exports = router

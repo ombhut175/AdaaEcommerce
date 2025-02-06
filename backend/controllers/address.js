@@ -3,12 +3,6 @@ const z = require('zod');
 const {giveUserIdFromCookies} = require("../services/auth");
 const {ObjectId} = require('mongoose').Types;
 
-const addressSchemaForValidation = z.object({
-    flat: z.string().nonempty().max(30),
-    area: z.string().nonempty().max(100),
-    pincode: z.number(),
-    state: z.string().nonempty()
-})
 
 async function address(req, res) {
     console.log(req.body);
@@ -90,7 +84,20 @@ async function checkAddress(req, res) {
     }
 }
 
+async function getAllAddress(req,res){
+    try {
+        const data = await addressModel.find({})
+        if(!data){
+            return res.json({success:false , msg:"Not get all address"})
+        }
+        return res.json({success:true , msg:"success in get all address" , data})
+
+    } catch (error) {
+        
+    }
+}
 module.exports = {
     address,
-    checkAddress
+    checkAddress,
+    getAllAddress
 }

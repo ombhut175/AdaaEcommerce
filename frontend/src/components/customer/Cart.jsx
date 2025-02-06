@@ -6,6 +6,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { LoadingBar } from '../loadingBar/LoadingBar';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 
 export default function Cart() {
   const [items, setItems] = useState([]);
@@ -101,7 +104,47 @@ export default function Cart() {
 
   return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
-        <LoadingBar isLoading={isDisabled} />
+        {/* <LoadingBar isLoading={isDisabled} /> */}
+        {isDisabled ? 
+         <div className="max-w-7xl mx-auto">
+         <div className="text-center mb-6">
+           <Skeleton height={30} width={`60%`} />
+           <div className="text-sm breadcrumbs mt-2">
+             <Skeleton height={20} width={`40%`} />
+           </div>
+         </div>
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+           <div className="lg:col-span-2">
+             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 md:p-6">
+               {[...Array(3)].map((_, index) => (
+                 <div key={index} className="flex items-center gap-4 mb-4">
+                   <Skeleton circle height={80} width={80} />
+                   <div className="flex-1">
+                     <Skeleton height={20} width={`80%`} />
+                     <Skeleton height={15} width={`60%`} />
+                     <Skeleton height={15} width={`70%`} />
+                   </div>
+                 </div>
+               ))}
+             </div>
+           </div>
+           <div className="lg:col-span-1">
+             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 md:p-6">
+               <Skeleton height={25} width={`50%`} />
+               <div className="space-y-3 mt-4">
+                 <Skeleton height={20} width={`80%`} />
+                 <Skeleton height={20} width={`80%`} />
+                 <Skeleton height={20} width={`80%`} />
+                 <Skeleton height={40} width={`100%`} />
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+        
+        
+        :
+        
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-6">
             <h1 className="text-2xl md:text-3xl font-bold">Shopping Cart</h1>
@@ -201,7 +244,7 @@ export default function Cart() {
                 </Link>
               </div>
           )}
-        </div>
+        </div>}
       </motion.div>
   );
 }

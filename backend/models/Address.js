@@ -8,7 +8,9 @@ const addressSchema = mongoose.Schema(
         city: {type: String, required: true},
         pincode: {type: Number, required: true},
         state: {type: String, required: true},
-        country: {type: String, required: true}
+        country: {type: String, required: true},
+        latitude: Number,
+  longitude: Number,
     },
     {timestamps: true}
 );
