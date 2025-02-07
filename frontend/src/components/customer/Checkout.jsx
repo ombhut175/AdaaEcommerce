@@ -343,8 +343,8 @@ export default function Checkout() {
               </motion.div>
             </motion.div>:
   <motion.div variants={formVariants} initial="hidden" animate="visible" className="space-y-8">          
-    <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Delivery Address</h2>
+    <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-slate-800 dark:text-slate-50">
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-slate-50 mb-4">Delivery Address</h2>
       <div className="space-y-4">
         <div>
           <strong>Full Name:</strong> {address?.fullName}  {address.lastName}
@@ -366,7 +366,7 @@ export default function Checkout() {
         </div>
       </div>
       <div className="mt-6">
-        <button onClick={()=>setIsAddressHide(false)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Edit Address</button>
+        <button onClick={()=>setIsAddressHide(false)} className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-blue-700">Edit Address</button>
       </div>
     </div>
               <motion.div variants={formVariants}>
@@ -376,7 +376,7 @@ export default function Checkout() {
                       whileHover="hover"
                       whileTap="tap"
                       onClick={handlePayNow}
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white py-3 rounded-md font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+                      className="w-full bg-slate-600 hover:bg-slate-700 dark:bg-slate-500 dark:hover:bg-slate-600 text-white py-3 rounded-md font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
                   >
                     <FaLock className="text-sm" />
                     <span>Pay Now</span>
@@ -433,7 +433,7 @@ export default function Checkout() {
                       variants={buttonVariants}
                       whileHover="hover"
                       whileTap="tap"
-                      className="px-4 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white rounded-r-md transition-colors duration-200"
+                      className="px-4 bg-slate-600 hover:bg-slate-700 dark:bg-slate-500 dark:hover:bg-slate-600 text-white rounded-r-md transition-colors duration-200"
                   >
                     Apply
                   </motion.button>

@@ -28,7 +28,112 @@ const { initSocket } = require("./services/socket");
 const {checkForAdminAuthentication} = require("./middlewares/admin");
 const {checkForUserAuthentication} = require("./middlewares/user");
 
+// # Express Server Documentation
 
+// ## Overview
+// This is the main server file that initializes and configures an Express.js application with MongoDB, Socket.IO, and various middleware integrations. The server handles authentication, user management, product management, and various other e-commerce functionalities.
+
+// ## Dependencies
+// - `dotenv`: Environment variable management
+// - `express`: Web application framework
+// - `mongoose`: MongoDB ODM
+// - `cookie-parser`: Cookie parsing middleware
+// - `cors`: Cross-Origin Resource Sharing
+// - `passport`: Authentication middleware
+// - `express-session`: Session middleware
+// - `socket.io`: Real-time bidirectional communication
+
+// ## Configuration
+// - Server runs on the port specified in environment variable `PORT`
+// - MongoDB connection URL is specified in `MONGO_URL` environment variable
+// - Session secret key is specified in `SESSION_SECRET_KEY` environment variable
+// - CORS is configured to allow requests from `CLIENT_URL_FOR_CORS`
+
+// ## Database Connection
+// The application connects to MongoDB using Mongoose before initializing the Express server. On successful connection, it proceeds with server setup and configuration.
+
+// ## Middleware Setup
+// 1. **CORS Configuration**
+//    - Origins: Specified by `CLIENT_URL_FOR_CORS`
+//    - Methods: GET, POST, PUT, DELETE
+//    - Credentials: Enabled
+
+// 2. **Session Configuration**
+//    - Secret key from environment variables
+//    - Session duration: 7 days
+//    - Non-resaving of unmodified sessions
+//    - Uninitialized sessions are saved
+
+// 3. **Body Parsing**
+//    - JSON parsing
+//    - URL-encoded data parsing
+//    - Cookie parsing
+
+// 4. **Authentication**
+//    - Passport initialization
+//    - Session support
+
+// ## Routes
+
+// ### Static Files
+// - `/api/static`: Serves static files from `public/staticPictures`
+// - `/api/getStaticImages`: Retrieves static images
+
+// ### Authentication
+// - `/api/google`: Google authentication routes
+// - `/api`: General authentication routes
+
+// ### User Management
+// - `/api/cart`: Shopping cart operations
+// - `/api/wishlist`: Wishlist management
+// - `/api/orders`: Order management
+// - `/api/user`: User profile operations
+// - `/api/address`: Address management
+
+// ### Product Management
+// - `/api/products`: Product-related operations
+
+// ### Dealer Operations
+// - `/api/dealer`: Dealer-specific routes (requires dealer authentication)
+
+// ### Admin Operations
+// - `/api/admin`: Admin-specific routes (requires admin authentication)
+
+// ### Additional Features
+// - `/api/tracking`: Product tracking functionality
+// - `/api/payment`: Payment processing
+// - `/api/delivery`: Delivery management
+
+// ### Utility Routes
+// - `/clearCookie`: Clears authentication cookie
+// - `/`: Health check endpoint
+
+// ## Security Features
+// 1. Role-based Authentication
+//    - Admin authentication middleware
+//    - Dealer authentication middleware
+//    - User authentication middleware
+
+// 2. Session Management
+//    - Secure cookie handling
+//    - Session persistence
+//    - Authentication state management
+
+// ## WebSocket Integration
+// - Socket.IO initialization for real-time communication
+// - Configured with CORS settings matching the main application
+
+// ## Error Handling
+// - MongoDB connection errors are caught and logged
+// - Server startup errors are handled and logged
+
+// ## Usage
+// 1. Ensure all environment variables are properly set
+// 2. Install dependencies using `npm install`
+// 3. Start the server using `node index.js`
+// 4. Server will initialize MongoDB connection before starting to listen for requests
+
+// ## Environment Variables Required
 //configuration--------------------------------------------------
 const PORT = process.env.PORT;
 
