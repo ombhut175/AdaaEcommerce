@@ -4,7 +4,8 @@ const { giveUserIdFromCookies } = require('../services/auth');
 const UserBehavior = require('../models/UserBehavior');
 const Product = require('../models/Product');
 const {updateProductsUsingSocketIo} = require("../services/socket");
-const { default: mongoose } = require('mongoose');
+const mongoose = require("mongoose");
+const {ObjectId} = require("mongoose").Types;
 
 // Create a new order
 async function createOrder(req, res) {
@@ -54,19 +55,19 @@ async function createOrder(req, res) {
 async function addAllProductsOfCart(req, res) {
     console.log("from addAllProductsOfCart");
     try {
-        const userId = giveUserIdFromCookies(req.cookies.authToken);
-        console.log(userId);
-        if (!userId) {
+        const userIdFromCookies = giveUserIdFromCookies(req.cookies.authToken);
+        console.log(userIdFromCookies);
+        if (!userIdFromCookies) {
             return res.status(401).json({ error: 'Unauthorized: Invalid auth token.' });
         }
 
-        const cartItems = await Cart.find({ userId: new ObjectId(userId) }).populate('productId');
+        const cartItems = await Cart.find({ userId: new ObjectId(userIdFromCookies) }).populate('productId');
+        console.log(cartItems)
         if (!cartItems.length) {
             return res.status(400).json({ error: 'Cart is empty.' });
         }
-
         const orders = cartItems.map(item => ({
-            userId,
+            userId: userIdFromCookies,
             productId:new ObjectId(item.productId._id) ,
             price: item.productId.price,
             discount: item.productId.discount || 0,
@@ -79,7 +80,7 @@ async function addAllProductsOfCart(req, res) {
         }));
 
         const ordersItems = await Orders.insertMany(orders);
-        await Cart.deleteMany({ userId: new ObjectId(userId) });
+        await Cart.deleteMany({ userId: new ObjectId(userIdFromCookies) });
         updateProductsUsingSocketIo();
         res.status(201).json({ message: 'Orders placed successfully.' , ordersItems });
     } catch (error) {

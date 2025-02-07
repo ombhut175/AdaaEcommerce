@@ -109,7 +109,7 @@ function App() {
                             <Route path="/product/:id" element={<ProductDetail />} />
                             <Route path="/cart" element={<Cart />} />
                             <Route path="/orders" element={<OrdersPage />} />
-                            <Route path="/checkout/:userId" element={<Checkout />} />
+                            <Route path="/checkout/:userIdFromCookies" element={<Checkout />} />
 
                             {/* User Profile Routes */}
                             <Route path="/profile" element={<UserProfile />} />

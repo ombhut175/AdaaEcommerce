@@ -2,7 +2,7 @@ from utils.db import get_db
 
 def get_user_activity(user_id):
     db = get_db()
-    user_activity = db.useractivities.find_one({"userId": user_id})
+    user_activity = db.useractivities.find_one({"userIdFromCookies": user_id})
     return user_activity
 
 
