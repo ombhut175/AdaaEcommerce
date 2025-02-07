@@ -36,20 +36,20 @@ Fashion enthusiasts looking for an intuitive and efficient e-commerce shopping e
 
 ---
 
-## 🛍️ Shopping Experience
+## 🛋️ Shopping Experience
 
 - 🔍 **Advanced search with filters**
-- 💫 **Smooth animations powered by Framer Motion**
-- 🌗 **Light and Dark Mode**
+- 🌯 **Smooth animations powered by Framer Motion**
+- 🌇 **Light and Dark Mode**
 
 ### 👤 User Features
 
-- 🔐 **Secure authentication**
+- 🔒 **Secure authentication**
 - 💝 **Wishlist management**
-- 📦 **Order tracking**
+- 🛂 **Order tracking**
 - 💳 **Multiple payment options**
 - 📱 **Mobile app-like experience**
-- 🖼️ **Profile picture customization**
+- 🎨 **Profile picture customization**
 
 ---
 
@@ -71,7 +71,7 @@ Fashion enthusiasts looking for an intuitive and efficient e-commerce shopping e
 
 ---
 
-## 📦 Version Information
+## 🛋 Version Information
 
 | Package       | Version |
 | ------------- | ------- |
@@ -122,12 +122,6 @@ Fashion enthusiasts looking for an intuitive and efficient e-commerce shopping e
 
 ---
 
-## 📝 Note:
-
-- In the frontend, certain pages like **Delivery Boy**, **Deals of the Month**, etc., contain static data due to the limited number of products. However, both frontend and backend logic have been implemented and tested successfully.
-- **For now, all middlewares of Admin, Dealer, and Delivery Boy are removed just for testing purposes.**
-
----
 
 ## 📂 Setup Instructions
 
@@ -176,7 +170,7 @@ Now, your application should be running successfully!
 
 ---
 
-## 📧 Contact
+## 📞 Contact
 
 For any inquiries or contributions, feel free to reach out!
 
@@ -184,6 +178,11 @@ For any inquiries or contributions, feel free to reach out!
 
 ---
 
+## 🔗 Live Hosted Link
+
+[Adaa E-Commerce Live](https://adaaecommerce-1.onrender.com)
+
+---
 
 Happy coding! 🚀
 
