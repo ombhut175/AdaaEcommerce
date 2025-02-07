@@ -54,8 +54,10 @@ async function createOrder(req, res) {
 async function addAllProductsOfCart(req, res) {
     console.log("from addAllProductsOfCart");
     try {
-        const userId = giveUserIdFromCookies(req.cookies.authToken);
-        console.log(userId);
+
+        const userId = new mongoose.Types.ObjectId(giveUserIdFromCookies(req.cookies.authToken));
+        console.log(userId , "this is userId");
+        
         if (!userId) {
             return res.status(401).json({ error: 'Unauthorized: Invalid auth token.' });
         }
@@ -113,16 +115,15 @@ async function getOrdersByUserId(req, res) {
 
 async function getById(req, res) {
     const { id } = req.params;
-
+    const objId = new mongoose.Types.ObjectId(id)
     try {
-        console.log("Received order ID:", id);
+        console.log("Received order ID:", objId);
 
         // Validate if the ID is a valid ObjectId
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose.Types.ObjectId.isValid(objId)) {
             return res.status(400).json({ success: false, message: "Invalid order ID format" });
         }
 
-        const objId = new mongoose.Types.ObjectId(id);
 
         // Fetch order (use `findOne` if fetching a single order)
         const data = await Orders.findById(objId);
