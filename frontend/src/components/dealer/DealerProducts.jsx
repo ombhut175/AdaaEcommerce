@@ -42,24 +42,6 @@ export default function DealerProducts() {
           className="pt-24 px-4 min-h-screen bg-white dark:bg-gray-900"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-black dark:text-white">My Products</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Manage your product inventory and track sales
-              </p>
-            </div>
-            {/*<div className="flex gap-4">*/}
-            {/*  <motion.div*/}
-            {/*      whileHover={{ scale: 1.05 }}*/}
-            {/*      whileTap={{ scale: 0.95 }}*/}
-            {/*      className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg"*/}
-            {/*  >*/}
-            {/*    <h3 className="text-xl font-bold text-black dark:text-white">{products.length}</h3>*/}
-            {/*    <p className="text-sm text-gray-600 dark:text-gray-400">Total Products</p>*/}
-            {/*  </motion.div>*/}
-            {/*</div>*/}
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
