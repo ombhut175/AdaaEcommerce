@@ -97,7 +97,7 @@ const OrderCard = ({ order , address}) => {
                         whileHover={{ scale: 1.05 }}
                         className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${order.paymentStatus === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}
                     >
-                        {order.paymentStatus}
+                        {order.orderStatus}
                     </motion.div>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
