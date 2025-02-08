@@ -1,13 +1,13 @@
-import {useState, useRef, useEffect} from "react"
-import {motion, AnimatePresence} from "framer-motion"
-import {FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaHeart, FaBars, FaTimes} from "react-icons/fa"
-import {Link, useNavigate} from "react-router-dom"
-import {useSelector, useDispatch} from "react-redux"
-import {selectDarkMode, toggleDarkMode} from "../../store/features/themeSlice.js"
-import {changeRole, fetchUser, logOutUser} from "../../store/features/userSlice.js"
+import { useState, useRef, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { FaMoon, FaSun, FaChevronDown, FaSignOutAlt, FaUser, FaHeart, FaBars, FaTimes } from "react-icons/fa"
+import { Link, useNavigate } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { selectDarkMode, toggleDarkMode } from "../../store/features/themeSlice.js"
+import { fetchUser, logOutUser } from "../../store/features/userSlice.js"
 import axios from "axios"
-import {toast} from "react-toastify"
-import {SearchBar} from "./SearchBar"
+import { toast } from "react-toastify"
+import { SearchBar } from "./SearchBar"
 
 export default function Navbar() {
     const navigate = useNavigate()
@@ -25,18 +25,18 @@ export default function Navbar() {
     const mobileSubmenuRef = useRef(null)
 
     const submenuItems = [
-        {name: "Deals", path: "/deals"},
-        {name: "Shop", path: "/shop"},
-        {name: "New Arrivals", path: "/new-arrivals"},
-        {name: "Orders", path: "/orders"},
-        ...(user.role?.includes("dealer") ? [{name: "Dealer", path: "/dealer/products"}] : []),
-        ...(user.role?.includes("delivery") ? [{name: "Delivery Boy", path: "/delivery"}] : []),
-        ...(user.role?.includes("admin") ? [{name: "Admin", path: "/admin"}] : []),
+        { name: "Deals", path: "/deals" },
+        { name: "Shop", path: "/shop" },
+        { name: "New Arrivals", path: "/new-arrivals" },
+        { name: "Orders", path: "/orders" },
+        ...(user.role?.includes("dealer") ? [{ name: "Dealer", path: "/dealer/products" }] : []),
+        ...(user.role?.includes("delivery") ? [{ name: "Delivery Boy", path: "/delivery" }] : []),
+        ...(user.role?.includes("admin") ? [{ name: "Admin", path: "/admin" }] : []),
     ]
 
     useEffect(() => {
-        dispatch(fetchUser());
-    }, []);
+        dispatch(fetchUser())
+    }, [])
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -59,10 +59,9 @@ export default function Navbar() {
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
 
-
     return (
         <nav className="fixed w-full bg-white dark:bg-gray-900 shadow-md z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8"> {/* Update 2 */}
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-4">
                         <motion.button
@@ -140,7 +139,7 @@ export default function Navbar() {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 md:gap-4"> {/* Update 3 */}
                         <SearchBar isOpen={isSearchOpen} onToggle={() => setIsSearchOpen(!isSearchOpen)}
                                    darkMode={darkMode}/>
 
@@ -235,7 +234,7 @@ export default function Navbar() {
                             <>
                                 <motion.button
                                     whileHover={{scale: 1.05}}
-                                    className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+                                    className="hidden md:block px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                                     onClick={() => navigate("/signIn")}
                                 >
                                     Sign In
@@ -243,7 +242,7 @@ export default function Navbar() {
 
                                 <motion.button
                                     whileHover={{scale: 1.05}}
-                                    className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md"
+                                    className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md whitespace-nowrap"
                                     onClick={() => navigate("/signUp")}
                                 >
                                     Sign Up
@@ -303,3 +302,4 @@ export default function Navbar() {
         </nav>
     )
 }
+
