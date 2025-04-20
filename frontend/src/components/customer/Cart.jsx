@@ -14,6 +14,12 @@ export default function Cart() {
   const navigate = useNavigate();
   const user = useSelector(state => state.user);
   const [isDisabled, setIsDisabled] = useState(false);
+
+  useEffect(() => {
+    if (!user.isLoggedIn){
+      navigate("/signIn");
+    }
+  },[])
   
   
   const updateQuantity = (id, change) => {

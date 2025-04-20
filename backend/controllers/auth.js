@@ -2,7 +2,8 @@ const userModel = require('../models/User')
 const {sendOtpViaEmail} = require('../services/mailServices');
 const bcrypt = require('bcrypt');
 const tempUserModel = require('../models/TempUserModel');
-const {setUser, setUserCookies} = require('../services/auth');
+const {setUser, setUserCookies, giveUserIdFromCookies} = require('../services/auth');
+const User = require("../models/User");
 
 //signupSendOtp method -----------------------------------------------------
 const sendOtpToSignup = async (req, res) => {
@@ -220,11 +221,35 @@ const forLogin = async (req, res) => {
         res.status(500).json({success: false, msg: "Internal server error"});
     }
 }
+
+const isUserLoggedIn = async (req,res) => {
+
+    try {
+        const userIdFromCookies = giveUserIdFromCookies(req.cookies.authToken);
+
+        if(!userIdFromCookies) {
+            return res.status(401).json({error:"User not logged in"});
+        }
+
+        const user = await User.findById(userIdFromCookies);
+
+        if (!user){
+            return res.status(401).json({error: "User not signed Up"});
+        }
+
+        return res.status(200).json({message: "User is logged in"});
+    }catch (error) {
+        console.error(error);
+        return res.status(401).json({error:"User not logged in"});
+    }
+}
+
 module.exports = {
     sendOtpToSignup,
     verifyOtpToSignup,
     sendOtpForgotPassword,
     verifyOtpForgotPassword,
     setNewPassword,
-    forLogin
+    forLogin,
+    isUserLoggedIn
 }

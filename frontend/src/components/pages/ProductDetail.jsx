@@ -73,7 +73,12 @@ export default function ProductDetail() {
   },[id])
   
   const handleUpdateProductQuantity = (change)=>{
-  
+    if (!user.isLoggedIn){
+      toast.error("Please login to add product to cart");
+
+      return;
+    }
+
     if(change===0){
       removeItem()
       setQuantity(change);

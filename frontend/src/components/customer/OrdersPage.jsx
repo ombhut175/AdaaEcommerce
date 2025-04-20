@@ -6,6 +6,7 @@ import OrderCard from "./OrderCard.jsx";
 import EmptyState from "../EmptyState.jsx";
 import { Filter, Search } from "lucide-react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const OrdersPage = () => {
     const darkMode = useSelector(selectDarkMode);
@@ -16,6 +17,13 @@ const OrdersPage = () => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const [address , setAddress]  = useState({});
     const user = useSelector(state=>state.user)
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user.isLoggedIn){
+            navigate('/signIn');
+        }
+    }, []);
 
 
     //-------------------------------------------fetch address ------------------------
