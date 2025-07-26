@@ -5,6 +5,9 @@ import { FaShoppingCart, FaArrowUp } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { selectDarkMode } from './store/features/themeSlice';
 
+import { StagewiseToolbar } from '@stagewise/toolbar-react';
+import ReactPlugin from '@stagewise-plugins/react';
+
 // Components
 import Navbar from './components/design/Navbar.jsx';
 import Hero from './components/design/Hero.jsx';
@@ -84,6 +87,11 @@ function App() {
         <LazyMotion features={domAnimation}>
             <div className={darkMode ? 'dark' : ''}>
                 <div className="min-h-screen bg-white dark:bg-gray-900">
+                    <StagewiseToolbar
+                        config={{
+                            plugins: [ReactPlugin],
+                        }}
+                    />
                     <Navbar />
 
                     <Suspense
