@@ -489,20 +489,12 @@ async function searchProducts(req, res) {
 
 async function getDealsOfTheMonth(req, res) {
     try {
-        const startOfMonth = new Date();
-        startOfMonth.setDate(1);
-        startOfMonth.setHours(0, 0, 0, 0);
-
-        const endOfMonth = new Date();
-        endOfMonth.setMonth(endOfMonth.getMonth() + 1);
-        endOfMonth.setDate(0);
-        endOfMonth.setHours(23, 59, 59, 999);
-
+        // Get products with discounts, sorted by highest discount and most recent
         const deals = await Product.find({
             discountPercent: { $gt: 0 },
-            createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+            stock: { $gt: 0 } // Ensure products are in stock
         })
-            .sort({ discountPercent: -1 }) // Sort by highest discount
+            .sort({ discountPercent: -1, createdAt: -1 }) // Sort by highest discount first, then newest
             .limit(10); // Limit to top 10 deals
 
         res.status(200).json({ success: true, deals });
@@ -515,13 +507,8 @@ async function getDealsOfTheMonth(req, res) {
 async function getNewArrivals(req, res) {
     console.log("from getNewArrivals");
     try {
-        // Fetch products created within the last 30 days and sorted by newest first
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
+        // Fetch latest products regardless of creation date, sorted by newest first
         const newArrivals = await Product.find({
-            createdAt: { $gte: thirtyDaysAgo },
-            productType: 'new',
             stock: { $gt: 0 } // Ensure products are in stock
         })
             .sort({ createdAt: -1 }) // Sort by newest first
