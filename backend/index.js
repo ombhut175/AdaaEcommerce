@@ -153,7 +153,7 @@ mongoose.connect(process.env.MONGO_URL)
 
         //middlewares
         app.use(cors({
-            origin: process.env.CLIENT_URL_FOR_CORS, // Specify your frontend's origin
+            origin: process.env.CLIENT_URL, // Specify your frontend's origin
             methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
             credentials: true, // Allow credentials (cookies, authentication headers, etc.)
         }));

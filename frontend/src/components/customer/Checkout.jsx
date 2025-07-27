@@ -7,7 +7,7 @@ import { toast } from "react-toastify" // Import toastify
 import { useSelector } from "react-redux"
 import { LoadingBar } from "../loadingBar/LoadingBar"
 
-const RAZOR_API_KEY = import.meta.env.RAZOR_API_KEY
+const RAZOR_API_KEY = import.meta.env.VITE_RAZOR_API_KEY
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 const inputVariants = {
