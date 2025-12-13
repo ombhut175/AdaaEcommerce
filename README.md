@@ -92,8 +92,23 @@ Fashion enthusiasts looking for an intuitive and efficient e-commerce shopping e
 ---
 
 ## 👥 Team Contributions
+### **Member 1: Patoliya Yash**
 
-### **Member 1: Bhut Om**
+**Role:** Backend Developer
+
+#### Contributions:
+
+- Implemented OTP authentication
+- Integrated Razorpay for secure payments
+- Developed wishlist functionality
+- Created backend filtering logic for products
+- Connected frontend to backend for user panel and authentication
+- Integrated Nodemailer for email notifications
+- Designed the structure of the website and database
+
+---
+
+### **Member 2: Bhut Om**
 
 **Role:** Full-stack Developer
 
@@ -112,21 +127,6 @@ Fashion enthusiasts looking for an intuitive and efficient e-commerce shopping e
 - Designed the structure of the website and database
 - Connected frontend to backend for user panel and authentication
 
-### **Member 2: Patoliya Yash**
-
-**Role:** Backend Developer
-
-#### Contributions:
-
-- Implemented OTP authentication
-- Integrated Razorpay for secure payments
-- Developed wishlist functionality
-- Created backend filtering logic for products
-- Connected frontend to backend for user panel and authentication
-- Integrated Nodemailer for email notifications
-- Designed the structure of the website and database
-
----
 
 
 ## 📂 Setup Instructions
@@ -180,6 +180,7 @@ Now, your application should be running successfully!
 
 For any inquiries or contributions, feel free to reach out!
 
+- **Yash Patoliya** - [GitHub](https://github.com/yashpatoliya14) | [LinkedIn](https://www.linkedin.com/in/om-bhut-ab93972b9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 - **Bhut Om** - [GitHub](https://github.com/ombhut175) | [LinkedIn](https://www.linkedin.com/in/om-bhut-ab93972b9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 
 ---
