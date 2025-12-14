@@ -1,19 +1,36 @@
-const express = require('express');
-const {forLogin,sendOtpToSignup,verifyOtpToSignup,sendOtpForgotPassword,verifyOtpForgotPassword,setNewPassword,
-    isUserLoggedIn,
-    googleLogin
-} = require('../controllers/auth')
+/**
+ * Authentication Routes
+ * Handles signup, login, password reset, and Google OAuth
+ */
 
-//delclaration 
+const express = require('express');
 const router = express.Router();
 
-//routes 
-router.post('/signup/send-otp',sendOtpToSignup);
-router.post('/signup/verify-otp',verifyOtpToSignup);
-router.post('/login/send-otp-forgot',sendOtpForgotPassword);
-router.post('/login/verify-otp-forgot',verifyOtpForgotPassword);
-router.post('/login/set-new-password',setNewPassword);
-router.post('/login',forLogin);
-router.post('/google-auth',googleLogin);
+const {
+    sendOtpToSignup,
+    verifyOtpToSignup,
+    sendOtpForgotPassword,
+    verifyOtpForgotPassword,
+    setNewPassword,
+    forLogin,
+    isUserLoggedIn,
+    googleLogin
+} = require('../controllers/auth');
 
-module.exports = router
+// Signup Routes
+router.post('/signup/send-otp', sendOtpToSignup);
+router.post('/signup/verify-otp', verifyOtpToSignup);
+
+// Login Routes
+router.post('/login', forLogin);
+router.get('/check-auth', isUserLoggedIn);
+
+// Google OAuth
+router.post('/google-auth', googleLogin);
+
+// Password Reset Routes
+router.post('/login/send-otp-forgot', sendOtpForgotPassword);
+router.post('/login/verify-otp-forgot', verifyOtpForgotPassword);
+router.post('/login/set-new-password', setNewPassword);
+
+module.exports = router;
