@@ -42,8 +42,8 @@ function setUser(user) {
     return jwt.sign({
         id: user._id,
         email: user.email,
-        role: user.role
-    }, process.env.JWT_SECRET, { expiresIn: '30d' });
+        role:user.role
+    },process.env.JWT_SECRET,{expiresIn:'30d'});
 }
 
 /**
@@ -54,10 +54,10 @@ function setUser(user) {
 function getUser(token) {
     if (!token) return null;
     try {
-        return jwt.verify(token, process.env.JWT_SECRET);
+        return jwt.verify(token,process.env.JWT_SECRET);
     } catch (err) {
-        console.log('Token verification failed:', err.message);
-        return null;
+        console.error(err);
+        throw new Error('Invalid token');
     }
 }
 
@@ -79,7 +79,7 @@ function giveUserIdFromCookies(token) {
  */
 function setUserCookies(res, token) {
     try {
-        return res.cookie('userId', token, {
+        return res.cookie('authToken', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',

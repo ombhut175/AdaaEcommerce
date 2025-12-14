@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Slider from "./Slider"
+<<<<<<< HEAD
 import { ChevronDown, ChevronUp, Palette, Ruler, IndianRupee, ArrowUpDown } from "lucide-react"
+=======
+import { ChevronDown, ChevronUp } from "lucide-react"
+>>>>>>> origin
 import { useSearchParams } from "react-router-dom"
 
 const FilterSystem = ({ priceRange, setPriceRange, filters, setFilters, uniqueValues, sortOrder, setSortOrder }) => {
@@ -61,6 +65,7 @@ const FilterSystem = ({ priceRange, setPriceRange, filters, setFilters, uniqueVa
         }))
     }
 
+<<<<<<< HEAD
     // Filter section header component for consistency
     const FilterHeader = ({ icon: Icon, title, count }) => (
         <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
@@ -159,6 +164,55 @@ const FilterSystem = ({ priceRange, setPriceRange, filters, setFilters, uniqueVa
                     onChange={(e) => setSortOrder(e.target.value)}
                     className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-500 cursor-pointer"
                     whileHover={{ scale: 1.01 }}
+=======
+    const FilterContent = () => (
+        <div className="space-y-6">
+            <motion.div layout>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Price Range</h3>
+                <Slider min={0} max={10000} value={priceRange} onChange={setPriceRange} />
+                <div className="flex justify-between mt-2 text-gray-600 dark:text-gray-300">
+                    <span>₹{priceRange[0]}</span>
+                    <span>₹{priceRange[1]}</span>
+                </div>
+            </motion.div>
+
+            {["colors", "size"].map((filterType) => (
+                <motion.div key={filterType} layout>
+                    <h3 className="text-lg font-semibold mb-2 capitalize text-gray-900 dark:text-white">{filterType}</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {uniqueValues(filterType === "colors" ? "colors.colorName" : filterType).map((value) => (
+                            <motion.button
+                                key={value}
+                                onClick={() => handleFilterChange(filterType, value)}
+                                className={`flex items-center justify-between p-2 rounded transition-all duration-200 ${
+                                    filters[filterType].includes(value)
+                                        ? "bg-blue-100 dark:bg-blue-900"
+                                        : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                                }`}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate mr-2">{value}</span>
+                                {filterType === "colors" && (
+                                    <span
+                                        className="w-6 h-6 rounded-full border border-gray-300 dark:border-gray-600 flex-shrink-0"
+                                        style={{ backgroundColor: value.toLowerCase() }}
+                                    ></span>
+                                )}
+                            </motion.button>
+                        ))}
+                    </div>
+                </motion.div>
+            ))}
+
+            <motion.div layout>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Sort By</h3>
+                <motion.select
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all duration-200 hover:border-indigo-500 dark:hover:border-indigo-400"
+                    whileHover={{ scale: 1.02 }}
+>>>>>>> origin
                     transition={{ type: "spring", stiffness: 300 }}
                 >
                     <option value="">Default</option>

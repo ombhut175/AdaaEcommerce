@@ -1,14 +1,21 @@
 const express = require('express');
-const {addProduct,removeProduct,getAllProducts,getProduct,updateProduct} = require('../controllers/products')
+const {addProduct,removeProduct,getAllProducts,getProduct,updateProduct,filterProduct, searchProducts,
+    getDealsOfTheMonth, getNewArrivals, handleSuggestion
+} = require('../controllers/products')
+const uploadForProducts = require('../middlewares/multer.middleware');
 
-//delclaration 
+//declaration
 const router = express.Router();
-
+ 
 //routes
-router.get('/products/',getAllProducts);
-router.get('/products/:id',getProduct);
-router.delete('/products/:id',removeProduct);
-router.patch('/products/:id',updateProduct);
-router.post('/products/',addProduct);
+router.get('/',getAllProducts);
+router.get('/suggestions',handleSuggestion);
+router.get('/newArrivals',getNewArrivals);
+router.post('/add', uploadForProducts.any(), addProduct);
+router.post('/filter',filterProduct);
+router.get('/dealsOfMonth',getDealsOfTheMonth);
+router.get('/:id',getProduct);
+router.get('/search/:searchText',searchProducts);
+
 
 module.exports = router

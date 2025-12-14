@@ -2,13 +2,14 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const {giveUserFromDb} = require("../services/common.services");
+const {giveUserIdFromCookies} = require("../services/auth");
 
 // Define the temp directory relative to this script
 const tempDir = path.join(__dirname, '../public/temp');
 
 // Ensure the temp directory exists
 if (!fs.existsSync(tempDir)) {
-    fs.mkdirSync(tempDir, { recursive: true });
+    fs.mkdirSync(tempDir, {recursive: true});
 }
 
 //storage for userProfile
@@ -39,6 +40,37 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({storage: storage});
+
+
+const storageForProducts = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, tempDir); // Temporary directory for all files
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+        cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
+    }
+});
+
+
+const uploadForProducts = multer({
+    storage: storageForProducts,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error("Only image files are allowed"), false);
+        }
+    },
+});
+
+
+
+
+
 
 module.exports = upload;
+module.exports = uploadForProducts;
