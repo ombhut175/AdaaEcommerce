@@ -1,18 +1,43 @@
-require('dotenv').config({path: '../.env'});
+require('dotenv').config({ path: '../.env' });
+const userModel = require('../models/User')
+
 const jwt = require('jsonwebtoken');
-const res = require("express/lib/response");
+
+const admin = require("firebase-admin");
+
+
+async function googleAuth(token) {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+
+    let user = await userModel.findOne({ email: decodedToken.email });
+    if (!user) {
+        user = await userModel.create({
+            name: decodedToken.name,
+            email: decodedToken.email,
+            password: decodedToken.sub,
+            verified: true,
+        });
+    }
+
+    const authToken = setUser(user);
+
+    return { user, authToken };
+}
+
+
 
 function setUser(user) {
     return jwt.sign({
         id: user._id,
         email: user.email,
-    },process.env.JWT_SECRET,{expiresIn:'30d'});
+        role: user.role
+    }, process.env.JWT_SECRET, { expiresIn: '30d' });
 }
 
 function getUser(token) {
     if (!token) return null;
     try {
-        return jwt.verify(token,process.env.SECRETKEY);
+        return jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
         console.log(err);
         
@@ -25,7 +50,7 @@ function giveUserIdFromCookies(token) {
     return user.id;
 }
 
-function setUserCookies(res,token) {
+function setUserCookies(res, token) {
     try {
         return res.cookie('userId', token, {
             httpOnly: true,
@@ -38,7 +63,7 @@ function setUserCookies(res,token) {
     }
 }
 
-function removeUserCookies(res ,cookieName) {
+function removeUserCookies(res, cookieName) {
     res.clearCookie(cookieName);
 }
 
@@ -48,4 +73,5 @@ module.exports = {
     giveUserIdFromCookies,
     setUserCookies,
     removeUserCookies,
+    googleAuth,
 }
