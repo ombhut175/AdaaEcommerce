@@ -1,20 +1,38 @@
-require('dotenv').config({path:'../.env'});
-const googleRoutes = require('express').Router();
-const passport = require('passport');
-const {setUser, setUserCookies, removeUserCookies} = require("../services/auth");
+/**
+ * Google Authentication Routes
+ * Uses Firebase Admin SDK for token verification
+ */
 
+const express = require('express');
+const googleRoutes = express.Router();
+const { googleLogin } = require('../controllers/auth');
+const { removeUserCookies } = require('../services/auth');
 
+/**
+ * POST /api/google-auth
+ * Verify Firebase ID token and authenticate user
+ */
+googleRoutes.post('/google-auth', googleLogin);
 
-// Google login route
-googleRoutes.get('/', passport.authenticate("google", {
-    scope: ["profile", "email"]
-}));
-
-
-googleRoutes.get('/login/success',(req,res)=>{
-    if (!req.user){
-        return res.status(400).json({error:true,message:'Not Authorized'});
+/**
+ * GET /api/google/logout
+ * Clear user session and cookies
+ */
+googleRoutes.get('/logout', (req, res) => {
+    try {
+        removeUserCookies(res, 'userId');
+        return res.status(200).json({
+            success: true,
+            msg: 'Logged out successfully'
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            msg: 'Logout failed'
+        });
     }
+<<<<<<< HEAD
+=======
     return res.status(200).json({
         error:false,
         message:'Successfully logged in',
@@ -44,17 +62,7 @@ googleRoutes.get('/callback', passport.authenticate('google', {
     const token = setUser(user);
     setUserCookies(res ,token);
     return res.redirect(`${process.env.CLIENT_URL}`);
+>>>>>>> origin
 });
-
-googleRoutes.get('/logout',(req,res,next)=>{
-    req.logout((err)=>{
-        if (err){
-            removeUserCookies(res ,'userId');
-            return next(err);
-        }
-        return res.redirect(process.env.CLIENT_URL);
-    });
-})
-
 
 module.exports = googleRoutes;
