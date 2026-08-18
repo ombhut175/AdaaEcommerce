@@ -6,12 +6,12 @@ const transporter = nodemailer.createTransport({
   secure: false, // true for port 465, false for other ports
   auth: {
     user: process.env.EMAIL_OF_DEVELOPER,
-    pass: "kcfleaovoepfkipb",
+    pass: process.env.PASSKEY,
   },
 });
 
 const sendOtpViaEmail = async (email,otp)=>{
-    const info = await transporter.sendMail({
+     await transporter.sendMail({
         from: process.env.EMAIL_OF_DEVELOPER, // sender address
         to: email, // list of receivers
         subject: `Adaa-Jaipur`, // Subject line

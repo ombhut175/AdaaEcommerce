@@ -29,6 +29,7 @@ import NewArrivalsPage from './components/pages/NewArrivalsPage';
 import Wishlist from './components/customer/Wishlist.jsx';
 import SearchResults from './components/searchProducts/SearchResults.jsx';
 import SignIn from "./components/auth/SignIn.jsx";
+import { LoginProvider } from "./contexts/useLoginForm.jsx";
 import SignUp from "./components/auth/SignUp.jsx";
 import ForgotPassword from "./components/auth/ForgotPassword.jsx";
 import ResetPassword from "./components/auth/ResetPassword.jsx";
@@ -105,7 +106,7 @@ function App() {
                         <ScrollToTop />
                         <Routes>
                             {/* User Login Routes */}
-                            <Route path="/signIn" element={<SignIn />} />
+                            <Route path="/signIn" element={<LoginProvider><SignIn /></LoginProvider>} />
                             <Route path="/signUp" element={<SignUp />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
                             <Route path="/reset-password" element={<ResetPassword />} />
