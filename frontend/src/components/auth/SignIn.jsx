@@ -2,6 +2,7 @@ import { Link,useNavigate } from 'react-router-dom'
 import {GoogleButton} from "./GoogleButton.jsx";
 import {LoadingBar} from "../loadingBar/LoadingBar.jsx";
 import useLoginForm from '../../contexts/useLoginForm.jsx';
+import FormInput from '../common/FormInput.jsx';
 
 function SignIn() {
   const { 
@@ -45,40 +46,27 @@ function SignIn() {
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6" noValidate>
             <div className="space-y-4">
-              <div>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  name='email'
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
-                  onChange={handleChange}
-                />
-                {errors.email && <span className='text-red-700'>{errors.email}</span>}
-              </div>
-              <div className="relative">
-  <input
-    type={isHidePass ? "password" : "text"}
-    placeholder="Password"
-    name="password"
-    className="relative w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
-    onChange={handleChange}
-  />
-  {errors.password && <span className="text-red-700">{errors.password}</span>}
-  <button
-    type="button"
-    className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 p-1"
-    onClick={(e) => {
-      e.preventDefault();
-      setIsHidePass(!isHidePass);
-    }}
-  >
-    {isHidePass ? (
-      <i className="fa-regular fa-eye"></i>
-    ) : (
-      <i className="fa-regular fa-eye-slash"></i>
-    )}
-  </button>
-</div>
+              <FormInput 
+              type="email"
+              placeholder="Email"
+              name='email'
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
+              onChange={handleChange}
+              errors={errors}
+              isHidePass={isHidePass}
+              setIsHidePass={setIsHidePass}
+              />
+              
+            <FormInput 
+              type="password"
+              placeholder="Password"
+              name="password"
+              className="relative w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
+              onChange={handleChange}
+              errors={errors}
+              isHidePass={isHidePass}
+              setIsHidePass={setIsHidePass}
+              />
 
             </div>
 

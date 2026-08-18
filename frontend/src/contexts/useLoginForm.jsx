@@ -1,9 +1,9 @@
 import { fetchUser, logInUser } from "../store/features/userSlice";
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { forgotPassword } from "../services/auth.service";
+import { authService } from "../services/auth.service";
 
 const loginContext = createContext();
 
@@ -16,9 +16,8 @@ export const LoginProvider = ({ children }) => {
         email: "",
         password: ""
     });
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const [loading, setLoading] = useState(false);
     const [isHidePass, setIsHidePass] = useState(true);
@@ -35,7 +34,7 @@ export const LoginProvider = ({ children }) => {
             }
         }
         setErrors(prev => ({ ...prev, [name]: error }));
-    }
+    };
 
 
     const handleChange = (e) => {
@@ -45,59 +44,58 @@ export const LoginProvider = ({ children }) => {
     };
 
 
-    const handleForgot = (e) => {
-        e.preventDefault()
+    const handleForgot = async (e) => {
+        e.preventDefault();
 
         if (!formData.email) {
-            setErrors({ "email": "Please Enter Email" })
+            setErrors({ email: "Please enter your email" });
+            return;
         }
-        forgotPassword(BACKEND_URL,formData)
-        .then((res)=>{
-            if(res.success){
-                toast(res.msg);
+
+        setLoading(true);
+        try {
+            const data = await authService.sendForgotPasswordOtp(formData.email);
+            if (data.success) {
+                toast(data.msg);
                 setErrors({});
                 navigate('/forgot-password');
+            } else {
+                toast(data.msg);
+                setErrors({ email: data.msg || 'Please try again.' });
             }
-        })
-        .catch((err)=>{
-            toast(err.message)
-        })
-    }
-    const handleSubmit = (e) => {
+        } catch (err) {
+            console.error('Error sending OTP:', err);
+            const errorMessage = err.response?.data?.msg || 'Error verifying OTP.';
+            toast(errorMessage);
+            setErrors({ email: errorMessage });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         setIsDisabled(true);
-        console.log('Form Submitted:', formData);
-
         setLoading(true);
 
-
-        fetch(BACKEND_URL + "/api/login",
-            {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }, credentials: 'include',
-                method: "POST",
-                body: JSON.stringify(formData)
-            })
-            .then((res) => res.json())
-            .then((res) => {
-                console.log(res);
-
-                if (res.success) {
-                    setLoading(false);
-                    toast(res.msg);
-                    dispatch(fetchUser());
-                    dispatch(logInUser());
-                    navigate('/')
-
-                } else {
-                    toast(res.msg)
-                }
-            })
-            .catch(function (res) { console.log(res) })
-            .finally(() => setIsDisabled(false));
+        try {
+            const data = await authService.login(formData);
+            if (data.success) {
+                toast(data.msg);
+                dispatch(fetchUser());
+                dispatch(logInUser());
+                navigate('/');
+            } else {
+                toast(data.msg);
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            toast(err.response?.data?.msg || 'Login failed. Please check credentials.');
+        } finally {
+            setLoading(false);
+            setIsDisabled(false);
+        }
     };
 
 
