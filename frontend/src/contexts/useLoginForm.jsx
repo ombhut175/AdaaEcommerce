@@ -22,6 +22,7 @@ export const LoginProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [isHidePass, setIsHidePass] = useState(true);
     const [isDisabled, setIsDisabled] = useState(false);
+    const [otp, setOtp] = useState('');
 
     const validate = (name, value) => {
         let error = '';
@@ -37,6 +38,20 @@ export const LoginProvider = ({ children }) => {
     };
 
 
+    const validateForm = (isForgot) => {
+        if (!formData.email) {
+            toast.error("Please enter your email");
+            return false;
+        }
+        if (!isForgot && !formData.password) {
+            toast.error("Please enter your password");
+            return false;
+        }
+        setIsDisabled(true)
+        return true;
+    }
+
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -46,6 +61,8 @@ export const LoginProvider = ({ children }) => {
 
     const handleForgot = async (e) => {
         e.preventDefault();
+
+        validateForm(true);
 
         if (!formData.email) {
             setErrors({ email: "Please enter your email" });
@@ -73,8 +90,99 @@ export const LoginProvider = ({ children }) => {
         }
     };
 
+    const handleVerifyForgotOtp = async (e) => {
+        e.preventDefault();
+
+        console.log(otp.length)
+        if (!otp || otp.length !== 6) {
+            setErrors({ otp: 'Please enter a valid 6-digit OTP.' });
+            return;
+        }
+
+        setErrors({});
+
+        const email = formData.email;
+
+        try {
+            const data = await authService.verifyForgotPasswordOtp({
+                email,
+                otp
+            });
+
+            if (data.success) {
+                localStorage.setItem('authToken', data.token);
+                toast(data.msg);
+                setErrors({});
+                navigate('/reset-password');
+            } else {
+                toast(data.msg);
+                setErrors({ otp: data.msg || 'Error verifying OTP.' });
+            }
+        } catch (err) {
+            console.error('Error verifying OTP:', err);
+            const errorMessage = err.response?.data?.msg || 'Error verifying OTP.';
+            toast(errorMessage);
+            setErrors({ otp: errorMessage });
+        } finally {
+            setLoading(false);
+            setIsDisabled(false);
+        }
+    };
+
+    const handleSetNewPassword = async (e, resetFormData) => {
+        if (e) e.preventDefault();
+
+        const { newPassword, confirmPassword } = resetFormData || {};
+
+        setIsDisabled(true);
+        if (!newPassword || !confirmPassword) {
+            setErrors({ resetPassword: 'Both fields are required.' });
+            setIsDisabled(false);
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setErrors({ resetPassword: 'Passwords do not match.' });
+            setIsDisabled(false);
+            return;
+        }
+
+        setErrors({});
+        setLoading(true);
+
+        const email = formData.email || localStorage.getItem('email');
+
+        try {
+            const data = await authService.resetPassword({
+                email,
+                newPassword: confirmPassword
+            });
+
+            if (data.success) {
+                toast.success('Password changed successfully!');
+                setErrors({});
+                navigate('/');
+            } else {
+                toast.error(data.msg || 'An error occurred. Please try again.');
+                setErrors({ resetPassword: data.msg || 'An error occurred. Please try again.' });
+            }
+        } catch (err) {
+            console.error('Error resetting password:', err);
+            const errorMessage = err.response?.data?.msg || 'Failed to set new password. Please try again.';
+            toast(errorMessage);
+            setErrors({ resetPassword: errorMessage });
+        } finally {
+            setLoading(false);
+            setIsDisabled(false);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
 
         setIsDisabled(true);
         setLoading(true);
@@ -103,18 +211,25 @@ export const LoginProvider = ({ children }) => {
         <loginContext.Provider value={{
             errors,
             loading,
+            isDisabled,
+            setIsDisabled,
             handleChange,
             handleSubmit,
             handleForgot,
+            handleVerifyForgotOtp,
+            handleSetNewPassword,
             isHidePass,
             setErrors,
             setIsHidePass,
             formData,
-            setFormData
+            setFormData,
+            otp,
+            setOtp
         }}>
             {children}
         </loginContext.Provider>
     )
+
 }
 
 

@@ -23,11 +23,38 @@ export const authService = {
     },
 
     /**
+     * Verify OTP for forgot password
+     * @param {Object} data - { email, otp }
+     */
+    verifyForgotPasswordOtp: async (data) => {
+        const response = await api.post('/api/login/verify-otp-forgot', data);
+        return response.data;
+    },
+
+    /**
      * Verify OTP or reset password
      * @param {Object} data
      */
     resetPassword: async (data) => {
-        const response = await api.post('/api/login/reset-password', data);
+        const response = await api.post('/api/login/set-new-password', data);
+        return response.data;
+    },
+
+    /**
+     * Send OTP for signup
+     * @param {Object} userData - { name, email, password }
+     */
+    sendSignupOtp: async (userData) => {
+        const response = await api.post('/api/signup/send-otp', userData);
+        return response.data;
+    },
+
+    /**
+     * Verify OTP for signup
+     * @param {Object} data - { email, otp }
+     */
+    verifySignupOtp: async (data) => {
+        const response = await api.post('/api/signup/verify-otp', data);
         return response.data;
     }
 };

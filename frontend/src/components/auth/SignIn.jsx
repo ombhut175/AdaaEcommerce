@@ -7,7 +7,7 @@ import FormInput from '../common/FormInput.jsx';
 function SignIn() {
   const { 
     errors, 
-    loading, 
+    loading,
     handleChange, 
     handleSubmit, 
     handleForgot, 
@@ -77,7 +77,6 @@ function SignIn() {
                           ? "bg-gray-500 text-gray-300 cursor-not-allowed"
                           : "bg-black text-white hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98]"
                   }`}
-                  disabled={loading}
               >
                   Sign In
               </button>

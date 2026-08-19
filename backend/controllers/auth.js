@@ -23,12 +23,11 @@ const sendOtpToSignup = async (req, res) => {
         // Check if an unverified user already exists
         const tempUser = await tempUserModel.findOne({ email });
         if (tempUser) {
-            return res.status(400).json({ success: true, msg: "OTP already sent. Please verify." });
+            return res.status(200).json({ success: true, msg: "OTP already sent. Please verify." });
         }
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 5);
-
         // Save user temporarily
         await tempUserModel.create({ name, email, password: hashedPassword, otp, otpExpiresAt });
 
@@ -100,7 +99,7 @@ const sendOtpForgotPassword = async (req, res) => {
     //generate otp & expiration
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
-
+    console.log("sent otp: ", otp);
     try {
 
         //userModel exists or not
@@ -132,7 +131,6 @@ const sendOtpForgotPassword = async (req, res) => {
 
 const verifyOtpForgotPassword = async (req, res) => {
     const { otp, email } = req.body;
-
     //check is empty or not
     if (!otp || !email) {
         return res.status(400).json({ success: false, msg: "All fields are required Email and OTP !" });
@@ -145,7 +143,6 @@ const verifyOtpForgotPassword = async (req, res) => {
         if (!User) {
             return res.status(404).json({ success: false, msg: "User not found" });
         }
-
         //check is invalid or expiration
         if (User.otp !== otp) {
             return res.status(400).json({ success: false, msg: "Otp is invalid" });
@@ -186,6 +183,8 @@ const setNewPassword = async (req, res) => {
 
         //check is invalid or expiration
         User.password = await bcrypt.hash(newPassword, 5);
+        console.log("Hashed Password :", User.password)
+
         await User.save();
 
         return res.status(200).json({ success: true, message: 'Password changed successfully' });
@@ -209,7 +208,10 @@ const forLogin = async (req, res) => {
         if (!data) {
             return res.json({ success: false, msg: "User Not found" });
         }
+        console.log("Password At Login :", password)
         const isPassValid = await bcrypt.compare(password, data.password)
+        console.log("Password At Login Hashed :", data.password)
+        console.log(isPassValid)
         if (isPassValid) {
             const token = setUser(data)
             setUserCookies(res, token);
