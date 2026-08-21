@@ -16,13 +16,7 @@ function ConfirmCode() {
     return (
         <div className="flex min-h-[calc(100vh-4rem)]">
             <LoadingBar isLoading={loading || isDisabled}/>
-            <div className="flex-1 hidden lg:block">
-                <img
-                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1200&fit=crop"
-                    alt="Fashion"
-                    className="w-full h-full object-cover"
-                />
-            </div>
+
             <div className="flex-1 flex items-center justify-center p-8">
                 <div className="w-full max-w-md space-y-8 animate-fadeIn">
                     <div className="text-center transform hover:scale-105 transition-transform duration-300">

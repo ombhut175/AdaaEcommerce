@@ -16,13 +16,7 @@ function ForgotPassword() {
     return (
         <div className="flex min-h-[calc(100vh-4rem)]">
             <LoadingBar isLoading={loading || isDisabled} />
-            <div className="flex-1 hidden lg:block">
-                <img
-                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1200&fit=crop"
-                    alt="Fashion"
-                    className="w-full h-full object-cover"
-                />
-            </div>
+
             <div className="flex-1 flex items-center justify-center p-8">
                 <div className="w-full max-w-md space-y-8 animate-fadeIn">
                     <div className="text-center">
@@ -66,7 +60,7 @@ function ForgotPassword() {
                     </form>
 
                     <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-                        By continuing, you agree to ADAA's{' '}
+                        By continuing, you agree to ADAA&apos;s{' '}
                         <Link to="/terms"
                               className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
                             Terms & Conditions

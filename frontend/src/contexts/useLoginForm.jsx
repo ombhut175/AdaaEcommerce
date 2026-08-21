@@ -161,6 +161,7 @@ export const LoginProvider = ({ children }) => {
             if (data.success) {
                 toast.success('Password changed successfully!');
                 setErrors({});
+                dispatch(fetchUser());
                 navigate('/');
             } else {
                 toast.error(data.msg || 'An error occurred. Please try again.');
