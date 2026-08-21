@@ -4,7 +4,7 @@ import ReactGA from "react-ga4";
 
 const AnalyticsTracker = () => {
     const location = useLocation();
-
+    console.log(location, "location");
     useEffect(() => {
         ReactGA.send({ hitType: "pageview", page: location.pathname });
     }, [location]);

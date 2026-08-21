@@ -1,145 +1,24 @@
-import { useState,useEffect } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
-import {toast} from 'react-toastify'
 import {GoogleButton} from "./GoogleButton.jsx";
-import { jwtDecode } from 'jwt-decode'
-import {useDispatch} from "react-redux";
-import {fetchUser, logInUser} from "../../store/features/userSlice.js";
 import {LoadingBar} from "../loadingBar/LoadingBar.jsx";
-import axios from "axios";
+import useLoginForm from '../../contexts/useLoginForm.jsx';
+import FormInput from '../common/FormInput.jsx';
 
 function SignIn() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  })
-
-  const [errors, setErrors] = useState({});
-  const [loading,setLoading] = useState(false);
-  const navigate = useNavigate()
-    const dispatch = useDispatch();
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const [isHidePass,setIsHidePass] = useState(true);
-  const [isDisabled, setIsDisabled] = useState(false);
-
-  const validate = (name, value) => {
-      let error = '';
-      if (name === 'email' && !/\S+@\S+\.\S+/.test(value)) {
-          error = 'Please enter a valid email address';
-      } else if (name === 'password') {
-          const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).{6,}$/;
-          if (!passwordRegex.test(value)) {
-              error = 'Password must be at least 6 characters long, include at least one number, and one special character';
-          }
-      }
-      setErrors(prev => ({ ...prev, [name]: error })); // Update the error state
-    };
-
-
-  const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({ ...prev, [name]: value }));
-      validate(name, value);
-  };
-const validateForm = ()=>{
-  console.log(formData);
-
-  if(!formData.email && !formData.password){
-    setErrors(prev => ({...prev ,"password":"Please enter Password"}))
-    setErrors(prev => ({...prev ,"email":"Please enter Email"}))
-  }
-  else if(!formData.password){
-    setErrors(prev => ({...prev ,"password":"Please enter Password"}))
-  }else if(!formData.email){
-    setErrors(prev => ({...prev ,"email":"Please enter Email"}))
-
-  }
-  return true
-}
-
-  const handleForgot = (e)=>{
-    e.preventDefault()
-
-    if(!formData.email){
-      setErrors({"email":"Please Enter Email"})
-    }
-    fetch(BACKEND_URL+ '/api/login/send-otp-forgot', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email:formData.email }),
-    })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.success) {
-          toast(data.msg);
-          navigate('/forgot-password'); // Redirect to home page after successful OTP verification
-
-      } else {
-          console.log(data);
-          toast(data.msg)
-          setErrors('Please try again.');
-      }
-    })
-    .catch((err) => {
-        console.log(err);
-        setErrors('Error verifying OTP.');
-    });
-  }
-  const handleSubmit = (e) => {
-      e.preventDefault();
-
-      setIsDisabled(true);
-      if (validateForm()) {
-          console.log('Form Submitted:', formData);
-
-          setLoading(true);
-
-
-          fetch( BACKEND_URL + "/api/login",
-              {
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                  },credentials: 'include',
-                  method: "POST",
-                  body: JSON.stringify(formData)
-              })
-              .then((res)=> res.json())
-              .then((res)=>{
-                console.log(res);
-
-                  if(res.success){
-                      setLoading(false);
-                      toast(res.msg);
-                      dispatch(fetchUser());
-                      dispatch(logInUser());
-                          navigate('/')
-
-                  }else{
-                    toast(res.msg)
-                  }
-              })
-              .catch(function(res){ console.log(res) })
-              .finally(()=>setIsDisabled(false));
-      }
-  };
-
-    const handleSignInWithGoogle = () => {
-        window.location.href=import.meta.env.VITE_BACKENDURL + '/api/google';
-    }
+  const { 
+    errors, 
+    loading,
+    handleChange, 
+    handleSubmit, 
+    handleForgot, 
+    isHidePass, 
+    setIsHidePass 
+  } = useLoginForm();
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
-        <LoadingBar isLoading={isDisabled} />
-      <div className="flex-1 hidden lg:block">
-        <img
-          src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1200&fit=crop"
-          alt="Fashion"
-          className="w-full h-full object-cover"
-        />
-      </div>
+        <LoadingBar isLoading={loading} />
+
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8 animate-fadeIn">
           <div className="text-center">
@@ -161,51 +40,37 @@ const validateForm = ()=>{
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6" noValidate>
             <div className="space-y-4">
-              <div>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  name='email'
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
-                  onChange={handleChange}
-                />
-                {errors.email && <span className='text-red-700'>{errors.email}</span>}
-              </div>
-              <div className="relative">
-  <input
-    type={isHidePass ? "password" : "text"}
-    placeholder="Password"
-    name="password"
-    className="relative w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
-    onChange={handleChange}
-  />
-  {errors.password && <span className="text-red-700">{errors.password}</span>}
-  <button
-    type="button"
-    className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 p-1"
-    onClick={(e) => {
-      e.preventDefault();
-      setIsHidePass(!isHidePass);
-    }}
-  >
-    {isHidePass ? (
-      <i className="fa-regular fa-eye"></i>
-    ) : (
-      <i className="fa-regular fa-eye-slash"></i>
-    )}
-  </button>
-</div>
+              <FormInput 
+              type="email"
+              placeholder="Email"
+              name='email'
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
+              onChange={handleChange}
+              errors={errors}
+              isHidePass={isHidePass}
+              setIsHidePass={setIsHidePass}
+              />
+              
+            <FormInput 
+              type="password"
+              placeholder="Password"
+              name="password"
+              className="relative w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition-all duration-200"
+              onChange={handleChange}
+              errors={errors}
+              isHidePass={isHidePass}
+              setIsHidePass={setIsHidePass}
+              />
 
             </div>
 
               <button
                   type="submit"
                   className={`w-full p-3 rounded-lg transition-all duration-200 transform ${
-                      isDisabled
+                      loading
                           ? "bg-gray-500 text-gray-300 cursor-not-allowed"
                           : "bg-black text-white hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98]"
                   }`}
-                  disabled={isDisabled}
               >
                   Sign In
               </button>
@@ -228,7 +93,7 @@ const validateForm = ()=>{
           </form>
 
           <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-            By continuing, you agree to ADAA's{' '}
+            By continuing, you agree to ADAA&apos;s{' '}
             <Link to="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
               Terms & Conditions
             </Link>

@@ -57,6 +57,11 @@ export const userSlice = createSlice({
         builder.addCase(fetchUser.fulfilled, (state, action) => {
             return {...state, ...action.payload, isLoggedIn: true};
         })
+        .addCase(fetchUser.rejected, (state, action) => {
+            return {...state, isLoggedIn: false};
+        }).addCase(fetchUser.pending, (state, action) => {
+            return {...state, isLoggedIn: false};
+        })
     }
 });
 

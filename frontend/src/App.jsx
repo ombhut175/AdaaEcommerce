@@ -29,7 +29,9 @@ import NewArrivalsPage from './components/pages/NewArrivalsPage';
 import Wishlist from './components/customer/Wishlist.jsx';
 import SearchResults from './components/searchProducts/SearchResults.jsx';
 import SignIn from "./components/auth/SignIn.jsx";
+import { LoginProvider } from "./contexts/useLoginForm.jsx";
 import SignUp from "./components/auth/SignUp.jsx";
+import { SignupProvider } from "./contexts/useSignup.jsx";
 import ForgotPassword from "./components/auth/ForgotPassword.jsx";
 import ResetPassword from "./components/auth/ResetPassword.jsx";
 import ConfirmCode from "./components/auth/ConfirmCode.jsx";
@@ -105,11 +107,11 @@ function App() {
                         <ScrollToTop />
                         <Routes>
                             {/* User Login Routes */}
-                            <Route path="/signIn" element={<SignIn />} />
-                            <Route path="/signUp" element={<SignUp />} />
-                            <Route path="/forgot-password" element={<ForgotPassword />} />
-                            <Route path="/reset-password" element={<ResetPassword />} />
-                            <Route path="/confirm-code" element={<ConfirmCode />} />
+                            <Route path="/signIn" element={<LoginProvider><SignIn /></LoginProvider>} />
+                            <Route path="/signUp" element={<SignupProvider><SignUp /></SignupProvider>} />
+                            <Route path="/forgot-password" element={<LoginProvider><ForgotPassword /></LoginProvider>} />
+                            <Route path="/reset-password" element={<LoginProvider><ResetPassword /></LoginProvider>} />
+                            <Route path="/confirm-code" element={<SignupProvider><ConfirmCode /></SignupProvider>} />
 
                             {/* Main Routes */}
                             <Route path="/" element={<HomePage />} />
@@ -226,6 +228,7 @@ function App() {
 }
 
 // Memoized HomePage component to reduce unnecessary re-renders
+// eslint-disable-next-line react/display-name
 const HomePage = memo(() => (
     <>
         <Hero />
